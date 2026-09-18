@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Itai Raveh — recreation</title>
+<style>
+  :root{
+    --illustration:#3b6df0;
+    --brand:#ef5da8;
+    --science:#1fae70;
+    --animation:#f2822f;
+    --ink:#171717;
+    --sub:#8c8c8c;
+    --bg:#ffffff;
+    --line:#ececec;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Helvetica Neue","HelveticaNeue",Helvetica,Arial,sans-serif;
+    font-weight:400;
+    color:var(--ink);
+    background:var(--bg);
+    overflow-x:hidden;
+  }
+  a{color:inherit;}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:fixed; top:0; left:0; right:0;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 28px;
+    z-index:50;
+    background:linear-gradient(var(--bg), var(--bg) 70%, transparent);
+  }
+  .nav-left{display:flex; align-items:center; gap:22px;}
+  .logo{font-weight:700; font-size:14px; letter-spacing:.01em; cursor:pointer;}
+  .nav-links{display:flex; gap:18px; list-style:none; margin:0; padding:0;}
+  .nav-links li{font-size:13px; font-weight:600; color:var(--ink); cursor:pointer; transition:color .2s;}
+  .nav-links li.dim{color:#bdbdbd;}
+  .nav-right{display:flex; gap:18px; font-size:13px; font-weight:600;}
+  .nav-right a{text-decoration:none;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; align-items:center;
+    padding:0 8vw;
+  }
+  /* two scatter layers: one behind the text, one in front of it.
+     `layer:'front'` on a scatter entry puts it in the front layer. */
+  .scatter{position:absolute; inset:0; pointer-events:none;}
+  .scatter.back{z-index:1;}
+  .scatter.front{z-index:3;}
+  .swatch{
+    position:absolute;
+    opacity:0;
+    transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+    display:flex; align-items:center; justify-content:center;
+    background-repeat:no-repeat; background-size:contain; background-position:center;
+  }
+  .swatch.active{opacity:1;}
+
+  .lead{
+    position:relative; z-index:2;
+    font-weight:400;
+    font-size:clamp(28px, 4.4vw, 52px);
+    line-height:1.28; font-weight:400;
+    max-width:1180px; margin:0;
+  }
+  .lead .cat{
+    text-decoration:underline;
+    text-decoration-style:dotted;
+    text-decoration-color:#c4c4c4;
+    text-decoration-thickness:1px;
+    text-underline-offset:7px;
+    pointer-events:auto;
+    cursor:pointer; transition:color .25s ease;
+  }
+  .lead .cat.on-illustration{color:var(--illustration); text-decoration-color:var(--illustration);}
+  .lead .cat.on-brand{color:var(--brand); text-decoration-color:var(--brand);}
+  .lead .cat.on-science{color:var(--science); text-decoration-color:var(--science);}
+  .lead .cat.on-animation{color:var(--animation); text-decoration-color:var(--animation);}
+  .lead .emoji{text-decoration:none;}
+
+  .hint{
+    position:absolute; left:28px; bottom:14px;
+    font-size:11px; color:var(--sub);
+    opacity:0; transition:opacity .2s;
+  }
+  .hint.show{opacity:1;}
+
+  /* ---------- TRANSITION OVERLAY ---------- */
+  .overlay{
+    position:fixed; inset:0; background:#000; z-index:300;
+    opacity:0; pointer-events:none;
+    transition:opacity .38s ease;
+  }
+  .overlay.show{opacity:1; pointer-events:all;}
+  .overlay .overlay-label{
+    position:absolute; top:22px; left:28px;
+    color:#fff; font-size:13px; font-weight:600;
+    opacity:0; transition:opacity .3s ease .15s;
+  }
+  .overlay.show .overlay-label{opacity:1;}
+
+  /* ---------- GRID PAGE ---------- */
+  .grid-page{display:none; padding:100px 28px 80px;}
+  .grid-page.show{display:block;}
+  .breadcrumb{
+    font-size:12px; color:var(--sub);
+    padding-bottom:14px; margin-bottom:34px;
+    border-bottom:1px solid var(--line);
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:28px 22px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .grid{grid-template-columns:1fr;} }
+
+  .card{cursor:pointer; text-decoration:none; display:block;}
+  .card-thumb{
+    position:relative; aspect-ratio:1/1;
+    border-radius:2px; overflow:hidden; background:#f1f1f1;
+    transition:transform .5s cubic-bezier(.16,1,.3,1);
+  }
+  .card:hover .card-thumb{transform:translateY(-3px);}
+  .card-thumb .fill{
+    position:absolute; inset:0;
+    filter:blur(18px); transform:scale(1.15); opacity:.9;
+    transition:filter .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1), opacity .9s ease;
+  }
+  .card:hover .card-thumb .fill{transform:scale(1.04);}
+  .card-thumb.loaded .fill{filter:blur(0); transform:scale(1); opacity:1;}
+  .card-thumb .glyph{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:34px; opacity:0;
+    transition:opacity .5s ease .1s;
+  }
+  .card-thumb.loaded .glyph{opacity:1;}
+  .card-thumb .badge{
+    position:absolute; top:8px; right:8px;
+    font-size:10px; font-weight:700; letter-spacing:.02em;
+    background:rgba(255,255,255,.9); padding:3px 7px; border-radius:3px;
+    opacity:0; transition:opacity .3s ease;
+  }
+  .card:hover .card-thumb .badge{opacity:1;}
+
+  .card-caption{margin-top:10px;}
+  .card-title{font-size:13px; font-weight:700;}
+  .card-desc{
+    font-size:12px; color:var(--sub); margin-top:3px;
+    max-height:0; overflow:hidden; opacity:0;
+    transition:max-height .3s ease, opacity .3s ease, margin-top .3s ease;
+  }
+  .card:hover .card-desc{max-height:60px; opacity:1; margin-top:6px;}
+
+  /* ---------- MODAL (the popup Readymag couldn't do) ---------- */
+  .modal-scrim{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(20,20,20,.55);
+    backdrop-filter:blur(0px);
+    display:flex; align-items:center; justify-content:center;
+    padding:40px 20px;
+    opacity:0; visibility:hidden;
+    transition:opacity .4s cubic-bezier(.19,1,.22,1), backdrop-filter .4s ease;
+  }
+  .modal-scrim.show{opacity:1; visibility:visible; backdrop-filter:blur(3px);}
+  .modal{
+    background:#fff; border-radius:8px;
+    width:min(920px, 100%); max-height:86vh;
+    overflow-y:auto; position:relative;
+    transform:translateY(28px) scale(.96);
+    transition:transform .5s cubic-bezier(.16,1.3,.3,1);
+    padding:44px;
+  }
+  .modal-scrim.show .modal{transform:translateY(0) scale(1);}
+  .modal-gallery .g-item{
+    opacity:0; transform:translateY(10px) scale(.98);
+    transition:opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
+  }
+  .modal-scrim.show .modal-gallery .g-item{opacity:1; transform:translateY(0) scale(1);}
+  .modal-close{
+    position:absolute; top:16px; right:18px;
+    width:30px; height:30px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:16px; background:#f4f4f4;
+    border:none;
+  }
+  .modal-close:hover{background:#eaeaea;}
+  .modal-title{font-size:20px; font-weight:700; margin:0 0 6px;}
+  .modal-desc{font-size:14px; color:var(--sub); line-height:1.6; max-width:60ch; margin:0 0 26px;}
+  .modal-gallery{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:14px;
+  }
+  .modal-gallery.single{grid-template-columns:1fr;}
+  .modal-gallery .g-item{
+    aspect-ratio:1/1; border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:40px;
+  }
+  .modal-gallery .g-item.wide{grid-column:1/-1; aspect-ratio:16/9;}
+
+  /* ---------- MODAL CTA ---------- */
+  .modal-cta{
+    display:inline-block; margin-top:26px;
+    font-size:13px; font-weight:700; text-decoration:none;
+    padding:11px 18px; border-radius:4px;
+    background:var(--ink); color:#fff;
+    transition:transform .4s cubic-bezier(.16,1,.3,1), opacity .2s;
+  }
+  .modal-cta:hover{transform:translateX(3px); opacity:.88;}
+
+  /* ---------- CASE STUDY: SERIES LAYOUT ---------- */
+  .case-top{max-width:1180px; margin:0 auto; padding:110px 28px 20px; position:relative;}
+  .case-top .back{
+    position:static; display:inline-block; margin-bottom:38px;
+    font-size:13px; font-weight:600; color:var(--sub); cursor:pointer;
+  }
+  .case-top .back:hover{color:var(--ink);}
+  .case-h1{
+    font-size:clamp(28px,4vw,46px); font-weight:700;
+    line-height:1.12; letter-spacing:-.01em;
+    max-width:14ch; margin:0 0 30px;
+  }
+  .case-intro-cols{
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:26px; max-width:760px;
+  }
+  @media (max-width:720px){ .case-intro-cols{grid-template-columns:1fr;} }
+  .case-intro-cols p{font-size:15px; line-height:1.6; margin:0; color:#222;}
+  .case-note{font-style:italic; color:var(--sub);}
+
+  .series{padding:90px 28px 20px; max-width:1500px; margin:0 auto;}
+  .series-statement{
+    font-size:clamp(22px,3.1vw,40px); font-weight:400; line-height:1.3;
+    text-align:center; max-width:22ch; margin:0 auto 70px;
+    opacity:0; transform:translateY(14px);
+    transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .series-statement.in{opacity:1; transform:translateY(0);}
+
+  .series-grid{
+    display:grid; grid-template-columns:repeat(5,1fr);
+    gap:52px 30px;
+  }
+  @media (max-width:1000px){ .series-grid{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:600px){ .series-grid{grid-template-columns:repeat(2,1fr);} }
+
+  .sym{
+    text-decoration:none; display:block; text-align:center;
+    opacity:0; transform:translateY(16px);
+    transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+  }
+  .sym.in{opacity:1; transform:translateY(0);}
+  .sym-img{
+    aspect-ratio:1/1;
+    background-size:contain; background-repeat:no-repeat; background-position:center;
+    transition:transform .45s cubic-bezier(.16,1.2,.3,1);
+  }
+  .sym:hover .sym-img{transform:scale(1.07);}
+  .sym-name{
+    margin-top:10px; font-size:11px; letter-spacing:.02em;
+    font-family:"SFMono-Regular",Menlo,Consolas,monospace;
+    color:#444;
+  }
+
+  /* ---------- LIGHTBOX (single symbol, deep-linked) ---------- */
+  .lightbox{
+    position:fixed; inset:0; z-index:260;
+    background:rgba(255,255,255,.97);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; visibility:hidden;
+    transition:opacity .3s cubic-bezier(.16,1,.3,1);
+  }
+  .lightbox.show{opacity:1; visibility:visible;}
+  .lb-figure{
+    margin:0; text-align:center; max-width:min(560px,80vw);
+    transform:scale(.95); transition:transform .45s cubic-bezier(.16,1.25,.3,1);
+  }
+  .lightbox.show .lb-figure{transform:scale(1);}
+  .lb-figure img{width:100%; height:auto; display:block;}
+  .lb-figure figcaption{
+    margin-top:22px; font-size:13px;
+    display:flex; gap:10px; justify-content:center; align-items:baseline;
+  }
+  .lb-figure figcaption span{font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:700;}
+  .lb-close, .lb-nav{
+    position:absolute; background:none; border:none; cursor:pointer;
+    color:var(--ink); line-height:1;
+  }
+  .lb-close{top:24px; right:28px; font-size:20px;}
+  .lb-nav{top:50%; transform:translateY(-50%); font-size:42px; padding:10px 18px; color:#bbb;}
+  .lb-nav:hover{color:var(--ink);}
+  .lb-nav.prev{left:12px;}
+  .lb-nav.next{right:12px;}
+
+  /* ---------- CASE STUDY PAGE ---------- */
+  .case-page{display:none;}
+  .case-page.show{display:block;}
+  .case-hero{
+    min-height:56vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:120px 8vw 60px; color:#fff;
+  }
+  .case-hero .back{
+    position:absolute; top:22px; left:28px;
+    font-size:13px; font-weight:600; color:#fff;
+    cursor:pointer; z-index:60; opacity:.85;
+  }
+  .case-hero .back:hover{opacity:1;}
+  .case-hero-glyph{font-size:64px; margin-bottom:18px;}
+  .case-hero h1{font-size:clamp(24px,4vw,40px); font-weight:700; margin:0 0 14px;}
+  .case-hero p{font-size:16px; max-width:52ch; line-height:1.6; opacity:.92; margin:0;}
+
+  .case-body{max-width:760px; margin:0 auto; padding:60px 24px;}
+  .case-body p{font-size:16px; line-height:1.75; color:#333; margin:0 0 22px;}
+  .case-media{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    max-width:1040px; margin:0 auto 60px; padding:0 24px;
+  }
+  .case-media .m{
+    aspect-ratio:4/3; border-radius:4px;
+    display:flex; align-items:center; justify-content:center; font-size:38px;
+  }
+  .case-media .m.full{grid-column:1/-1; aspect-ratio:21/9;}
+
+  .case-testimonial{
+    max-width:640px; margin:0 auto 100px; padding:0 24px;
+    display:flex; gap:16px; align-items:flex-start;
+  }
+  .case-testimonial .avatar{
+    width:52px; height:52px; border-radius:50%; background:#ddd;
+    flex:none; display:flex; align-items:center; justify-content:center; font-size:20px;
+  }
+  .case-testimonial p{font-size:14px; color:#444; line-height:1.6; margin:0 0 6px;}
+  .case-testimonial .who{font-size:12px; color:var(--sub); font-weight:600;}
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-left">
+      <div class="logo" data-home>Itai Raveh</div>
+      <ul class="nav-links" id="navLinks">
+        <li data-cat="illustration">Illustration</li>
+        <li data-cat="brand">Brands</li>
+        <li data-cat="science">Science</li>
+        <li data-cat="animation">Animation</li>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <a href="#" target="_blank" rel="noopener">Instagram</a>
+      <a href="#">Bio</a>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="scatter back" id="scatterBack"></div>
+    <div class="scatter front" id="scatterFront"></div>
+    <p class="lead">
+      Creating smart, detailed
+      <span class="cat" data-cat="illustration">illustrations projects <i class="emoji">🐦</i></span>,
+      building
+      <span class="cat" data-cat="brand">brand illustration languages <i class="emoji">🖐️</i></span>,
+      visualizing
+      <span class="cat" data-cat="science">science communication <i class="emoji">🧪</i></span>,
+      and providing
+      <span class="cat" data-cat="animation">art direction for animation <i class="emoji">🤸</i></span>.
+    </p>
+    <div class="hint" id="hint">itairaveh.com/</div>
+  </section>
+
+  <section class="grid-page" id="gridPage">
+    <div class="breadcrumb" id="breadcrumb">Projects</div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="case-page" id="casePage"></section>
+
+  <div class="modal-scrim" id="modalScrim">
+    <div class="modal" id="modal"></div>
+  </div>
+
+  <div class="lightbox" id="lightbox"></div>
+
+  <div class="overlay" id="overlay"><div class="overlay-label" id="overlayLabel"></div></div>
+
+<script>
+/* ---------------------------------------------------------
+   DATA — this whole site is driven from this one object.
+   Add a project by adding one entry here, nothing else.
+
+   Each project:
+     slug   — used in the URL (#/category/slug), auto-built
+              from the title if you don't set one
+     type   — 'simple'  -> title/desc only, click does nothing extra
+              'gallery' -> click opens a real popup: images + text,
+                           deep-linkable, closable, no page nav
+              'case'    -> click opens a full case-study page
+                           (hero, paragraphs, media, testimonial)
+     c, g   — placeholder color + emoji, swap for real image URLs
+--------------------------------------------------------- */
+
+function symUrl(projectSlug, file){
+  return `images/${projectSlug}/${file}.webp`;
+}
+
+function slugify(s){
+  return s.toLowerCase().replace(/['"]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+}
+
+/* Any object with c/g (color+glyph) can instead carry img:'url' and it
+   will render as a real photo/illustration, cover-fit, no code changes
+   needed elsewhere. Leave img unset to keep using placeholder color+emoji. */
+function bg(obj){
+  return obj.img
+    ? `background-image:url('${obj.img}'); background-size:cover; background-position:center;`
+    : `background:${obj.c || '#eee'};`;
+}
+function glyphHTML(obj){
+  return obj.img ? '' : (obj.g || '');
+}
+
+const CATS = {
+  illustration: {
+    accent: 'var(--illustration)',
+    label: 'Illustration',
+    path: 'itairaveh.com/illustration/',
+    scatter: [
+      // behind the text
+      {top:'3%',  left:'1%',  w:200,h:240, color:'#e8dccf', glyph:'🏺', rot:-4},
+      {top:'1%',  left:'24%', w:170,h:170, color:'#111111', glyph:'🌆', rot:3},
+      {top:'5%',  left:'54%', w:180,h:220, color:'#e3e3e3', glyph:'🧱', rot:-2},
+      {top:'2%',  left:'82%', w:150,h:240, color:'#f5f5f5', glyph:'🚶', rot:5},
+      {top:'34%', left:'-3%', w:190,h:190, color:'#f2b6c6', glyph:'🗺️', rot:6},
+      {top:'30%', left:'88%', w:200,h:210, color:'#dcdcdc', glyph:'🪑', rot:-5},
+      {top:'64%', left:'4%',  w:170,h:200, color:'#0e3b34', glyph:'🕊️', rot:-3},
+      {top:'68%', left:'28%', w:160,h:160, color:'#e8a24a', glyph:'🌳', rot:4},
+      {top:'60%', left:'64%', w:210,h:200, color:'#f0c9a0', glyph:'🚗', rot:-6},
+      {top:'70%', left:'86%', w:150,h:190, color:'#c9a6c2', glyph:'🎬', rot:2},
+      // in front of the text, overlapping it
+      {top:'26%', left:'18%', w:130,h:130, color:'#d6ff3d', glyph:'🪴', rot:-8, layer:'front'},
+      {top:'48%', left:'44%', w:120,h:120, color:'#e1233c', glyph:'🐎', rot:7,  layer:'front'},
+      {top:'20%', left:'70%', w:140,h:140, color:'#2e59a8', glyph:'🗓️', rot:-5, layer:'front'},
+    ],
+    items: [
+      {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺'},
+      {t:'Sublet', type:'simple', c:'#101010', g:'🏙️'},
+      {t:'City Symbol: Street level Coat Of Arms', type:'case',
+        slug:'city-symbol',
+        img:'images/city-symbol/sym-1-03.webp',
+        d:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.',
+        caseStudy:{
+          bg:'#ffffff', dark:false,
+          intro:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape. The project contains 3 series containing 15 symbols for three different cities: Tel Aviv, Haifa and Jerusalem.',
+          note:'Undergraduate project in the visual communication department in Shenkar College of Engineering, Design and Art.',
+          series:[
+            {
+              key:'jerusalem', name:'Jerusalem', accent:'#e1233c',
+              statement:'In Jerusalem, symbols are a reminder of the violence which holds this city together. The color red was used to emphasize this atmosphere.',
+              symbols:[
+                {n:'YMCA', f:'sym-1-01'},
+                {n:'Mahane Yehuda', f:'sym-1-02'},
+                {n:'Museum of Natural History', f:'sym-1-03'},
+                {n:'Damascus Gate', f:'sym-1-04'},
+                {n:'Ussishkin Street', f:'sym-1-05'},
+                {n:'Jewish Quarter', f:'sym-2-01'},
+                {n:'Nachalat Shivaa', f:'sym-2-02'},
+                {n:'Kikar Hachatolot', f:'sym-2-03'},
+                {n:'Rechov Ussishkin', f:'sym-2-04'},
+                {n:'Moment Caf\u00e9', f:'sym-2-05'},
+                {n:'Agada', f:'sym-3-01'},
+                {n:'Machneyuda', f:'sym-3-02'},
+                {n:'Nachlaot', f:'sym-3-03'},
+                {n:'Keren Hayesod', f:'sym-3-04'},
+                {n:'Shtetl Bamidbar', f:'sym-3-05'}
+              ]
+            },
+            {
+              key:'tel-aviv', name:'Tel Aviv', accent:'#29a4e0',
+              statement:'In Tel Aviv, symbols carry the city\u2019s restless self-invention, secular, sunlit and always half-built.',
+              symbols:[
+                {n:'Dizengoff', f:'sym-1-06'},
+                {n:'Bialik Street', f:'sym-1-07'},
+                {n:'New Central Station', f:'sym-1-08'},
+                {n:'Rothschild Boulevard', f:'sym-1-09'},
+                {n:'Hayarkon Park', f:'sym-1-10'},
+                {n:'Yafo', f:'sym-2-06'},
+                {n:'Kikar Rabin', f:'sym-2-07'},
+                {n:'Kerem HaTeimanim', f:'sym-2-08'},
+                {n:'Har Sinai', f:'sym-2-09'},
+                {n:'Salame', f:'sym-2-10'},
+                {n:'Montefiore', f:'sym-3-06'},
+                {n:'Neve Tzedek', f:'sym-3-07'},
+                {n:'Abu Kabir', f:'sym-3-08'},
+                {n:'Neue Jaffa', f:'sym-3-09'},
+                {n:'Gan Meir', f:'sym-3-10'}
+              ]
+            },
+            {
+              key:'haifa', name:'Haifa', accent:'#1fae70',
+              statement:'In Haifa, symbols grow out of the mountain and the port, industrial, layered and green.',
+              symbols:[
+                {n:'Haifa Port', f:'sym-1-11'},
+                {n:'Bat Galim', f:'sym-1-12'},
+                {n:'Herzl Street', f:'sym-1-13'},
+                {n:'Romema', f:'sym-1-14'},
+                {n:'Train Station', f:'sym-1-15'},
+                {n:'Haifa', f:'sym-2-11'},
+                {n:'Kababir', f:'sym-2-12'},
+                {n:'Beit Galim', f:'sym-2-13'},
+                {n:'Hadar Carmel', f:'sym-2-14'},
+                {n:'Merkaz', f:'sym-2-15'},
+                {n:'Wadi Nisnas', f:'sym-3-11'},
+                {n:'Stella Maris', f:'sym-3-12'},
+                {n:'Rechov HaNeviim', f:'sym-3-13'},
+                {n:'Masada', f:'sym-3-14'},
+                {n:'Shfech HaKishon', f:'sym-3-15'}
+              ]
+            }
+          ]
+        }},
+      {t:'Weizmann institute 2026 calendar', type:'simple', c:'#2e59a8', g:'🗓️'},
+      {t:'"The Boys"', type:'simple', c:'#e07d78', g:'👦'},
+      {t:'Heimat', type:'simple', c:'#e6e6e6', g:'🏢'},
+      {t:'Herzl', type:'gallery', c:'#f2d9ad', g:'🎩',
+        d:'Part of an exhibition, a series of illustrations following the journey of a postcard from Palestine to Austria.',
+        images:[{c:'#f2d9ad', g:'🎩'}, {c:'#e07d78', g:'🐫', wide:true}, {c:'#e8a24a', g:'🌴'}, {c:'#111111', g:'✉️'}]},
+      {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🪴'},
+      {t:'The Calling', type:'simple', c:'#d9d9d9', g:'✨'},
+      {t:'Saint Clara film poster', type:'simple', c:'#c9a6c2', g:'🎬'},
+      {t:'Welcome to tivon', type:'simple', c:'#e8a24a', g:'🌳'},
+    ]
+  },
+  brand: {
+    accent: 'var(--brand)',
+    label: 'Brands',
+    path: 'itairaveh.com/brand/',
+    scatter: [
+      {top:'3%', left:'4%',  w:220,h:150, color:'#111111', glyph:'🍞'},
+      {top:'2%', left:'34%', w:200,h:200, color:'#f2f2f2', glyph:'📦'},
+      {top:'5%', left:'70%', w:150,h:220, color:'#f2f2f2', glyph:'🧍'},
+      {top:'60%', left:'6%', w:190,h:150, color:'#0f2d28', glyph:'🕊️'},
+      {top:'62%', left:'34%',w:190,h:190, color:'#f2b6b6', glyph:'📮'},
+      {top:'58%', left:'70%',w:200,h:200, color:'#f0c9a0', glyph:'🪑'},
+    ],
+    items: [
+      {t:'Eko engineering', type:'case', c:'#e2434f', g:'🛠️',
+        d:'A visual system for an engineering studio, built to feel precise without going cold.',
+        caseStudy:{
+          bg:'#e2434f',
+          intro:'A visual system for an engineering studio, built to feel precise without going cold.',
+          paragraphs:[
+            'Eko approached the studio needing a language that could sit across decks, signage and the product itself, something technical enough to be credible, warm enough to still feel handmade.',
+            'The system leans on a restrained icon set and a single recurring character, used to walk clients through otherwise dry engineering concepts.'
+          ],
+          media:[{c:'#dceeea',g:'⚙️'},{c:'#f2c9a0',g:'🧑‍🔧'},{c:'#0f2d28',g:'🏗️',full:true}],
+          testimonial:{quote:'The system gave our engineering decks a personality they never had before.', who:'Eko, Product lead', avatar:'👤'}
+        }},
+      {t:'Island.io', type:'case', c:'#0f2a4a', g:'🌍',
+        d:'Brand illustration for a distributed-systems startup, translating infrastructure into a small illustrated world.',
+        caseStudy:{
+          bg:'#0f2a4a',
+          intro:'Brand illustration for a distributed-systems startup, translating infrastructure into a small illustrated world.',
+          paragraphs:[
+            'The concept is of a small island network: a perfect, self-contained place where every server has a home and every connection is visible.',
+            'At the conclusion of the project, the team received a full illustration system guide for extending the language without the studio.'
+          ],
+          media:[{c:'#13395e',g:'🏝️'},{c:'#e2434f',g:'📡'},{c:'#dceeea',g:'🖥️',full:true}],
+          testimonial:{quote:'We could hand this to any designer on the team and they knew exactly how to extend it.', who:'Island.io, Design lead', avatar:'👤'}
+        }},
+      {t:'Studio identity', type:'simple', c:'#161616', g:'🖋️'},
+      {t:'Retail signage', type:'simple', c:'#2e59a8', g:'🏬'},
+      {t:'Café branding', type:'simple', c:'#e07d78', g:'☕'},
+      {t:'Bakery mark', type:'simple', c:'#e6e6e6', g:'🥐'},
+      {t:'Wine label', type:'simple', c:'#d6ff3d', g:'🍷'},
+    ]
+  },
+  science: {
+    accent: 'var(--science)',
+    label: 'Science',
+    path: 'itairaveh.com/science/',
+    scatter: [
+      {top:'2%', left:'2%',  w:230,h:160, color:'#e8b400', glyph:'🚜'},
+      {top:'4%', left:'40%', w:120,h:90,  color:'#f2f2f2', glyph:'🐭'},
+      {top:'2%', left:'56%', w:130,h:110, color:'#f2b6c6', glyph:'🐖'},
+      {top:'3%', left:'76%', w:220,h:150, color:'#f2f2f2', glyph:'🐄'},
+      {top:'62%', left:'6%', w:170,h:190, color:'#f2f2f2', glyph:'🗼'},
+      {top:'64%', left:'32%',w:150,h:150, color:'#e8722c', glyph:'🪐'},
+      {top:'60%', left:'62%',w:220,h:190, color:'#eef2e6', glyph:'🌲'},
+    ],
+    items: [
+      {t:'Anthropomass', type:'gallery', c:'#1fae70', g:'🌍',
+        d:'Interactive exhibition on the mass of human-made materials versus living biomass.',
+        images:[{c:'#1fae70',g:'🌍',wide:true},{c:'#111111',g:'🏗️'},{c:'#eef2e6',g:'🌲'}]},
+      {t:'Tipping points', type:'simple', c:'#101010', g:'🌡️'},
+      {t:'Phenological calendar', type:'simple', c:'#eef2e6', g:'🌿'},
+      {t:'Lab identity system', type:'simple', c:'#2e59a8', g:'🧫'},
+      {t:'Springs of Ein Qinniyye', type:'simple', c:'#e8a24a', g:'💧'},
+      {t:'Weizmann figures', type:'simple', c:'#e6e6e6', g:'📊'},
+    ]
+  },
+  animation: {
+    accent: 'var(--animation)',
+    label: 'Animation',
+    path: 'itairaveh.com/animation/',
+    scatter: [
+      {top:'2%', left:'2%',  w:170,h:150, color:'#e9e9e9', glyph:'🫖'},
+      {top:'1%', left:'30%', w:210,h:170, color:'#1a1a1a', glyph:'🦍'},
+      {top:'3%', left:'66%', w:250,h:170, color:'#f2c9c9', glyph:'🐘'},
+      {top:'60%', left:'2%', w:150,h:220, color:'#dceeea', glyph:'🏄'},
+      {top:'64%', left:'26%',w:150,h:190, color:'#f2f2f2', glyph:'🚶'},
+      {top:'58%', left:'62%',w:220,h:220, color:'#0e3b34', glyph:'🦩'},
+      {top:'60%', left:'86%',w:130,h:190, color:'#f2c9dc', glyph:'👥'},
+    ],
+    items: [
+      {t:'Kurzgesagt storyboards', type:'simple', c:'#101010', g:'🎞️'},
+      {t:'Explainer series', type:'gallery', c:'#e07d78', g:'🎬',
+        d:'Art direction and storyboarding for a science explainer series.',
+        images:[{c:'#e07d78',g:'🎬'},{c:'#2e59a8',g:'🎥'},{c:'#111111',g:'🎞️'}]},
+      {t:'Character studies', type:'simple', c:'#2e59a8', g:'🧑‍🎨'},
+      {t:'Motion tests', type:'simple', c:'#e6e6e6', g:'🎥'},
+      {t:'Title sequence', type:'simple', c:'#f2d9ad', g:'🎦'},
+    ]
+  }
+};
+
+// auto-assign slugs
+Object.values(CATS).forEach(cat=>{
+  cat.items.forEach(item=> item.slug = item.slug || slugify(item.t));
+});
+
+/* ---------------------------------------------------------
+   ELEMENTS + STATE
+--------------------------------------------------------- */
+const scatterBack  = document.getElementById('scatterBack');
+const scatterFront = document.getElementById('scatterFront');
+const hintEl      = document.getElementById('hint');
+const overlayEl   = document.getElementById('overlay');
+const overlayLabel= document.getElementById('overlayLabel');
+const gridPage    = document.getElementById('gridPage');
+const hero        = document.getElementById('hero');
+const gridEl      = document.getElementById('grid');
+const breadcrumb  = document.getElementById('breadcrumb');
+const navLinks    = document.querySelectorAll('.nav-links li');
+const modalScrim  = document.getElementById('modalScrim');
+const modalEl     = document.getElementById('modal');
+const casePage    = document.getElementById('casePage');
+
+let currentCat = null;
+
+/* Build scatter swatches for every category up front, toggle visibility.
+   Each scatter entry supports:
+     top,left   — position, % strings, free to overlap the text
+     w,h        — size in px
+     img        — illustration URL (falls back to color+glyph placeholder)
+     layer      — 'front' to sit in front of the text, default is behind
+     rot        — rotation in degrees, small values read as hand-placed
+*/
+Object.entries(CATS).forEach(([key, cat]) => {
+  cat.scatter.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'swatch cat-' + key;
+    const rot = s.rot || 0;
+    div.style.cssText = `
+      top:${s.top}; left:${s.left};
+      width:${s.w}px; height:${s.h}px;
+      font-size:38px;
+      transition-delay:${i*38}ms;
+      ${bg(s.img ? s : {c:s.color})}
+    `;
+    div.dataset.rot = rot;
+    div.style.transform = `rotate(${rot}deg) scale(.9) translateY(8px)`;
+    div.innerHTML = s.img ? '' : (s.glyph || '');
+    (s.layer === 'front' ? scatterFront : scatterBack).appendChild(div);
+  });
+});
+
+function showScatter(cat){
+  document.querySelectorAll('.swatch').forEach(el=>{
+    const on = el.classList.contains('cat-'+cat);
+    const rot = el.dataset.rot || 0;
+    el.classList.toggle('active', on);
+    el.style.transform = on
+      ? `rotate(${rot}deg) scale(1) translateY(0)`
+      : `rotate(${rot}deg) scale(.9) translateY(8px)`;
+  });
+  if(cat){
+    hintEl.textContent = CATS[cat].path;
+    hintEl.classList.add('show');
+  } else {
+    hintEl.classList.remove('show');
+  }
+}
+
+document.querySelectorAll('.lead .cat').forEach(el=>{
+  const cat = el.dataset.cat;
+  el.addEventListener('mouseenter', ()=>{
+    document.querySelectorAll('.lead .cat').forEach(c=>c.classList.remove('on-illustration','on-brand','on-science','on-animation'));
+    el.classList.add('on-'+cat);
+    showScatter(cat);
+  });
+  el.addEventListener('mouseleave', ()=>{
+    el.classList.remove('on-'+cat);
+    showScatter(null);
+  });
+  el.addEventListener('click', ()=> { location.hash = '#/' + cat; });
+});
+
+navLinks.forEach(li=>{
+  li.addEventListener('click', ()=> { location.hash = '#/' + li.dataset.cat; });
+});
+document.querySelector('[data-home]').addEventListener('click', ()=> { location.hash = ''; });
+
+/* ---------------------------------------------------------
+   ROUTER — URL design, and why it is shaped this way.
+
+   One canonical URL per project. That URL is the full page:
+     #/illustration/city-symbol
+   It is what you share, what search engines index, and what a
+   visitor arriving cold should land on.
+
+   The popup is a PREVIEW of that same project, shown over the
+   grid you were already looking at. It gets its own restorable
+   URL so the back button closes it and a refresh reopens it:
+     #/illustration?preview=city-symbol
+   Inside the preview there is an "Open full project" link that
+   goes to the canonical URL above.
+
+   A third level deep-links one symbol inside a project:
+     #/illustration/city-symbol/ymca
+   Worth doing here because each symbol is individually named and
+   meaningful. Not worth doing for a generic image carousel.
+--------------------------------------------------------- */
+function parseHash(){
+  const raw = location.hash.replace(/^#\/?/, '');
+  const [pathPart, queryPart] = raw.split('?');
+  const [cat, slug, sub] = pathPart.split('/').filter(Boolean);
+  const params = new URLSearchParams(queryPart || '');
+  return {
+    cat: cat || null,
+    slug: slug || null,
+    sub: sub || null,
+    preview: params.get('preview')
+  };
+}
+
+function findItem(cat, slug){
+  if(!CATS[cat]) return null;
+  return CATS[cat].items.find(i=> i.slug === slug) || null;
+}
+
+/* every symbol across a case study, flattened, for deep-link lookup */
+function findSymbol(item, subSlug){
+  const cs = item && item.caseStudy;
+  if(!cs || !cs.series) return null;
+  for(const s of cs.series){
+    const hit = s.symbols.find(sym => slugify(sym.n) === subSlug);
+    if(hit) return {...hit, series: s};
+  }
+  return null;
+}
+
+function route(){
+  const {cat, slug, sub, preview} = parseHash();
+
+  // home
+  if(!cat){
+    closeModal(); closeLightbox();
+    casePage.classList.remove('show');
+    gridPage.classList.remove('show');
+    hero.style.display = 'flex';
+    navLinks.forEach(l=>l.classList.remove('dim'));
+    return;
+  }
+  if(!CATS[cat]) return;
+
+  const item = slug ? findItem(cat, slug) : null;
+
+  // canonical project page
+  if(item){
+    hero.style.display = 'none';
+    gridPage.classList.remove('show');
+    closeModal();
+    if(casePage.dataset.slug !== item.slug){
+      renderCasePage(cat, item);
+      casePage.dataset.slug = item.slug;
+      window.scrollTo(0,0);
+    }
+    casePage.classList.add('show');
+    navLinks.forEach(l=> l.classList.toggle('dim', l.dataset.cat !== cat));
+
+    // deep-linked single symbol
+    const sym = sub ? findSymbol(item, sub) : null;
+    if(sym) openLightbox(cat, item, sym);
+    else closeLightbox();
+    return;
+  }
+
+  // category grid, optionally with a preview popup over it
+  casePage.classList.remove('show');
+  casePage.dataset.slug = '';
+  closeLightbox();
+  hero.style.display = 'none';
+  if(currentCat !== cat){
+    renderGrid(cat);
+    currentCat = cat;
+  }
+  gridPage.classList.add('show');
+  navLinks.forEach(l=> l.classList.toggle('dim', l.dataset.cat !== cat));
+
+  const previewItem = preview ? findItem(cat, preview) : null;
+  if(previewItem) openModal(cat, previewItem);
+  else closeModal();
+}
+
+/* ---------------------------------------------------------
+   In-page link handling.
+
+   In a normal browser, cards and symbols carry a real href, so
+   right-click > "Open in new tab" and middle-click both work.
+
+   Inside a sandboxed preview (this file shown in an iframe), any
+   href navigation is caught by the host and turns into an
+   "open external link" prompt. So when we detect we are framed,
+   we render the target as data-href instead and drive the router
+   ourselves. Deployed on your own domain, hrefs come back.
+--------------------------------------------------------- */
+const FRAMED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
+
+function linkAttr(target){
+  return FRAMED ? `data-href="${target}"` : `href="${target}"`;
+}
+
+document.addEventListener('click', (e)=>{
+  const a = e.target.closest('a[href^="#"], a[data-href], [data-href]');
+  if(!a) return;
+  if(e.metaKey || e.ctrlKey || e.shiftKey) return; // let new-tab through
+  e.preventDefault();
+  e.stopPropagation();
+  const raw = a.getAttribute('data-href') || a.getAttribute('href') || '';
+  const target = raw.startsWith('#') ? raw.slice(1) : raw;
+  if(location.hash.slice(1) === target) route();
+  else location.hash = target;
+}, true); // capture phase, ahead of any host handler
+
+window.addEventListener('hashchange', route);
+window.addEventListener('load', route);
+
+/* transition flash only on cross-section navigation (home <-> category) */
+let lastTopLevel = null;
+window.addEventListener('hashchange', ()=>{
+  const {cat} = parseHash();
+  if(cat !== lastTopLevel){
+    overlayLabel.textContent = cat ? CATS[cat].label : '';
+    overlayEl.classList.add('show');
+    setTimeout(()=> overlayEl.classList.remove('show'), 260);
+  }
+  lastTopLevel = cat;
+});
+
+/* ---------------------------------------------------------
+   GRID
+--------------------------------------------------------- */
+function renderGrid(cat){
+  const data = CATS[cat];
+  breadcrumb.textContent = 'Projects';
+  gridEl.innerHTML = '';
+  data.items.forEach((item, i)=>{
+    const card = document.createElement('a');
+    card.className = 'card';
+    // cards open the PREVIEW popup; the full page is one click deeper
+    const cardTarget = '#/' + cat + '?preview=' + item.slug;
+    if(FRAMED) card.dataset.href = cardTarget; else card.href = cardTarget;
+    const badge = item.type === 'case' ? 'Case study' : (item.type === 'gallery' ? 'View' : '');
+    card.innerHTML = `
+      <div class="card-thumb">
+        <div class="fill" style="${bg(item)}"></div>
+        <div class="glyph">${glyphHTML(item)}</div>
+        ${badge ? `<div class="badge">${badge}</div>` : ''}
+      </div>
+      <div class="card-caption">
+        <div class="card-title">${item.t}</div>
+        ${item.d ? `<div class="card-desc">${item.d}</div>` : ''}
+      </div>
+    `;
+    gridEl.appendChild(card);
+    const thumb = card.querySelector('.card-thumb');
+    setTimeout(()=> thumb.classList.add('loaded'), 150 + i*90 + Math.random()*200);
+  });
+}
+
+/* ---------------------------------------------------------
+   MODAL — real popup: images + text together, closable,
+   and reachable by direct link via the URL hash.
+--------------------------------------------------------- */
+function openModal(cat, item){
+  /* PREVIEW popup: enough to judge the project, plus a way through
+     to the canonical full page. Deliberately not the whole project. */
+  const cs = item.caseStudy;
+  let preview = [];
+  if(cs && cs.series){
+    // pull a few symbols across the series as a taster
+    cs.series.forEach(s=> preview.push(...s.symbols.slice(0,2).map(sym=>({
+      img:symUrl(item.slug, sym.f), n:sym.n
+    }))));
+  } else if(item.images){
+    preview = item.images.slice(0,6);
+  } else {
+    preview = [{c:item.c, g:item.g, img:item.img, wide:true}];
+  }
+
+  modalEl.innerHTML = `
+    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    <div class="modal-title">${item.t}</div>
+    ${item.d ? `<p class="modal-desc">${item.d}</p>` : ''}
+    <div class="modal-gallery ${preview.length===1?'single':''}">
+      ${preview.map((im,i)=> `<div class="g-item ${im.wide?'wide':''}" style="${bg(im)}; transition-delay:${60+i*45}ms">${glyphHTML(im)}</div>`).join('')}
+    </div>
+    ${item.type === 'case' ? `
+      <a class="modal-cta" ${linkAttr('#/'+cat+'/'+item.slug)}>Open full project →</a>
+    ` : ''}
+  `;
+  modalScrim.classList.remove('show');
+  void modalScrim.offsetWidth;
+  modalScrim.classList.add('show');
+  document.getElementById('modalClose').addEventListener('click', ()=>{
+    location.hash = '#/' + cat;
+  });
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  modalScrim.classList.remove('show');
+  document.body.style.overflow = '';
+}
+modalScrim.addEventListener('click', (e)=>{
+  if(e.target === modalScrim){
+    const {cat} = parseHash();
+    location.hash = '#/' + cat;
+  }
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape' && modalScrim.classList.contains('show')){
+    const {cat} = parseHash();
+    location.hash = '#/' + cat;
+  }
+});
+
+/* ---------------------------------------------------------
+   CASE STUDY PAGE — for the handful of projects that
+   genuinely need a long-form page instead of a popup.
+--------------------------------------------------------- */
+function renderCasePage(cat, item){
+  const cs = item.caseStudy;
+
+  /* series-based case study (City Symbol shape):
+     title block, then one section per city: statement + symbol grid */
+  if(cs.series){
+    casePage.innerHTML = `
+      <div class="case-top">
+        <div class="back" data-back="${cat}">← Back to ${CATS[cat].label}</div>
+        <h1 class="case-h1">${item.t}</h1>
+        <div class="case-intro-cols">
+          <p>${cs.intro}</p>
+          ${cs.note ? `<p class="case-note">${cs.note}</p>` : ''}
+        </div>
+      </div>
+      ${cs.series.map(s=>`
+        <section class="series" data-series="${s.key}">
+          <p class="series-statement" style="--accent:${s.accent}">${s.statement}</p>
+          <div class="series-grid">
+            ${s.symbols.map((sym,i)=>`
+              <a class="sym" ${linkAttr('#/'+cat+'/'+item.slug+'/'+slugify(sym.n))} style="transition-delay:${i*28}ms">
+                <div class="sym-img" style="background-image:url('${symUrl(item.slug, sym.f)}')"></div>
+                <div class="sym-name">${sym.n}</div>
+              </a>
+            `).join('')}
+          </div>
+        </section>
+      `).join('')}
+    `;
+  } else {
+    /* long-form editorial shape (Eko, Island.io) */
+    casePage.innerHTML = `
+      <div class="case-hero" style="${cs.bgImg ? `background-image:url('${cs.bgImg}'); background-size:cover; background-position:center;` : `background:${cs.bg};`}">
+        <div class="back" data-back="${cat}">← Back</div>
+        <div class="case-hero-glyph">${item.g||''}</div>
+        <h1>${item.t}</h1>
+        <p>${cs.intro}</p>
+      </div>
+      <div class="case-body">${(cs.paragraphs||[]).map(p=>`<p>${p}</p>`).join('')}</div>
+      <div class="case-media">
+        ${(cs.media||[]).map(m=>`<div class="m ${m.full?'full':''}" style="${bg(m)}">${glyphHTML(m)}</div>`).join('')}
+      </div>
+      ${cs.testimonial ? `
+      <div class="case-testimonial">
+        <div class="avatar">${cs.testimonial.avatar||'👤'}</div>
+        <div>
+          <p>"${cs.testimonial.quote}"</p>
+          <div class="who">${cs.testimonial.who}</div>
+        </div>
+      </div>` : ''}
+    `;
+  }
+
+  casePage.querySelector('[data-back]').addEventListener('click', ()=>{
+    location.hash = '#/' + cat;
+  });
+
+  // reveal symbols on scroll
+  if(typeof IntersectionObserver !== 'undefined'){
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+    casePage.querySelectorAll('.sym, .series-statement').forEach(el=> io.observe(el));
+  } else {
+    casePage.querySelectorAll('.sym, .series-statement').forEach(el=> el.classList.add('in'));
+  }
+}
+
+/* ---------------------------------------------------------
+   LIGHTBOX — one symbol, deep-linked.
+   #/illustration/city-symbol/ymca
+   Arrow keys move between symbols and the URL follows, so any
+   symbol you are looking at is always the URL you can share.
+--------------------------------------------------------- */
+const lightbox = document.getElementById('lightbox');
+
+function flatSymbols(item){
+  const out = [];
+  (item.caseStudy.series||[]).forEach(s=> s.symbols.forEach(sym=> out.push({...sym, series:s})));
+  return out;
+}
+
+function openLightbox(cat, item, sym){
+  const all = flatSymbols(item);
+  const idx = all.findIndex(s=> slugify(s.n) === slugify(sym.n));
+  const prev = all[(idx-1+all.length)%all.length];
+  const next = all[(idx+1)%all.length];
+
+  lightbox.innerHTML = `
+    <button class="lb-close" aria-label="Close">✕</button>
+    <button class="lb-nav prev" aria-label="Previous">‹</button>
+    <button class="lb-nav next" aria-label="Next">›</button>
+    <figure class="lb-figure">
+      <img src="${symUrl(item.slug, sym.f)}" alt="${sym.n}">
+      <figcaption>
+        <strong>${sym.n}</strong>
+        <span style="color:${sym.series.accent}">${sym.series.name}</span>
+      </figcaption>
+    </figure>
+  `;
+  lightbox.classList.add('show');
+  document.body.style.overflow = 'hidden';
+
+  const base = '#/' + cat + '/' + item.slug;
+  lightbox.querySelector('.lb-close').onclick = ()=> location.hash = base;
+  lightbox.querySelector('.prev').onclick = ()=> location.hash = base + '/' + slugify(prev.n);
+  lightbox.querySelector('.next').onclick = ()=> location.hash = base + '/' + slugify(next.n);
+  lightbox.onclick = (e)=>{ if(e.target === lightbox) location.hash = base; };
+
+  lightbox._keys = (e)=>{
+    if(e.key === 'Escape') location.hash = base;
+    if(e.key === 'ArrowLeft') location.hash = base + '/' + slugify(prev.n);
+    if(e.key === 'ArrowRight') location.hash = base + '/' + slugify(next.n);
+  };
+  document.addEventListener('keydown', lightbox._keys);
+}
+
+function closeLightbox(){
+  if(!lightbox) return;
+  lightbox.classList.remove('show');
+  if(lightbox._keys) document.removeEventListener('keydown', lightbox._keys);
+  if(!modalScrim.classList.contains('show')) document.body.style.overflow = '';
+}
+
+/* ---------------------------------------------------------
+   SMOOTH (INERTIA) SCROLL
+   This is the part CSS alone can't do: the page keeps drifting
+   a little after you stop scrolling, instead of stopping dead.
+   Lenis intercepts the wheel/touch input and eases the scroll
+   position toward it every frame. Everything above still works
+   completely normally without this, it's a feel layer only.
+--------------------------------------------------------- */
+</script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+<script>
+  if (window.Lenis) {
+    const lenis = new Lenis({
+      duration: 1.05,             // higher = more drift/weight, lower = snappier
+      easing: t => 1 - Math.pow(1 - t, 3),
+      smoothWheel: true,
+    });
+    function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+
+    // pause inertia while a modal is open so background scroll doesn't fight it
+    const scrimObserver = new MutationObserver(()=>{
+      if(document.getElementById('modalScrim').classList.contains('show')) lenis.stop();
+      else lenis.start();
+    });
+    scrimObserver.observe(document.getElementById('modalScrim'), {attributes:true, attributeFilter:['class']});
+  }
+</script>
+</body>
+</html>
