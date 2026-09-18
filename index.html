@@ -376,10 +376,7 @@
     <div class="hint" id="hint">itairaveh.com/</div>
   </section>
 
-  <section class="grid-page" id="gridPage">
-    <div class="breadcrumb" id="breadcrumb">Projects</div>
-    <div class="grid" id="grid"></div>
-  </section>
+  <section class="grid-page" id="gridPage"></section>
 
   <section class="case-page" id="casePage"></section>
 
@@ -407,8 +404,8 @@
      c, g   — placeholder color + emoji, swap for real image URLs
 --------------------------------------------------------- */
 
-function symUrl(projectSlug, file){
-  return `images/${projectSlug}/${file}.webp`;
+function symUrl(cat, projectSlug, file){
+  return `images/${cat}/${projectSlug}/${file}.webp`;
 }
 
 function slugify(s){
@@ -452,9 +449,10 @@ const CATS = {
     items: [
       {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺'},
       {t:'Sublet', type:'simple', c:'#101010', g:'🏙️'},
+      {t:'Weizmann institute 2026 calendar', type:'simple', c:'#2e59a8', g:'🗓️'},
       {t:'City Symbol: Street level Coat Of Arms', type:'case',
         slug:'city-symbol',
-        img:'images/city-symbol/sym-1-03.webp',
+        img:'images/illustration/city-symbol/sym-1-03.webp',
         d:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.',
         caseStudy:{
           bg:'#ffffff', dark:false,
@@ -526,16 +524,45 @@ const CATS = {
             }
           ]
         }},
-      {t:'Weizmann institute 2026 calendar', type:'simple', c:'#2e59a8', g:'🗓️'},
       {t:'"The Boys"', type:'simple', c:'#e07d78', g:'👦'},
-      {t:'Heimat', type:'simple', c:'#e6e6e6', g:'🏢'},
-      {t:'Herzl', type:'gallery', c:'#f2d9ad', g:'🎩',
-        d:'Part of an exhibition, a series of illustrations following the journey of a postcard from Palestine to Austria.',
-        images:[{c:'#f2d9ad', g:'🎩'}, {c:'#e07d78', g:'🐫', wide:true}, {c:'#e8a24a', g:'🌴'}, {c:'#111111', g:'✉️'}]},
-      {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🪴'},
       {t:'The Calling', type:'simple', c:'#d9d9d9', g:'✨'},
-      {t:'Saint Clara film poster', type:'simple', c:'#c9a6c2', g:'🎬'},
+      {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🫚'},
+      {t:'Heimat', type:'simple', c:'#e6e6e6', g:'🏢'},
+      {t:'Tarot Card', type:'simple', c:'#3a2a4a', g:'🔮'},
+      {t:'Justice', type:'simple', c:'#111111', g:'⚖️'},
+      {t:'The springs of Ein Qiniyye', type:'simple', c:'#2e6f8e', g:'💧',
+        d:'A series of illustrations drawn from the folk tales surrounding the waters of one Druze village.'},
+      {t:'The Road Begins In Capernaum', type:'simple', c:'#3a6b8a', g:'⛵'},
+      {t:'Memento Mori', type:'simple', c:'#1a1a1a', g:'💀',
+        d:'While the world is in turmoil, the random death of some leaders in history serves as a kind reminder on the strange moves of history.'},
+      {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌'},
+      {t:'Jerusalem snow', type:'simple', c:'#eef2f5', g:'❄️'},
+      {t:'Runs in the family', type:'simple', c:'#e8a24a', g:'👪'},
+      {t:'Herzl | Eretz Israel Museum', type:'simple', c:'#f2d9ad', g:'🎩',
+        d:'Part of an exhibition, a series of illustrations following the journey of a postcard from Palestine to Austria.'},
       {t:'Welcome to tivon', type:'simple', c:'#e8a24a', g:'🌳'},
+      {t:'Saint Clara film poster', type:'simple', c:'#c9a6c2', g:'🎬'},
+      {t:'Passover', type:'simple', c:'#8a2e3a', g:'🍷'},
+      {t:'Parents Against Child Arrests', type:'simple', c:'#111111', g:'✊'},
+      {t:'Poriah', type:'simple', c:'#1e5f6e', g:'🌊'},
+    ],
+    editorial: [
+      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺'},
+      {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞'},
+      {t:'Future of medicine | Calcalist', type:'simple', c:'#cfe8e2', g:'⚕️'},
+      {t:'Work in post COVID times | Globes', type:'simple', c:'#e6e6e6', g:'💼'},
+      {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕',
+        d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
+        caseStudy:{bg:'#8a2e5a', intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.'}},
+      {t:'The Estonian Sting | Calcalist', type:'simple', c:'#3a5a8a', g:'🕵️'},
+      {t:'Remote therapy | Calcalist', type:'simple', c:'#cfe0e8', g:'🻋️'},
+      {t:'The Beach | Adam Tsair Magazine', type:'simple', c:'#e8d9b0', g:'🏖️'},
+      {t:'Archimedes and the crown | Einayim Magazine', type:'simple', c:'#d4af37', g:'👑'},
+      {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖'},
+      {t:'Crypto conservatives | Calcalist', type:'simple', c:'#111111', g:'🪙'},
+      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗'},
+      {t:'Where does salt comes from? | Einayim Magazine', type:'simple', c:'#eef2f5', g:'🧂'},
+      {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️'},
     ]
   },
   brand: {
@@ -543,43 +570,26 @@ const CATS = {
     label: 'Brands',
     path: 'itairaveh.com/brand/',
     scatter: [
-      {top:'3%', left:'4%',  w:220,h:150, color:'#111111', glyph:'🍞'},
-      {top:'2%', left:'34%', w:200,h:200, color:'#f2f2f2', glyph:'📦'},
-      {top:'5%', left:'70%', w:150,h:220, color:'#f2f2f2', glyph:'🧍'},
-      {top:'60%', left:'6%', w:190,h:150, color:'#0f2d28', glyph:'🕊️'},
-      {top:'62%', left:'34%',w:190,h:190, color:'#f2b6b6', glyph:'📮'},
-      {top:'58%', left:'70%',w:200,h:200, color:'#f0c9a0', glyph:'🪑'},
+      {top:'3%', left:'4%',  w:220,h:150, color:'#111111', glyph:'🛠️'},
+      {top:'2%', left:'34%', w:200,h:200, color:'#f2f2f2', glyph:'🌳'},
+      {top:'5%', left:'70%', w:150,h:220, color:'#f2f2f2', glyph:'🧘'},
+      {top:'60%', left:'6%', w:190,h:150, color:'#0f2d28', glyph:'🗼'},
+      {top:'62%', left:'34%',w:190,h:190, color:'#f2b6b6', glyph:'📡'},
+      {top:'58%', left:'70%',w:200,h:200, color:'#f0c9a0', glyph:'🌊'},
     ],
     items: [
-      {t:'Eko engineering', type:'case', c:'#e2434f', g:'🛠️',
-        d:'A visual system for an engineering studio, built to feel precise without going cold.',
+      {t:'Eko engineering', type:'case', slug:'eko', c:'#e2434f', g:'🛠️',
+        d:'The illustration language created for Eko Engineering is a harmonious blend of hand-drawn whimsy, smart and human-centric charm.',
         caseStudy:{
           bg:'#e2434f',
-          intro:'A visual system for an engineering studio, built to feel precise without going cold.',
-          paragraphs:[
-            'Eko approached the studio needing a language that could sit across decks, signage and the product itself, something technical enough to be credible, warm enough to still feel handmade.',
-            'The system leans on a restrained icon set and a single recurring character, used to walk clients through otherwise dry engineering concepts.'
-          ],
-          media:[{c:'#dceeea',g:'⚙️'},{c:'#f2c9a0',g:'🧑‍🔧'},{c:'#0f2d28',g:'🏗️',full:true}],
-          testimonial:{quote:'The system gave our engineering decks a personality they never had before.', who:'Eko, Product lead', avatar:'👤'}
+          intro:'The illustration language created for Eko Engineering is a harmonious blend of hand-drawn whimsy, smart and human-centric charm.'
         }},
-      {t:'Island.io', type:'case', c:'#0f2a4a', g:'🌍',
-        d:'Brand illustration for a distributed-systems startup, translating infrastructure into a small illustrated world.',
+      {t:'Island.io', type:'case', slug:'island', c:'#0f2a4a', g:'🧘',
+        d:'Illustration language for the Island.io product and web application. Island’s illustration system is based on the concept of a Zen garden in a metaphorical sense.',
         caseStudy:{
           bg:'#0f2a4a',
-          intro:'Brand illustration for a distributed-systems startup, translating infrastructure into a small illustrated world.',
-          paragraphs:[
-            'The concept is of a small island network: a perfect, self-contained place where every server has a home and every connection is visible.',
-            'At the conclusion of the project, the team received a full illustration system guide for extending the language without the studio.'
-          ],
-          media:[{c:'#13395e',g:'🏝️'},{c:'#e2434f',g:'📡'},{c:'#dceeea',g:'🖥️',full:true}],
-          testimonial:{quote:'We could hand this to any designer on the team and they knew exactly how to extend it.', who:'Island.io, Design lead', avatar:'👤'}
+          intro:'Illustration language for the Island.io product and web application. Island’s illustration system is based on the concept of a Zen garden in a metaphorical sense.'
         }},
-      {t:'Studio identity', type:'simple', c:'#161616', g:'🖋️'},
-      {t:'Retail signage', type:'simple', c:'#2e59a8', g:'🏬'},
-      {t:'Café branding', type:'simple', c:'#e07d78', g:'☕'},
-      {t:'Bakery mark', type:'simple', c:'#e6e6e6', g:'🥐'},
-      {t:'Wine label', type:'simple', c:'#d6ff3d', g:'🍷'},
     ]
   },
   science: {
@@ -587,23 +597,23 @@ const CATS = {
     label: 'Science',
     path: 'itairaveh.com/science/',
     scatter: [
-      {top:'2%', left:'2%',  w:230,h:160, color:'#e8b400', glyph:'🚜'},
-      {top:'4%', left:'40%', w:120,h:90,  color:'#f2f2f2', glyph:'🐭'},
-      {top:'2%', left:'56%', w:130,h:110, color:'#f2b6c6', glyph:'🐖'},
-      {top:'3%', left:'76%', w:220,h:150, color:'#f2f2f2', glyph:'🐄'},
+      {top:'2%', left:'2%',  w:230,h:160, color:'#e8b400', glyph:'🗼'},
+      {top:'4%', left:'40%', w:120,h:90,  color:'#f2f2f2', glyph:'🌍'},
+      {top:'3%', left:'76%', w:220,h:150, color:'#f2f2f2', glyph:'🐾'},
       {top:'62%', left:'6%', w:170,h:190, color:'#f2f2f2', glyph:'🗼'},
       {top:'64%', left:'32%',w:150,h:150, color:'#e8722c', glyph:'🪐'},
-      {top:'60%', left:'62%',w:220,h:190, color:'#eef2e6', glyph:'🌲'},
+      {top:'60%', left:'62%',w:220,h:190, color:'#eef2e6', glyph:'🌳'},
     ],
     items: [
-      {t:'Anthropomass', type:'gallery', c:'#1fae70', g:'🌍',
-        d:'Interactive exhibition on the mass of human-made materials versus living biomass.',
-        images:[{c:'#1fae70',g:'🌍',wide:true},{c:'#111111',g:'🏗️'},{c:'#eef2e6',g:'🌲'}]},
-      {t:'Tipping points', type:'simple', c:'#101010', g:'🌡️'},
-      {t:'Phenological calendar', type:'simple', c:'#eef2e6', g:'🌿'},
-      {t:'Lab identity system', type:'simple', c:'#2e59a8', g:'🧫'},
-      {t:'Springs of Ein Qinniyye', type:'simple', c:'#e8a24a', g:'💧'},
-      {t:'Weizmann figures', type:'simple', c:'#e6e6e6', g:'📊'},
+      {t:'Anthropomass', type:'case', slug:'anthropomass', c:'#1fae70', g:'🌍',
+        d:'Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has suppressed the amount of all living things.',
+        caseStudy:{
+          bg:'#1fae70',
+          intro:'Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has suppressed the amount of all living things.',
+          media:[{c:'#eef2e6', g:'🐃'}],
+          testimonial:{quote:'Biomass of mammals', who:'Ron Milo', avatar:'👤'}
+        }},
+      {t:'Watertowers of israel', type:'simple', c:'#e8b400', g:'🗼'},
     ]
   },
   animation: {
@@ -611,22 +621,14 @@ const CATS = {
     label: 'Animation',
     path: 'itairaveh.com/animation/',
     scatter: [
-      {top:'2%', left:'2%',  w:170,h:150, color:'#e9e9e9', glyph:'🫖'},
-      {top:'1%', left:'30%', w:210,h:170, color:'#1a1a1a', glyph:'🦍'},
-      {top:'3%', left:'66%', w:250,h:170, color:'#f2c9c9', glyph:'🐘'},
-      {top:'60%', left:'2%', w:150,h:220, color:'#dceeea', glyph:'🏄'},
-      {top:'64%', left:'26%',w:150,h:190, color:'#f2f2f2', glyph:'🚶'},
-      {top:'58%', left:'62%',w:220,h:220, color:'#0e3b34', glyph:'🦩'},
-      {top:'60%', left:'86%',w:130,h:190, color:'#f2c9dc', glyph:'👥'},
+      {top:'2%', left:'2%',  w:170,h:150, color:'#e9e9e9', glyph:'📺'},
+      {top:'1%', left:'30%', w:210,h:170, color:'#1a1a1a', glyph:'🌊'},
+      {top:'3%', left:'66%', w:250,h:170, color:'#f2c9c9', glyph:'▶️'},
+      {top:'60%', left:'2%', w:150,h:220, color:'#dceeea', glyph:'🎬'},
     ],
     items: [
-      {t:'Kurzgesagt storyboards', type:'simple', c:'#101010', g:'🎞️'},
-      {t:'Explainer series', type:'gallery', c:'#e07d78', g:'🎬',
-        d:'Art direction and storyboarding for a science explainer series.',
-        images:[{c:'#e07d78',g:'🎬'},{c:'#2e59a8',g:'🎥'},{c:'#111111',g:'🎞️'}]},
-      {t:'Character studies', type:'simple', c:'#2e59a8', g:'🧑‍🎨'},
-      {t:'Motion tests', type:'simple', c:'#e6e6e6', g:'🎥'},
-      {t:'Title sequence', type:'simple', c:'#f2d9ad', g:'🎦'},
+      {t:"A new solution to streaming technology | eko explainer", type:'simple', c:'#e07d78', g:'📺',
+        d:"An explainer on how eko's streaming technology works, and what makes it different."},
     ]
   }
 };
@@ -634,6 +636,7 @@ const CATS = {
 // auto-assign slugs
 Object.values(CATS).forEach(cat=>{
   cat.items.forEach(item=> item.slug = item.slug || slugify(item.t));
+  if(cat.editorial) cat.editorial.forEach(item=> item.slug = item.slug || slugify(item.t));
 });
 
 /* ---------------------------------------------------------
@@ -646,8 +649,6 @@ const overlayEl   = document.getElementById('overlay');
 const overlayLabel= document.getElementById('overlayLabel');
 const gridPage    = document.getElementById('gridPage');
 const hero        = document.getElementById('hero');
-const gridEl      = document.getElementById('grid');
-const breadcrumb  = document.getElementById('breadcrumb');
 const navLinks    = document.querySelectorAll('.nav-links li');
 const modalScrim  = document.getElementById('modalScrim');
 const modalEl     = document.getElementById('modal');
@@ -753,7 +754,8 @@ function parseHash(){
 
 function findItem(cat, slug){
   if(!CATS[cat]) return null;
-  return CATS[cat].items.find(i=> i.slug === slug) || null;
+  const all = CATS[cat].items.concat(CATS[cat].editorial || []);
+  return all.find(i=> i.slug === slug) || null;
 }
 
 /* every symbol across a case study, flattened, for deep-link lookup */
@@ -868,18 +870,11 @@ window.addEventListener('hashchange', ()=>{
 /* ---------------------------------------------------------
    GRID
 --------------------------------------------------------- */
-function renderGrid(cat){
-  const data = CATS[cat];
-  breadcrumb.textContent = 'Projects';
-  gridEl.innerHTML = '';
-  data.items.forEach((item, i)=>{
-    const card = document.createElement('a');
-    card.className = 'card';
-    // cards open the PREVIEW popup; the full page is one click deeper
-    const cardTarget = '#/' + cat + '?preview=' + item.slug;
-    if(FRAMED) card.dataset.href = cardTarget; else card.href = cardTarget;
-    const badge = item.type === 'case' ? 'Case study' : (item.type === 'gallery' ? 'View' : '');
-    card.innerHTML = `
+function cardHTML(cat, item, i){
+  const cardTarget = '#/' + cat + '?preview=' + item.slug;
+  const badge = item.type === 'case' ? 'Case study' : (item.type === 'gallery' ? 'View' : '');
+  return `
+    <a class="card" ${linkAttr(cardTarget)} data-i="${i}">
       <div class="card-thumb">
         <div class="fill" style="${bg(item)}"></div>
         <div class="glyph">${glyphHTML(item)}</div>
@@ -889,10 +884,25 @@ function renderGrid(cat){
         <div class="card-title">${item.t}</div>
         ${item.d ? `<div class="card-desc">${item.d}</div>` : ''}
       </div>
+    </a>`;
+}
+
+function renderGrid(cat){
+  const data = CATS[cat];
+  let html = `
+    <div class="breadcrumb">Projects</div>
+    <div class="grid">${data.items.map((it,i)=>cardHTML(cat,it,i)).join('')}</div>
+  `;
+  // optional labeled subsection, e.g. Illustration → Editorial and publications
+  if(data.editorial && data.editorial.length){
+    html += `
+      <div class="breadcrumb" style="margin-top:64px">Editorial and publications</div>
+      <div class="grid">${data.editorial.map((it,i)=>cardHTML(cat,it,data.items.length+i)).join('')}</div>
     `;
-    gridEl.appendChild(card);
-    const thumb = card.querySelector('.card-thumb');
-    setTimeout(()=> thumb.classList.add('loaded'), 150 + i*90 + Math.random()*200);
+  }
+  gridPage.innerHTML = html;
+  gridPage.querySelectorAll('.card-thumb').forEach((thumb,i)=>{
+    setTimeout(()=> thumb.classList.add('loaded'), 150 + i*70 + Math.random()*200);
   });
 }
 
@@ -908,7 +918,7 @@ function openModal(cat, item){
   if(cs && cs.series){
     // pull a few symbols across the series as a taster
     cs.series.forEach(s=> preview.push(...s.symbols.slice(0,2).map(sym=>({
-      img:symUrl(item.slug, sym.f), n:sym.n
+      img:symUrl(cat, item.slug, sym.f), n:sym.n
     }))));
   } else if(item.images){
     preview = item.images.slice(0,6);
@@ -977,7 +987,7 @@ function renderCasePage(cat, item){
           <div class="series-grid">
             ${s.symbols.map((sym,i)=>`
               <a class="sym" ${linkAttr('#/'+cat+'/'+item.slug+'/'+slugify(sym.n))} style="transition-delay:${i*28}ms">
-                <div class="sym-img" style="background-image:url('${symUrl(item.slug, sym.f)}')"></div>
+                <div class="sym-img" style="background-image:url('${symUrl(cat, item.slug, sym.f)}')"></div>
                 <div class="sym-name">${sym.n}</div>
               </a>
             `).join('')}
@@ -1049,7 +1059,7 @@ function openLightbox(cat, item, sym){
     <button class="lb-nav prev" aria-label="Previous">‹</button>
     <button class="lb-nav next" aria-label="Next">›</button>
     <figure class="lb-figure">
-      <img src="${symUrl(item.slug, sym.f)}" alt="${sym.n}">
+      <img src="${symUrl(cat, item.slug, sym.f)}" alt="${sym.n}">
       <figcaption>
         <strong>${sym.n}</strong>
         <span style="color:${sym.series.accent}">${sym.series.name}</span>
