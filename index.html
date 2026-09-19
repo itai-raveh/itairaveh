@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Itai Raveh — recreation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --illustration:#3b6df0;
@@ -18,7 +21,7 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    font-family:"Helvetica Neue","HelveticaNeue",Helvetica,Arial,sans-serif;
+    font-family:"Plus Jakarta Sans","Helvetica Neue","HelveticaNeue",Helvetica,Arial,sans-serif;
     font-weight:400;
     color:var(--ink);
     background:var(--bg);
@@ -32,7 +35,6 @@
     display:flex; align-items:center; justify-content:space-between;
     padding:22px 28px;
     z-index:50;
-    background:linear-gradient(var(--bg), var(--bg) 70%, transparent);
   }
   .nav-left{display:flex; align-items:center; gap:22px;}
   .logo{font-weight:700; font-size:14px; letter-spacing:.01em; cursor:pointer;}
@@ -460,18 +462,21 @@ const CATS = {
     label: 'Illustration',
     path: 'itairaveh.com/illustration/',
     scatter: [
-      // calculated from the reference screenshot — draft, adjust freely
-      {top:'0%',  left:'0%',   w:290,h:350, img:'images/Homepage/Illustraiton/ilustration 25.png', pos:'top', rot:0},
-      {top:'0%',  left:'32%',  w:245,h:245, img:'images/Homepage/Illustraiton/ilustration 20.png', rot:-2},
-      {top:'5%',  left:'58%',  w:177,h:257, img:'images/illustration-projects/heimat/heimat-cover.webp', rot:1},
-      {top:'0%',  left:'85%',  w:117,h:249, img:'images/Homepage/Illustraiton/ilustration 19.png', rot:0},
-      {top:'61%', left:'14%',  w:257,h:368, img:'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp', rot:0},
-      {top:'72%', left:'42%',  w:177,h:265, img:'images/illustration-projects/the-boys/the-boys-cover.jpg', rot:1},
-      // firm 2x2 grid: same cell size, no rotation, no gap variation
-      {top:'33%',    left:'72%',    w:190,h:253, img:'images/Homepage/Illustraiton/ilustration 23.png', rot:0},
-      {top:'33%',    left:'85.5%',  w:190,h:253, img:'images/Homepage/Illustraiton/ilustration 21.png', rot:0},
-      {top:'50.7%',  left:'72%',    w:190,h:253, img:'images/Homepage/Illustraiton/ilustration 22.png', rot:0},
-      {top:'50.7%',  left:'85.5%',  w:190,h:253, img:'images/Homepage/Illustraiton/ilustration 26.png', rot:0},
+      // exact coordinates from the Figma export (1920w light.svg), px at
+      // SCATTER_BASE_W=1920 — top/left are bare numbers here so they scale
+      // off viewport WIDTH like width/height do, avoiding the overlap bug
+      // that came from mixing height-relative % with width-relative vw
+      {top:-77, left:42,   w:398, h:572, img:'images/Homepage/Illustraiton/ilustration 25.png', rot:0},
+      {top:30,  left:688,  w:486, h:486, img:'images/Homepage/Illustraiton/ilustration 20.png', rot:0},
+      {top:41,  left:1233, w:221, h:333, img:'images/illustration-projects/heimat/heimat-cover.webp', rot:0},
+      {top:-59, left:1649, w:212, h:454, img:'images/Homepage/Illustraiton/ilustration 19.png', rot:0},
+      {top:706, left:172,  w:354, h:507, img:'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp', rot:0},
+      {top:909, left:842,  w:215, h:323, img:'images/illustration-projects/the-boys/the-boys-cover.jpg', rot:0},
+      // firm 2x2 grid, verified against the SVG's embedded image data
+      {top:576,  left:1282, w:344.69, h:459.459, img:'images/Homepage/Illustraiton/ilustration 23.png', rot:0}, // car
+      {top:594,  left:1657, w:344.69, h:459.459, img:'images/Homepage/Illustraiton/ilustration 22.png', rot:0}, // glove
+      {top:1007, left:1288, w:344.69, h:459.459, img:'images/Homepage/Illustraiton/ilustration 21.png', rot:0}, // creature
+      {top:1035, left:1646, w:335,    h:458,     img:'images/Homepage/Illustraiton/ilustration 26.png', rot:0}, // rocket
     ],
     items: [
       {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺',
@@ -725,19 +730,26 @@ let currentCat = null;
 
 /* Build scatter swatches for every category up front, toggle visibility.
    Each scatter entry supports:
-     top,left   — position, % strings, free to overlap the text
+     top,left   — position, at the SCATTER_BASE_W reference width. Either a
+                  '%' string (legacy, resolves against the container's
+                  HEIGHT per the CSS spec — only safe when the reference
+                  design is square-ish) or a bare number of px (preferred —
+                  resolved with the same vw() as width/height below, so
+                  position and size both scale off viewport WIDTH only and
+                  never drift out of proportion on wide/short windows)
      w,h        — size in px, at the SCATTER_BASE_W reference viewport width —
                   converted to vw below so every swatch scales fluidly with
                   the window instead of staying a fixed pixel size
      img        — illustration URL (falls back to color+glyph placeholder)
      pos        — background-position keyword, default 'center' (e.g. 'top'
                   to show the top slice of a tall image instead of cropping
-                  it centered — used for Sublet's full poster art)
+                  it centered)
      layer      — 'front' to sit in front of the text, default is behind
      rot        — rotation in degrees, small values read as hand-placed
 */
-const SCATTER_BASE_W = 1512; // logical viewport width the px sizes below were measured at
+const SCATTER_BASE_W = 1920; // logical viewport width the px sizes below were measured at (Figma export)
 function vw(px){ return (px / SCATTER_BASE_W * 100).toFixed(3) + 'vw'; }
+function topLeft(v){ return typeof v === 'number' ? vw(v) : v; }
 
 Object.entries(CATS).forEach(([key, cat]) => {
   cat.scatter.forEach((s, i) => {
@@ -745,8 +757,8 @@ Object.entries(CATS).forEach(([key, cat]) => {
     div.className = 'swatch cat-' + key;
     const rot = s.rot || 0;
     div.style.cssText = `
-      top:${s.top}; left:${s.left};
-      width:${vw(s.w)}; height:${vw(s.h)};
+      top:${topLeft(s.top)}; left:${topLeft(s.left)};
+      width:${vw(s.w)}; aspect-ratio:${s.w}/${s.h};
       font-size:${vw(38)};
       ${bg(s.img ? s : {c:s.color})}
       ${s.pos ? `background-position:${s.pos};` : ''}
