@@ -114,28 +114,40 @@
     padding-bottom:14px; margin-bottom:34px;
     border-bottom:1px solid var(--line);
   }
+  /* masonry: JS bin-packs items into N column divs by predicted height,
+     each column a plain flex stack — this is what lets card heights vary
+     freely by image aspect ratio instead of forcing a uniform row grid */
   .grid{
-    display:grid;
-    grid-template-columns:repeat(4, 1fr);
-    gap:28px 22px;
+    display:flex;
+    align-items:flex-start;
+    gap:0 22px;
   }
-  @media (max-width:900px){ .grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:520px){ .grid{grid-template-columns:1fr;} }
+  .grid-col{
+    display:flex; flex-direction:column;
+    gap:38px;
+    flex:1 1 0; min-width:0;
+  }
 
-  .card{cursor:pointer; text-decoration:none; display:block;}
+  .card{display:block;}
+  .card-thumb-link{display:block; text-decoration:none;}
   .card-thumb{
-    position:relative; aspect-ratio:1/1;
+    position:relative;
     border-radius:2px; overflow:hidden; background:#f1f1f1;
     transition:transform .5s cubic-bezier(.16,1,.3,1);
   }
-  .card:hover .card-thumb{transform:translateY(-3px);}
-  .card-thumb .fill{
+  .card-thumb-link:hover .card-thumb{transform:translateY(-3px);}
+  .card-thumb .fill-img{
+    display:block; width:100%; height:auto;
+  }
+  .card-thumb .fill-block{
     position:absolute; inset:0;
+  }
+  .card-thumb .fill-img, .card-thumb .fill-block{
     filter:blur(18px); transform:scale(1.15); opacity:.9;
     transition:filter .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1), opacity .9s ease;
   }
-  .card:hover .card-thumb .fill{transform:scale(1.04);}
-  .card-thumb.loaded .fill{filter:blur(0); transform:scale(1); opacity:1;}
+  .card-thumb-link:hover .fill-img, .card-thumb-link:hover .fill-block{transform:scale(1.04);}
+  .card-thumb.loaded .fill-img, .card-thumb.loaded .fill-block{filter:blur(0); transform:scale(1); opacity:1;}
   .card-thumb .glyph{
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
@@ -149,16 +161,21 @@
     background:rgba(255,255,255,.9); padding:3px 7px; border-radius:3px;
     opacity:0; transition:opacity .3s ease;
   }
-  .card:hover .card-thumb .badge{opacity:1;}
+  .card-thumb-link:hover .badge{opacity:1;}
 
-  .card-caption{margin-top:10px;}
-  .card-title{font-size:13px; font-weight:700;}
-  .card-desc{
-    font-size:12px; color:var(--sub); margin-top:3px;
-    max-height:0; overflow:hidden; opacity:0;
-    transition:max-height .3s ease, opacity .3s ease, margin-top .3s ease;
+  /* title + optional description sit side by side when there's room,
+     and wrap to their own lines in a narrow column — no JS needed */
+  .card-caption{margin-top:10px; display:flex; flex-wrap:wrap; column-gap:18px; row-gap:2px;}
+  .card-title{font-size:13px; font-weight:700; white-space:nowrap;}
+  .card-title > a{text-decoration:none;}
+  .card-title .readmore{
+    font-weight:600; text-decoration:underline; text-decoration-style:dotted;
+    text-underline-offset:3px; margin-left:6px; white-space:nowrap;
   }
-  .card:hover .card-desc{max-height:60px; opacity:1; margin-top:6px;}
+  .card-desc{
+    font-size:12px; color:var(--sub); line-height:1.55;
+    flex:1 1 180px; min-width:140px; margin:0;
+  }
 
   /* ---------- MODAL (the popup Readymag couldn't do) ---------- */
   .modal-scrim{
@@ -412,6 +429,12 @@ function slugify(s){
   return s.toLowerCase().replace(/['"]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
 }
 
+/* uploaded filenames are arbitrary (spaces, parens, Hebrew) — encode each
+   path segment so they resolve correctly as a URL regardless */
+function encodeImgPath(path){
+  return path.split('/').map(encodeURIComponent).join('/');
+}
+
 /* Any object with c/g (color+glyph) can instead carry img:'url' and it
    will render as a real photo/illustration, cover-fit, no code changes
    needed elsewhere. Leave img unset to keep using placeholder color+emoji. */
@@ -447,9 +470,10 @@ const CATS = {
       {top:'20%', left:'70%', w:140,h:140, color:'#2e59a8', glyph:'🗓️', rot:-5, layer:'front'},
     ],
     items: [
-      {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺'},
-      {t:'Sublet', type:'simple', c:'#101010', g:'🏙️'},
-      {t:'Weizmann institute 2026 calendar', type:'simple', c:'#2e59a8', g:'🗓️'},
+      {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺',
+        img:'images/illustration/gibberish/alefalefalef3.jpg'},
+      {t:'Sublet', type:'simple', c:'#101010', g:'🏙️', ratio:1.45},
+      {t:'Weizmann institute 2026 calendar', type:'simple', c:'#2e59a8', g:'🗓️', ratio:1.4},
       {t:'City Symbol: Street level Coat Of Arms', type:'case',
         slug:'city-symbol',
         img:'images/illustration/city-symbol/sym-1-03.webp',
@@ -524,45 +548,57 @@ const CATS = {
             }
           ]
         }},
-      {t:'"The Boys"', type:'simple', c:'#e07d78', g:'👦'},
-      {t:'The Calling', type:'simple', c:'#d9d9d9', g:'✨'},
-      {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🫚'},
-      {t:'Heimat', type:'simple', c:'#e6e6e6', g:'🏢'},
-      {t:'Tarot Card', type:'simple', c:'#3a2a4a', g:'🔮'},
-      {t:'Justice', type:'simple', c:'#111111', g:'⚖️'},
+      {t:'"The Boys"', type:'simple', c:'#e07d78', g:'👦', ratio:1.75},
+      {t:'The Calling', type:'simple', c:'#d9d9d9', g:'✨', ratio:1.35},
+      {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🫚', ratio:1.45},
+      {t:'Heimat', type:'simple', c:'#e6e6e6', g:'🏢', ratio:1.9},
+      {t:'Tarot Card', type:'simple', c:'#3a2a4a', g:'🔮', ratio:1.3,
+        d:'Justice'},
+      {t:'Justice', type:'simple', c:'#111111', g:'⚖️', ratio:1.35},
       {t:'The springs of Ein Qiniyye', type:'simple', c:'#2e6f8e', g:'💧',
+        img:'images/illustration/the-springs-of-ein-qiniyye/Maayanot-_elhamam_-.Z.jpg',
+        images:[
+          {img:'images/illustration/the-springs-of-ein-qiniyye/Maayanot-_elhamam_-.Z.jpg', wide:true},
+          {img:'images/illustration/the-springs-of-ein-qiniyye/Maayanot_ein_el_shelala_Cropped_2.jpg', wide:true}
+        ],
         d:'A series of illustrations drawn from the folk tales surrounding the waters of one Druze village.'},
-      {t:'The Road Begins In Capernaum', type:'simple', c:'#3a6b8a', g:'⛵'},
-      {t:'Memento Mori', type:'simple', c:'#1a1a1a', g:'💀',
+      {t:'The Road Begins In Capernaum', type:'simple', c:'#3a6b8a', g:'⛵',
+        img:'images/illustration/the-road-begins-in-capernaum/Artboard 3187 copy 2.png'},
+      {t:'Memento Mori', type:'simple', c:'#1a1a1a', g:'💀', ratio:0.7,
         d:'While the world is in turmoil, the random death of some leaders in history serves as a kind reminder on the strange moves of history.'},
-      {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌'},
-      {t:'Jerusalem snow', type:'simple', c:'#eef2f5', g:'❄️'},
-      {t:'Runs in the family', type:'simple', c:'#e8a24a', g:'👪'},
+      {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌', ratio:1},
+      {t:'Jerusalem snow', type:'simple', c:'#eef2f5', g:'❄️',
+        img:'images/illustration/jerusalem-snow/snow1.png'},
+      {t:'Runs in the family', type:'simple', c:'#e8a24a', g:'👪',
+        img:'images/illustration/runs-in-the-family/family2_gif)_face.gif'},
       {t:'Herzl | Eretz Israel Museum', type:'simple', c:'#f2d9ad', g:'🎩',
+        img:'images/illustration/herzl-eretz-israel-museum/Artboard 3203.png',
         d:'Part of an exhibition, a series of illustrations following the journey of a postcard from Palestine to Austria.'},
-      {t:'Welcome to tivon', type:'simple', c:'#e8a24a', g:'🌳'},
-      {t:'Saint Clara film poster', type:'simple', c:'#c9a6c2', g:'🎬'},
-      {t:'Passover', type:'simple', c:'#8a2e3a', g:'🍷'},
-      {t:'Parents Against Child Arrests', type:'simple', c:'#111111', g:'✊'},
-      {t:'Poriah', type:'simple', c:'#1e5f6e', g:'🌊'},
+      {t:'Welcome to tivon', type:'simple', c:'#e8a24a', g:'🌳', ratio:1.3},
+      {t:'Saint Clara film poster', type:'simple', c:'#c9a6c2', g:'🎬', ratio:1.3},
+      {t:'Passover', type:'simple', c:'#8a2e3a', g:'🍷', ratio:1.15},
+      {t:'Parents Against Child Arrests', type:'simple', c:'#111111', g:'✊', ratio:1},
+      {t:'Poriah', type:'simple', c:'#1e5f6e', g:'🌊', ratio:0.75},
     ],
     editorial: [
-      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺'},
-      {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞'},
-      {t:'Future of medicine | Calcalist', type:'simple', c:'#cfe8e2', g:'⚕️'},
-      {t:'Work in post COVID times | Globes', type:'simple', c:'#e6e6e6', g:'💼'},
+      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺', ratio:1.3},
+      {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞', ratio:1.3},
+      {t:'Future of medicine | Calcalist', type:'simple', c:'#cfe8e2', g:'⚕️', ratio:1.3},
+      {t:'Work in post COVID times | Globes', type:'simple', c:'#e6e6e6', g:'💼', ratio:1.3},
       {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕',
+        img:'images/illustration/sex/Artboard 3180 copy 4.png',
         d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
         caseStudy:{bg:'#8a2e5a', intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.'}},
-      {t:'The Estonian Sting | Calcalist', type:'simple', c:'#3a5a8a', g:'🕵️'},
-      {t:'Remote therapy | Calcalist', type:'simple', c:'#cfe0e8', g:'🻋️'},
-      {t:'The Beach | Adam Tsair Magazine', type:'simple', c:'#e8d9b0', g:'🏖️'},
-      {t:'Archimedes and the crown | Einayim Magazine', type:'simple', c:'#d4af37', g:'👑'},
-      {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖'},
-      {t:'Crypto conservatives | Calcalist', type:'simple', c:'#111111', g:'🪙'},
-      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗'},
-      {t:'Where does salt comes from? | Einayim Magazine', type:'simple', c:'#eef2f5', g:'🧂'},
-      {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️'},
+      {t:'The Estonian Sting | Calcalist', type:'simple', c:'#3a5a8a', g:'🕵️', ratio:1.3},
+      {t:'Remote therapy | Calcalist', type:'simple', c:'#cfe0e8', g:'🻋️', ratio:1.3},
+      {t:'The Beach | Adam Tsair Magazine', type:'simple', c:'#e8d9b0', g:'🏖️',
+        img:'images/illustration/the-beach-adam-tsair-magazine/1.jpg'},
+      {t:'Archimedes and the crown | Einayim Magazine', type:'simple', c:'#d4af37', g:'👑', ratio:1.3},
+      {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖', ratio:1.3},
+      {t:'Crypto conservatives | Calcalist', type:'simple', c:'#111111', g:'🪙', ratio:1.3},
+      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗', ratio:1.3},
+      {t:'Where does salt comes from? | Einayim Magazine', type:'simple', c:'#eef2f5', g:'🧂', ratio:1.3},
+      {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️', ratio:1.3},
     ]
   },
   brand: {
@@ -868,43 +904,100 @@ window.addEventListener('hashchange', ()=>{
 });
 
 /* ---------------------------------------------------------
-   GRID
+   GRID — Pinterest-style masonry, matching the real site.
+   Each item's card height varies with its own image (or, before
+   real art is uploaded, a placeholder color block sized to a
+   guessed `ratio`, height/width). Items are bin-packed into N
+   column divs, always into the currently-shortest column, so the
+   layout looks the same "waterfall" as the reference design
+   instead of a uniform equal-height row grid.
 --------------------------------------------------------- */
 function cardHTML(cat, item, i){
   const cardTarget = '#/' + cat + '?preview=' + item.slug;
-  const badge = item.type === 'case' ? 'Case study' : (item.type === 'gallery' ? 'View' : '');
+  const readMoreTarget = '#/' + cat + '/' + item.slug;
+  const badge = item.type === 'gallery' ? 'View' : '';
+  const hasImg = !!item.img;
+  const thumbStyle = hasImg ? '' : ` style="aspect-ratio:${item.ratio || 1.3}"`;
+  const fillHTML = hasImg
+    ? `<img class="fill-img" src="${encodeImgPath(item.img)}" alt="${item.t}" loading="lazy">`
+    : `<div class="fill-block" style="${bg(item)}"></div><div class="glyph">${glyphHTML(item)}</div>`;
   return `
-    <a class="card" ${linkAttr(cardTarget)} data-i="${i}">
-      <div class="card-thumb">
-        <div class="fill" style="${bg(item)}"></div>
-        <div class="glyph">${glyphHTML(item)}</div>
-        ${badge ? `<div class="badge">${badge}</div>` : ''}
-      </div>
+    <div class="card" data-i="${i}">
+      <a class="card-thumb-link" ${linkAttr(cardTarget)}>
+        <div class="card-thumb"${thumbStyle}>
+          ${fillHTML}
+          ${badge ? `<div class="badge">${badge}</div>` : ''}
+        </div>
+      </a>
       <div class="card-caption">
-        <div class="card-title">${item.t}</div>
-        ${item.d ? `<div class="card-desc">${item.d}</div>` : ''}
+        <div class="card-title">
+          <a ${linkAttr(cardTarget)}>${item.t}</a>${item.type === 'case' ? ` <a class="readmore" ${linkAttr(readMoreTarget)}>Read more</a>` : ''}
+        </div>
+        ${item.d ? `<p class="card-desc">${item.d}</p>` : ''}
       </div>
-    </a>`;
+    </div>`;
+}
+
+/* rough predicted height used only to decide which column an item goes
+   in — doesn't need to match rendered pixels exactly, just be roughly
+   proportional across items so columns balance sensibly */
+function estimateCardHeight(item, colWidth){
+  const ratio = item.ratio || 1.3;
+  const thumbH = colWidth * ratio;
+  const captionH = item.d ? 56 : 22;
+  return thumbH + captionH + 38; // + gap
+}
+
+function colCountFor(width){
+  if(width <= 520) return 1;
+  if(width <= 900) return 2;
+  return 4;
+}
+
+function masonryHTML(cat, items, indexOffset){
+  const colCount = colCountFor(gridPage.clientWidth || window.innerWidth);
+  const colWidth = 300; // nominal, only used for relative comparison between items
+  const heights = new Array(colCount).fill(0);
+  const cols = Array.from({length: colCount}, ()=> []);
+  items.forEach((item, i)=>{
+    let target = 0;
+    for(let c = 1; c < colCount; c++){ if(heights[c] < heights[target]) target = c; }
+    cols[target].push(cardHTML(cat, item, indexOffset + i));
+    heights[target] += estimateCardHeight(item, colWidth);
+  });
+  return `<div class="grid">${cols.map(col=>`<div class="grid-col">${col.join('')}</div>`).join('')}</div>`;
 }
 
 function renderGrid(cat){
   const data = CATS[cat];
   let html = `
     <div class="breadcrumb">Projects</div>
-    <div class="grid">${data.items.map((it,i)=>cardHTML(cat,it,i)).join('')}</div>
+    ${masonryHTML(cat, data.items, 0)}
   `;
   // optional labeled subsection, e.g. Illustration → Editorial and publications
   if(data.editorial && data.editorial.length){
     html += `
       <div class="breadcrumb" style="margin-top:64px">Editorial and publications</div>
-      <div class="grid">${data.editorial.map((it,i)=>cardHTML(cat,it,data.items.length+i)).join('')}</div>
+      ${masonryHTML(cat, data.editorial, data.items.length)}
     `;
   }
   gridPage.innerHTML = html;
   gridPage.querySelectorAll('.card-thumb').forEach((thumb,i)=>{
     setTimeout(()=> thumb.classList.add('loaded'), 150 + i*70 + Math.random()*200);
   });
+  lastGridColCount = colCountFor(window.innerWidth);
 }
+
+/* re-pack columns when the viewport crosses a breakpoint (not on every
+   resize pixel — only when colCountFor(width) actually changes) */
+let lastGridColCount = null;
+window.addEventListener('resize', ()=>{
+  if(!gridPage.classList.contains('show')) return;
+  const cc = colCountFor(window.innerWidth);
+  if(cc === lastGridColCount) return;
+  lastGridColCount = cc;
+  renderGrid(currentCat);
+});
 
 /* ---------------------------------------------------------
    MODAL — real popup: images + text together, closable,
