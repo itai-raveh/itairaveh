@@ -46,7 +46,7 @@
   .hero{
     position:relative;
     min-height:100vh;
-    display:flex; align-items:center;
+    display:flex; align-items:center; justify-content:center;
     padding:0 8vw;
   }
   /* two scatter layers: one behind the text, one in front of it.
@@ -57,7 +57,7 @@
   .swatch{
     position:absolute;
     opacity:0;
-    transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+    transition:opacity .22s cubic-bezier(.16,1,.3,1), transform .22s cubic-bezier(.16,1,.3,1);
     display:flex; align-items:center; justify-content:center;
     background-repeat:no-repeat; background-size:contain; background-position:center;
   }
@@ -84,6 +84,10 @@
   .lead .cat.on-science{color:var(--science); text-decoration-color:var(--science);}
   .lead .cat.on-animation{color:var(--animation); text-decoration-color:var(--animation);}
   .lead .emoji{text-decoration:none;}
+  .lead .cat-icon{
+    height:.72em; width:.72em; object-fit:contain;
+    display:inline-block; vertical-align:-0.08em;
+  }
 
   .hint{
     position:absolute; left:28px; bottom:14px;
@@ -382,13 +386,13 @@
     <div class="scatter front" id="scatterFront"></div>
     <p class="lead">
       Creating smart, detailed
-      <span class="cat" data-cat="illustration">illustrations projects <i class="emoji">🐦</i></span>,
+      <span class="cat" data-cat="illustration">illustrations projects <img class="cat-icon" src="images/Homepage/Sections icons/illustration.png" alt=""></span>,
       building
-      <span class="cat" data-cat="brand">brand illustration languages <i class="emoji">🖐️</i></span>,
+      <span class="cat" data-cat="brand">brand illustration languages <img class="cat-icon" src="images/Homepage/Sections icons/brands.png" alt=""></span>,
       visualizing
-      <span class="cat" data-cat="science">science communication <i class="emoji">🧪</i></span>,
+      <span class="cat" data-cat="science">science communication <img class="cat-icon" src="images/Homepage/Sections icons/science.png" alt=""></span>,
       and providing
-      <span class="cat" data-cat="animation">art direction for animation <i class="emoji">🤸</i></span>.
+      <span class="cat" data-cat="animation">art direction for animation <img class="cat-icon" src="images/Homepage/Sections icons/animtion.webp" alt=""></span>.
     </p>
     <div class="hint" id="hint">itairaveh.com/</div>
   </section>
@@ -422,7 +426,10 @@
 --------------------------------------------------------- */
 
 function symUrl(cat, projectSlug, file){
-  return `images/${cat}/${projectSlug}/${file}.webp`;
+  // illustration's images live under illustration-projects/illustration-editorial,
+  // not a flat images/illustration/ folder
+  const base = cat === 'illustration' ? 'illustration-projects' : cat;
+  return `images/${base}/${projectSlug}/${file}.webp`;
 }
 
 function slugify(s){
@@ -453,30 +460,29 @@ const CATS = {
     label: 'Illustration',
     path: 'itairaveh.com/illustration/',
     scatter: [
-      // behind the text
-      {top:'3%',  left:'1%',  w:200,h:240, color:'#e8dccf', glyph:'🏺', rot:-4},
-      {top:'1%',  left:'24%', w:170,h:170, color:'#111111', glyph:'🌆', rot:3},
-      {top:'5%',  left:'54%', w:180,h:220, color:'#e3e3e3', glyph:'🧱', rot:-2},
-      {top:'2%',  left:'82%', w:150,h:240, color:'#f5f5f5', glyph:'🚶', rot:5},
-      {top:'34%', left:'-3%', w:190,h:190, color:'#f2b6c6', glyph:'🗺️', rot:6},
-      {top:'30%', left:'88%', w:200,h:210, color:'#dcdcdc', glyph:'🪑', rot:-5},
-      {top:'64%', left:'4%',  w:170,h:200, color:'#0e3b34', glyph:'🕊️', rot:-3},
-      {top:'68%', left:'28%', w:160,h:160, color:'#e8a24a', glyph:'🌳', rot:4},
-      {top:'60%', left:'64%', w:210,h:200, color:'#f0c9a0', glyph:'🚗', rot:-6},
-      {top:'70%', left:'86%', w:150,h:190, color:'#c9a6c2', glyph:'🎬', rot:2},
-      // in front of the text, overlapping it
-      {top:'26%', left:'18%', w:130,h:130, color:'#d6ff3d', glyph:'🪴', rot:-8, layer:'front'},
-      {top:'48%', left:'44%', w:120,h:120, color:'#e1233c', glyph:'🐎', rot:7,  layer:'front'},
-      {top:'20%', left:'70%', w:140,h:140, color:'#2e59a8', glyph:'🗓️', rot:-5, layer:'front'},
+      // calculated from the reference screenshot — draft, adjust freely
+      {top:'0%',  left:'0%',   w:290,h:350, img:'images/Homepage/Illustraiton/ilustration 25.png', pos:'top', rot:0},
+      {top:'0%',  left:'32%',  w:245,h:245, img:'images/Homepage/Illustraiton/ilustration 20.png', rot:-2},
+      {top:'5%',  left:'58%',  w:177,h:257, img:'images/illustration-projects/heimat/heimat-cover.webp', rot:1},
+      {top:'0%',  left:'85%',  w:117,h:249, img:'images/Homepage/Illustraiton/ilustration 19.png', rot:0},
+      {top:'61%', left:'14%',  w:257,h:368, img:'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp', rot:0},
+      {top:'72%', left:'42%',  w:177,h:265, img:'images/illustration-projects/the-boys/the-boys-cover.jpg', rot:1},
+      // firm 2x2 grid: same cell size, no rotation, no gap variation
+      {top:'33%',    left:'72%',    w:190,h:253, img:'images/Homepage/Illustraiton/ilustration 23.png', rot:0},
+      {top:'33%',    left:'85.5%',  w:190,h:253, img:'images/Homepage/Illustraiton/ilustration 21.png', rot:0},
+      {top:'50.7%',  left:'72%',    w:190,h:253, img:'images/Homepage/Illustraiton/ilustration 22.png', rot:0},
+      {top:'50.7%',  left:'85.5%',  w:190,h:253, img:'images/Homepage/Illustraiton/ilustration 26.png', rot:0},
     ],
     items: [
       {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺',
-        img:'images/illustration/gibberish/alefalefalef3.jpg'},
-      {t:'Sublet', type:'simple', c:'#101010', g:'🏙️', ratio:1.45},
-      {t:'Weizmann institute 2026 calendar', type:'simple', c:'#2e59a8', g:'🗓️', ratio:1.4},
+        img:'images/illustration-projects/gibberish/gibberish-cover.jpg'},
+      {t:'Sublet', type:'simple', c:'#101010', g:'🏙️',
+        img:'images/illustration-projects/sublet/sublet-cover.png'},
+      {t:'Weizmann institute 2026 calendar', type:'simple', c:'#2e59a8', g:'🗓️',
+        img:'images/illustration-projects/weizmann-institute-2026-calendar/weizmann-institute-2026-calendar-cover.png'},
       {t:'City Symbol: Street level Coat Of Arms', type:'case',
         slug:'city-symbol',
-        img:'images/illustration/city-symbol/sym-1-03.webp',
+        img:'images/illustration-projects/city-symbol/sym-1-03.webp',
         d:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.',
         caseStudy:{
           bg:'#ffffff', dark:false,
@@ -548,57 +554,82 @@ const CATS = {
             }
           ]
         }},
-      {t:'"The Boys"', type:'simple', c:'#e07d78', g:'👦', ratio:1.75},
-      {t:'The Calling', type:'simple', c:'#d9d9d9', g:'✨', ratio:1.35},
-      {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🫚', ratio:1.45},
-      {t:'Heimat', type:'simple', c:'#e6e6e6', g:'🏢', ratio:1.9},
-      {t:'Tarot Card', type:'simple', c:'#3a2a4a', g:'🔮', ratio:1.3,
+      {t:'"The Boys"', type:'simple', c:'#e07d78', g:'👦',
+        img:'images/illustration-projects/the-boys/the-boys-cover.jpg'},
+      {t:'The Calling', type:'simple', c:'#d9d9d9', g:'✨',
+        img:'images/illustration-projects/the-calling/the-calling-cover.jpg'},
+      {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🫚',
+        img:'images/illustration-projects/in-the-garden/in-the-garden-cover.webp'},
+      {t:'Heimat', type:'simple', c:'#e6e6e6', g:'🏢',
+        img:'images/illustration-projects/heimat/heimat-cover.webp'},
+      {t:'Tarot Card', type:'simple', c:'#3a2a4a', g:'🔮',
+        img:'images/illustration-projects/tarot-card/tarot-card-cover.png',
         d:'Justice'},
-      {t:'Justice', type:'simple', c:'#111111', g:'⚖️', ratio:1.35},
+      {t:'Justice', type:'simple', c:'#111111', g:'⚖️',
+        img:'images/illustration-projects/justice/justice-cover.jpg'},
       {t:'The springs of Ein Qiniyye', type:'simple', c:'#2e6f8e', g:'💧',
-        img:'images/illustration/the-springs-of-ein-qiniyye/Maayanot-_elhamam_-.Z.jpg',
+        img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-cover.jpg',
         images:[
-          {img:'images/illustration/the-springs-of-ein-qiniyye/Maayanot-_elhamam_-.Z.jpg', wide:true},
-          {img:'images/illustration/the-springs-of-ein-qiniyye/Maayanot_ein_el_shelala_Cropped_2.jpg', wide:true}
+          {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-cover.jpg', wide:true},
+          {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-2.jpg', wide:true},
+          {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-3.jpg', wide:true}
         ],
         d:'A series of illustrations drawn from the folk tales surrounding the waters of one Druze village.'},
       {t:'The Road Begins In Capernaum', type:'simple', c:'#3a6b8a', g:'⛵',
-        img:'images/illustration/the-road-begins-in-capernaum/Artboard 3187 copy 2.png'},
-      {t:'Memento Mori', type:'simple', c:'#1a1a1a', g:'💀', ratio:0.7,
+        img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-cover.png'},
+      {t:'Memento Mori', type:'simple', c:'#1a1a1a', g:'💀',
+        img:'images/illustration-projects/memento-mori/memento-mori-cover.jpg',
         d:'While the world is in turmoil, the random death of some leaders in history serves as a kind reminder on the strange moves of history.'},
-      {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌', ratio:1},
+      {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌',
+        img:'images/illustration-projects/kuli-alma-club-valentine/kuli-alma-club-valentine-cover.jpg'},
       {t:'Jerusalem snow', type:'simple', c:'#eef2f5', g:'❄️',
-        img:'images/illustration/jerusalem-snow/snow1.png'},
+        img:'images/illustration-projects/jerusalem-snow/jerusalem-snow-cover.png'},
       {t:'Runs in the family', type:'simple', c:'#e8a24a', g:'👪',
-        img:'images/illustration/runs-in-the-family/family2_gif)_face.gif'},
+        img:'images/illustration-projects/runs-in-the-family/runs-in-the-family-cover.gif'},
       {t:'Herzl | Eretz Israel Museum', type:'simple', c:'#f2d9ad', g:'🎩',
-        img:'images/illustration/herzl-eretz-israel-museum/Artboard 3203.png',
+        img:'images/illustration-projects/herzl-eretz-israel-museum/herzl-eretz-israel-museum-cover.jpg',
         d:'Part of an exhibition, a series of illustrations following the journey of a postcard from Palestine to Austria.'},
-      {t:'Welcome to tivon', type:'simple', c:'#e8a24a', g:'🌳', ratio:1.3},
-      {t:'Saint Clara film poster', type:'simple', c:'#c9a6c2', g:'🎬', ratio:1.3},
-      {t:'Passover', type:'simple', c:'#8a2e3a', g:'🍷', ratio:1.15},
-      {t:'Parents Against Child Arrests', type:'simple', c:'#111111', g:'✊', ratio:1},
-      {t:'Poriah', type:'simple', c:'#1e5f6e', g:'🌊', ratio:0.75},
-    ],
-    editorial: [
-      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺', ratio:1.3},
-      {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞', ratio:1.3},
-      {t:'Future of medicine | Calcalist', type:'simple', c:'#cfe8e2', g:'⚕️', ratio:1.3},
-      {t:'Work in post COVID times | Globes', type:'simple', c:'#e6e6e6', g:'💼', ratio:1.3},
+      {t:'Welcome to tivon', type:'simple', c:'#e8a24a', g:'🌳',
+        img:'images/illustration-projects/welcome-to-tivon/welcome-to-tivon-cover.jpg'},
+      {t:'Saint Clara film poster', type:'simple', c:'#c9a6c2', g:'🎬',
+        img:'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp'},
+      {t:'Passover', type:'simple', c:'#8a2e3a', g:'🍷',
+        img:'images/illustration-projects/passover/passover-cover.webp'},
+      {t:'Parents Against Child Arrests', type:'simple', c:'#111111', g:'✊',
+        img:'images/illustration-projects/parents-against-child-arrests/parents-against-child-arrests-cover.png'},
+      {t:'Poriah', type:'simple', c:'#1e5f6e', g:'🌊',
+        img:'images/illustration-projects/poriah/poriah-cover.png'},
       {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕',
-        img:'images/illustration/sex/Artboard 3180 copy 4.png',
+        img:'images/illustration-projects/sex/sex-cover.png',
         d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
         caseStudy:{bg:'#8a2e5a', intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.'}},
+      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗',
+        img:'images/illustration-projects/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png'},
+    ],
+    editorial: [
+      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺',
+        img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.jpg'},
+      {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞',
+        img:'images/illustration-editorial/calcalist-our-digital-mirror/calcalist-our-digital-mirror-cover.png'},
+      {t:'Future of medicine | Calcalist', type:'simple', c:'#cfe8e2', g:'⚕️', ratio:1.3},
+      {t:'Work in post COVID times | Globes', type:'simple', c:'#e6e6e6', g:'💼', ratio:1.3},
       {t:'The Estonian Sting | Calcalist', type:'simple', c:'#3a5a8a', g:'🕵️', ratio:1.3},
       {t:'Remote therapy | Calcalist', type:'simple', c:'#cfe0e8', g:'🻋️', ratio:1.3},
       {t:'The Beach | Adam Tsair Magazine', type:'simple', c:'#e8d9b0', g:'🏖️',
-        img:'images/illustration/the-beach-adam-tsair-magazine/1.jpg'},
-      {t:'Archimedes and the crown | Einayim Magazine', type:'simple', c:'#d4af37', g:'👑', ratio:1.3},
-      {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖', ratio:1.3},
+        img:'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg'},
+      {t:'Archimedes and the crown | Einayim Magazine', type:'simple', c:'#d4af37', g:'👑',
+        img:'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.png'},
+      {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖',
+        img:'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg'},
       {t:'Crypto conservatives | Calcalist', type:'simple', c:'#111111', g:'🪙', ratio:1.3},
-      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗', ratio:1.3},
       {t:'Where does salt comes from? | Einayim Magazine', type:'simple', c:'#eef2f5', g:'🧂', ratio:1.3},
-      {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️', ratio:1.3},
+      {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️',
+        img:'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg'},
+      {t:'Chuzpa! | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📰',
+        slug:'einayim-magazine-huzpa',
+        img:'images/illustration-editorial/einayim-magazine-Huzpa/einayim-magazine-Huzpa-cover.jpg'},
+      {t:'What my father never told me', type:'simple', c:'#dcdcdc', g:'👨',
+        img:'images/illustration-editorial/What-my-father-never-told-me/What-my-father-never-told-me-cover.jpg'},
     ]
   },
   brand: {
@@ -695,11 +726,19 @@ let currentCat = null;
 /* Build scatter swatches for every category up front, toggle visibility.
    Each scatter entry supports:
      top,left   — position, % strings, free to overlap the text
-     w,h        — size in px
+     w,h        — size in px, at the SCATTER_BASE_W reference viewport width —
+                  converted to vw below so every swatch scales fluidly with
+                  the window instead of staying a fixed pixel size
      img        — illustration URL (falls back to color+glyph placeholder)
+     pos        — background-position keyword, default 'center' (e.g. 'top'
+                  to show the top slice of a tall image instead of cropping
+                  it centered — used for Sublet's full poster art)
      layer      — 'front' to sit in front of the text, default is behind
      rot        — rotation in degrees, small values read as hand-placed
 */
+const SCATTER_BASE_W = 1512; // logical viewport width the px sizes below were measured at
+function vw(px){ return (px / SCATTER_BASE_W * 100).toFixed(3) + 'vw'; }
+
 Object.entries(CATS).forEach(([key, cat]) => {
   cat.scatter.forEach((s, i) => {
     const div = document.createElement('div');
@@ -707,10 +746,10 @@ Object.entries(CATS).forEach(([key, cat]) => {
     const rot = s.rot || 0;
     div.style.cssText = `
       top:${s.top}; left:${s.left};
-      width:${s.w}px; height:${s.h}px;
-      font-size:38px;
-      transition-delay:${i*38}ms;
+      width:${vw(s.w)}; height:${vw(s.h)};
+      font-size:${vw(38)};
       ${bg(s.img ? s : {c:s.color})}
+      ${s.pos ? `background-position:${s.pos};` : ''}
     `;
     div.dataset.rot = rot;
     div.style.transform = `rotate(${rot}deg) scale(.9) translateY(8px)`;
