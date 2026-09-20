@@ -39,7 +39,7 @@
   .nav-left{display:flex; align-items:center; gap:22px;}
   .logo{font-weight:700; font-size:14px; letter-spacing:.01em; cursor:pointer;}
   .nav-links{display:flex; gap:18px; list-style:none; margin:0; padding:0;}
-  .nav-links li{font-size:13px; font-weight:600; color:var(--ink); cursor:pointer; transition:color .2s;}
+  .nav-links li{font-size:12px; font-weight:600; color:var(--ink); cursor:pointer; transition:color .2s;}
   .nav-links li.dim{color:#bdbdbd;}
   .nav-right{display:flex; gap:18px; font-size:13px; font-weight:600;}
   .nav-right a{text-decoration:none;}
@@ -115,45 +115,60 @@
   /* ---------- GRID PAGE ---------- */
   .grid-page{display:none; padding:100px 28px 80px;}
   .grid-page.show{display:block;}
+  /* side margin measured off the Figma export: content sits at 99px in
+     from a 1440px canvas (1242px content width) — expressed as vw so it
+     holds the same proportion at other desktop widths */
+  @media (min-width:901px){
+    .grid-page{padding-left:max(28px, 6.875vw); padding-right:max(28px, 6.875vw);}
+  }
   .breadcrumb{
     font-size:12px; color:var(--sub);
     padding-bottom:14px; margin-bottom:34px;
     border-bottom:1px solid var(--line);
   }
-  /* masonry: JS bin-packs items into N column divs by predicted height,
-     each column a plain flex stack — this is what lets card heights vary
-     freely by image aspect ratio instead of forcing a uniform row grid */
-  .grid{
-    display:flex;
-    align-items:flex-start;
-    gap:0 22px;
-  }
-  .grid-col{
-    display:flex; flex-direction:column;
-    gap:38px;
-    flex:1 1 0; min-width:0;
-  }
+  /* true masonry, computed in JS (layoutMasonry). The track math is
+     measured off the Figma export (1440w light-fix.svg), not guessed:
+     every rect in that file resolves to a 9-track grid at that width,
+     track ≈126px, gap 14px — a normal card spans 2 tracks (≈265px), a
+     featured one spans 3 (≈405px) or 4 (≈544px). Each rectangle is then
+     sized to its own image's real aspect ratio (via IMG_RATIO) and
+     packed into whichever column is shortest, so images fill their box
+     edge-to-edge instead of being forced into a uniform grid cell. CSS
+     Grid can't produce this — its rows share one height across every
+     track in the row, which is what caused the uneven layout before. */
+  .grid{position:relative;}
+  .card{position:absolute; top:0; left:0;}
 
-  .card{display:block;}
   .card-thumb-link{display:block; text-decoration:none;}
   .card-thumb{
     position:relative;
-    border-radius:2px; overflow:hidden; background:#f1f1f1;
-    transition:transform .5s cubic-bezier(.16,1,.3,1);
+    border-radius:0; overflow:hidden; background:#f1f1f1;
+    transition:transform .9s cubic-bezier(.16,1,.3,1);
   }
-  .card-thumb-link:hover .card-thumb{transform:translateY(-3px);}
+  .card-thumb-link:hover .card-thumb{transform:scale(1.01);}
   .card-thumb .fill-img{
-    display:block; width:100%; height:auto;
+    display:block; position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   }
   .card-thumb .fill-block{
     position:absolute; inset:0;
   }
   .card-thumb .fill-img, .card-thumb .fill-block{
     filter:blur(18px); transform:scale(1.15); opacity:.9;
-    transition:filter .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1), opacity .9s ease;
+    transition:filter .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1), opacity .25s ease;
   }
-  .card-thumb-link:hover .fill-img, .card-thumb-link:hover .fill-block{transform:scale(1.04);}
   .card-thumb.loaded .fill-img, .card-thumb.loaded .fill-block{filter:blur(0); transform:scale(1); opacity:1;}
+  /* "show all three illustrations one after another" (springs of Ein
+     Qiniyye) — a plain vertical stack of full images instead of the
+     usual single-frame hover-cycle thumb */
+  .card-thumb-stack{display:flex; flex-direction:column; gap:14px;}
+  .card-thumb-stack a{display:block; text-decoration:none;}
+  .card-thumb-stack img{display:block; width:100%; border-radius:0;}
+  /* mobile: one plain column, every card the same size regardless of its
+     image's own aspect ratio — overrides the per-item inline aspect-ratio
+     set in cardHTML/layoutMasonry */
+  @media (max-width:520px){
+    .card-thumb, .card-thumb-stack img{aspect-ratio:3/4 !important;}
+  }
   .card-thumb .glyph{
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
@@ -164,15 +179,30 @@
   .card-thumb .badge{
     position:absolute; top:8px; right:8px;
     font-size:10px; font-weight:700; letter-spacing:.02em;
-    background:rgba(255,255,255,.9); padding:3px 7px; border-radius:3px;
+    background:rgba(255,255,255,.9); padding:3px 7px; border-radius:0;
     opacity:0; transition:opacity .3s ease;
   }
   .card-thumb-link:hover .badge{opacity:1;}
 
-  /* title + optional description sit side by side when there's room,
-     and wrap to their own lines in a narrow column — no JS needed */
-  .card-caption{margin-top:10px; display:flex; flex-wrap:wrap; column-gap:18px; row-gap:2px;}
-  .card-title{font-size:13px; font-weight:700; white-space:nowrap;}
+  /* multi-image projects: on hover the thumbnail auto-cycles through the
+     gallery, and these arrows appear for manual control too */
+  .thumb-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:26px; height:26px; border-radius:50%; border:none;
+    background:rgba(255,255,255,.85); color:var(--ink);
+    font-size:15px; line-height:1; cursor:pointer;
+    opacity:0; transition:opacity .2s ease, background .2s ease;
+    display:flex; align-items:center; justify-content:center;
+    z-index:2; padding:0;
+  }
+  .card-thumb-link:hover .thumb-nav{opacity:1;}
+  .thumb-nav:hover{background:#fff;}
+  .thumb-nav.prev{left:8px;}
+  .thumb-nav.next{right:8px;}
+
+  /* title sits below the image, description below the title */
+  .card-caption{margin-top:6px;}
+  .card-title{font-size:12px; font-weight:700;}
   .card-title > a{text-decoration:none;}
   .card-title .readmore{
     font-weight:600; text-decoration:underline; text-decoration-style:dotted;
@@ -180,64 +210,75 @@
   }
   .card-desc{
     font-size:12px; color:var(--sub); line-height:1.55;
-    flex:1 1 180px; min-width:140px; margin:0;
+    margin:2px 0 0;
   }
 
   /* ---------- MODAL (the popup Readymag couldn't do) ---------- */
-  .modal-scrim{
-    position:fixed; inset:0; z-index:200;
-    background:rgba(20,20,20,.55);
-    backdrop-filter:blur(0px);
-    display:flex; align-items:center; justify-content:center;
-    padding:40px 20px;
-    opacity:0; visibility:hidden;
-    transition:opacity .4s cubic-bezier(.19,1,.22,1), backdrop-filter .4s ease;
+  /* project preview: no card, no box — image and text float directly on
+     the light scrim (see .lightbox), exactly like the symbol lightbox
+     below. Measured off the updated Figma export ("1440w lightbox
+     new.svg"): the white "frame" is the backdrop itself, not a panel
+     around the content. Content eases in with a gentle rise + fade
+     rather than appearing instantly. Click-outside, Escape, or the
+     viewport-corner "close" all dismiss it. */
+  .lb-panel{
+    display:flex; align-items:center; gap:32px;
+    max-width:95vw; max-height:94vh;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .4s cubic-bezier(.16,1,.3,1), transform .4s cubic-bezier(.16,1,.3,1);
+    pointer-events:none; /* a flex row's own box is a rectangle spanning
+      its tallest child even where a shorter child (e.g. short text next
+      to a tall image) leaves visually-empty space — without this, that
+      empty-looking space still belongs to .lb-panel and swallows clicks
+      that should count as "click the background to close". Re-enabled
+      on the actual content below, so only real content blocks clicks. */
   }
-  .modal-scrim.show{opacity:1; visibility:visible; backdrop-filter:blur(3px);}
-  .modal{
-    background:#fff; border-radius:8px;
-    width:min(920px, 100%); max-height:86vh;
-    overflow-y:auto; position:relative;
-    transform:translateY(28px) scale(.96);
-    transition:transform .5s cubic-bezier(.16,1.3,.3,1);
-    padding:44px;
+  .lightbox.show .lb-panel{opacity:1; transform:none;}
+  .lb-project-media{
+    position:relative; display:grid; flex:0 1 auto; min-width:0;
+    max-width:74vw; max-height:94vh;
+    pointer-events:auto;
   }
-  .modal-scrim.show .modal{transform:translateY(0) scale(1);}
-  .modal-gallery .g-item{
-    opacity:0; transform:translateY(10px) scale(.98);
-    transition:opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
+  /* two stacked layers (same grid cell) for a real crossfade between
+     gallery images — swapping innerHTML on the hidden one and fading
+     opacity on both at once, so one is always fully visible instead of
+     a hard cut (or, worse, a moment where neither is, which is what
+     caused the grey flash on cards with several images) */
+  .lb-media-layer{grid-area:1/1; transition:opacity .35s ease;}
+  .lb-project-media img, .lb-project-media .fill-block{
+    display:block; max-width:100%; max-height:94vh;
+    width:auto; height:auto; object-fit:contain; border-radius:0;
   }
-  .modal-scrim.show .modal-gallery .g-item{opacity:1; transform:translateY(0) scale(1);}
-  .modal-close{
-    position:absolute; top:16px; right:18px;
-    width:30px; height:30px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer; font-size:16px; background:#f4f4f4;
-    border:none;
+  .lb-project-media.has-multi .lb-media-layer{cursor:pointer;}
+  .lb-project-text{
+    flex:0 1 auto; max-width:280px;
+    pointer-events:auto;
+    /* a padded safe zone around the text, cancelled visually by the
+     matching negative margin — so selecting/copying text (a click-drag
+     whose mouseup can easily land just outside the tight glyph box,
+     e.g. below the last line) doesn't fall through to the backdrop and
+     close the lightbox mid-selection */
+    padding:24px 8px;
+    margin:-24px -8px;
   }
-  .modal-close:hover{background:#eaeaea;}
-  .modal-title{font-size:20px; font-weight:700; margin:0 0 6px;}
-  .modal-desc{font-size:14px; color:var(--sub); line-height:1.6; max-width:60ch; margin:0 0 26px;}
-  .modal-gallery{
-    display:grid; grid-template-columns:repeat(2,1fr); gap:14px;
+  .lb-project-title{font-size:15px; font-weight:700; margin:0 0 8px; line-height:1.3; color:var(--ink);}
+  .lb-project-desc{font-size:13px; color:var(--sub); line-height:1.6; margin:0 0 10px;}
+  .lb-project-note{font-size:12px; font-style:italic; color:var(--sub); line-height:1.6; margin:0 0 14px;}
+  .lb-project-link{
+    font-size:12px; font-weight:600; color:var(--ink); text-decoration:underline;
+    text-decoration-style:dotted; text-underline-offset:3px;
   }
-  .modal-gallery.single{grid-template-columns:1fr;}
-  .modal-gallery .g-item{
-    aspect-ratio:1/1; border-radius:4px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:40px;
+  .lb-panel-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:26px; height:26px; border-radius:50%; border:none;
+    background:rgba(255,255,255,.85); color:var(--ink);
+    font-size:15px; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding:0;
+    transition:background .2s ease;
   }
-  .modal-gallery .g-item.wide{grid-column:1/-1; aspect-ratio:16/9;}
-
-  /* ---------- MODAL CTA ---------- */
-  .modal-cta{
-    display:inline-block; margin-top:26px;
-    font-size:13px; font-weight:700; text-decoration:none;
-    padding:11px 18px; border-radius:4px;
-    background:var(--ink); color:#fff;
-    transition:transform .4s cubic-bezier(.16,1,.3,1), opacity .2s;
-  }
-  .modal-cta:hover{transform:translateX(3px); opacity:.88;}
+  .lb-panel-nav:hover{background:#fff;}
+  .lb-panel-nav.prev{left:20px;}
+  .lb-panel-nav.next{right:20px;}
 
   /* ---------- CASE STUDY: SERIES LAYOUT ---------- */
   .case-top{max-width:1180px; margin:0 auto; padding:110px 28px 20px; position:relative;}
@@ -294,9 +335,13 @@
   }
 
   /* ---------- LIGHTBOX (single symbol, deep-linked) ---------- */
+  /* white scrim, not a blackout — the "frame" is this light wash itself,
+     with no card/panel behind the content (see .lb-panel). The grid
+     stays faintly visible underneath, dimmed toward white instead of
+     black. */
   .lightbox{
     position:fixed; inset:0; z-index:260;
-    background:rgba(255,255,255,.97);
+    background:rgba(255,255,255,.9);
     display:flex; align-items:center; justify-content:center;
     opacity:0; visibility:hidden;
     transition:opacity .3s cubic-bezier(.16,1,.3,1);
@@ -309,16 +354,22 @@
   .lightbox.show .lb-figure{transform:scale(1);}
   .lb-figure img{width:100%; height:auto; display:block;}
   .lb-figure figcaption{
-    margin-top:22px; font-size:13px;
+    margin-top:22px; font-size:13px; color:var(--ink);
     display:flex; gap:10px; justify-content:center; align-items:baseline;
   }
   .lb-figure figcaption span{font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:700;}
   .lb-close, .lb-nav{
     position:absolute; background:none; border:none; cursor:pointer;
-    color:var(--ink); line-height:1;
+    line-height:1;
   }
-  .lb-close{top:24px; right:28px; font-size:20px;}
-  .lb-nav{top:50%; transform:translateY(-50%); font-size:42px; padding:10px 18px; color:#bbb;}
+  .lb-close{
+    top:14px; right:18px; font-size:14px; font-weight:600;
+    color:var(--ink); letter-spacing:.02em; text-decoration:underline;
+    text-underline-offset:3px; opacity:.85; transition:opacity .2s;
+    padding:14px 16px; /* bigger hit target than the text alone */
+  }
+  .lb-close:hover{opacity:1;}
+  .lb-nav{top:50%; transform:translateY(-50%); font-size:36px; padding:10px 18px; color:rgba(0,0,0,.4);}
   .lb-nav:hover{color:var(--ink);}
   .lb-nav.prev{left:12px;}
   .lb-nav.next{right:12px;}
@@ -348,10 +399,16 @@
     max-width:1040px; margin:0 auto 60px; padding:0 24px;
   }
   .case-media .m{
-    aspect-ratio:4/3; border-radius:4px;
+    aspect-ratio:4/3; border-radius:0;
     display:flex; align-items:center; justify-content:center; font-size:38px;
   }
   .case-media .m.full{grid-column:1/-1; aspect-ratio:21/9;}
+  .case-gallery{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:16px;
+    max-width:1040px; margin:0 auto 80px; padding:0 24px;
+  }
+  .case-gallery img{width:100%; height:auto; display:block; border-radius:0;}
+  @media (max-width:720px){ .case-gallery{grid-template-columns:1fr;} }
 
   .case-testimonial{
     max-width:640px; margin:0 auto 100px; padding:0 24px;
@@ -403,10 +460,6 @@
 
   <section class="case-page" id="casePage"></section>
 
-  <div class="modal-scrim" id="modalScrim">
-    <div class="modal" id="modal"></div>
-  </div>
-
   <div class="lightbox" id="lightbox"></div>
 
   <div class="overlay" id="overlay"><div class="overlay-label" id="overlayLabel"></div></div>
@@ -444,6 +497,14 @@ function encodeImgPath(path){
   return path.split('/').map(encodeURIComponent).join('/');
 }
 
+/* builds a {cover, then -2, -3, ...} gallery array for a project folder
+   that follows the {slug}-cover.ext / {slug}-N.ext naming convention */
+function galleryRange(dir, slug, ext, count){
+  const arr = [{img:`${dir}/${slug}-cover.${ext}`, wide:true}];
+  for(let i = 2; i <= count; i++) arr.push({img:`${dir}/${slug}-${i}.${ext}`, wide:true});
+  return arr;
+}
+
 /* Any object with c/g (color+glyph) can instead carry img:'url' and it
    will render as a real photo/illustration, cover-fit, no code changes
    needed elsewhere. Leave img unset to keep using placeholder color+emoji. */
@@ -479,15 +540,13 @@ const CATS = {
       {top:1035, left:1646, w:335,    h:458,     img:'images/Homepage/Illustraiton/ilustration 26.png', rot:0}, // rocket
     ],
     items: [
-      {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺',
+      {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺', col:0,
         img:'images/illustration-projects/gibberish/gibberish-cover.jpg'},
-      {t:'Sublet', type:'simple', c:'#101010', g:'🏙️',
+      {t:'Sublet', type:'simple', c:'#101010', g:'🏙️', col:2,
         img:'images/illustration-projects/sublet/sublet-cover.png'},
-      {t:'Weizmann institute 2026 calendar', type:'simple', c:'#2e59a8', g:'🗓️',
-        img:'images/illustration-projects/weizmann-institute-2026-calendar/weizmann-institute-2026-calendar-cover.png'},
-      {t:'City Symbol: Street level Coat Of Arms', type:'case',
+      {t:'City Symbol: Street level Coat Of Arms', type:'case', span:3, col:4, mobilePriority:0.5,
         slug:'city-symbol',
-        img:'images/illustration-projects/city-symbol/sym-1-03.webp',
+        img:'images/illustration-projects/city-symbol/city-symbol-1-cover.png',
         d:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.',
         caseStudy:{
           bg:'#ffffff', dark:false,
@@ -507,7 +566,7 @@ const CATS = {
                 {n:'Nachalat Shivaa', f:'sym-2-02'},
                 {n:'Kikar Hachatolot', f:'sym-2-03'},
                 {n:'Rechov Ussishkin', f:'sym-2-04'},
-                {n:'Moment Caf\u00e9', f:'sym-2-05'},
+                {n:'Moment Café', f:'sym-2-05'},
                 {n:'Agada', f:'sym-3-01'},
                 {n:'Machneyuda', f:'sym-3-02'},
                 {n:'Nachlaot', f:'sym-3-03'},
@@ -517,7 +576,7 @@ const CATS = {
             },
             {
               key:'tel-aviv', name:'Tel Aviv', accent:'#29a4e0',
-              statement:'In Tel Aviv, symbols carry the city\u2019s restless self-invention, secular, sunlit and always half-built.',
+              statement:'In Tel Aviv, symbols carry the city’s restless self-invention, secular, sunlit and always half-built.',
               symbols:[
                 {n:'Dizengoff', f:'sym-1-06'},
                 {n:'Bialik Street', f:'sym-1-07'},
@@ -559,20 +618,25 @@ const CATS = {
             }
           ]
         }},
-      {t:'"The Boys"', type:'simple', c:'#e07d78', g:'👦',
+      {t:'Weizmann institute 2026 calendar', type:'simple', c:'#2e59a8', g:'🗓️', col:7,
+        img:'images/illustration-projects/weizmann-institute-2026-calendar/weizmann-institute-2026-calendar-cover.png'},
+      {t:'"The Boys"', type:'simple', c:'#e07d78', g:'👦', col:0,
         img:'images/illustration-projects/the-boys/the-boys-cover.jpg'},
-      {t:'The Calling', type:'simple', c:'#d9d9d9', g:'✨',
+      {t:'The Calling', type:'simple', c:'#d9d9d9', g:'✨', col:7,
         img:'images/illustration-projects/the-calling/the-calling-cover.jpg'},
-      {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🫚',
+      {t:'Herzl | Eretz Israel Museum', type:'simple', c:'#f2d9ad', g:'🎩', span:3, col:2,
+        img:'images/illustration-projects/herzl-eretz-israel-museum/herzl-eretz-israel-museum-cover.jpg',
+        images: galleryRange('images/illustration-projects/herzl-eretz-israel-museum', 'herzl-eretz-israel-museum', 'jpg', 16),
+        d:'Part of an exhibition, a series of illustrations following the journey of a postcard from Palestine to Austria.'},
+      {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🫚', col:5,
         img:'images/illustration-projects/in-the-garden/in-the-garden-cover.webp'},
-      {t:'Heimat', type:'simple', c:'#e6e6e6', g:'🏢',
+      {t:'Welcome to tivon', type:'simple', c:'#e8a24a', g:'🌳', col:7,
+        img:'images/illustration-projects/welcome-to-tivon/welcome-to-tivon-cover.jpg'},
+      {t:'Heimat', type:'simple', c:'#e6e6e6', g:'🏢', col:0,
         img:'images/illustration-projects/heimat/heimat-cover.webp'},
-      {t:'Tarot Card', type:'simple', c:'#3a2a4a', g:'🔮',
-        img:'images/illustration-projects/tarot-card/tarot-card-cover.png',
-        d:'Justice'},
-      {t:'Justice', type:'simple', c:'#111111', g:'⚖️',
-        img:'images/illustration-projects/justice/justice-cover.jpg'},
-      {t:'The springs of Ein Qiniyye', type:'simple', c:'#2e6f8e', g:'💧',
+      {t:'Saint Clara film poster', type:'simple', c:'#c9a6c2', g:'🎬', col:5,
+        img:'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp'},
+      {t:'The springs of Ein Qiniyye', type:'simple', c:'#2e6f8e', g:'💧', span:3, col:2, stack:true,
         img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-cover.jpg',
         images:[
           {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-cover.jpg', wide:true},
@@ -580,36 +644,39 @@ const CATS = {
           {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-3.jpg', wide:true}
         ],
         d:'A series of illustrations drawn from the folk tales surrounding the waters of one Druze village.'},
-      {t:'The Road Begins In Capernaum', type:'simple', c:'#3a6b8a', g:'⛵',
-        img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-cover.png'},
-      {t:'Memento Mori', type:'simple', c:'#1a1a1a', g:'💀',
+      {t:'Tarot Card', type:'simple', c:'#3a2a4a', g:'🔮', col:0,
+        img:'images/illustration-projects/tarot-card/tarot-card-cover.png',
+        d:'Justice'},
+      {t:'Memento Mori', type:'simple', c:'#1a1a1a', g:'💀', span:4, col:5,
         img:'images/illustration-projects/memento-mori/memento-mori-cover.jpg',
+        images: galleryRange('images/illustration-projects/memento-mori', 'memento-mori', 'jpg', 6),
         d:'While the world is in turmoil, the random death of some leaders in history serves as a kind reminder on the strange moves of history.'},
-      {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌',
-        img:'images/illustration-projects/kuli-alma-club-valentine/kuli-alma-club-valentine-cover.jpg'},
-      {t:'Jerusalem snow', type:'simple', c:'#eef2f5', g:'❄️',
-        img:'images/illustration-projects/jerusalem-snow/jerusalem-snow-cover.png'},
-      {t:'Runs in the family', type:'simple', c:'#e8a24a', g:'👪',
-        img:'images/illustration-projects/runs-in-the-family/runs-in-the-family-cover.gif'},
-      {t:'Herzl | Eretz Israel Museum', type:'simple', c:'#f2d9ad', g:'🎩',
-        img:'images/illustration-projects/herzl-eretz-israel-museum/herzl-eretz-israel-museum-cover.jpg',
-        d:'Part of an exhibition, a series of illustrations following the journey of a postcard from Palestine to Austria.'},
-      {t:'Welcome to tivon', type:'simple', c:'#e8a24a', g:'🌳',
-        img:'images/illustration-projects/welcome-to-tivon/welcome-to-tivon-cover.jpg'},
-      {t:'Saint Clara film poster', type:'simple', c:'#c9a6c2', g:'🎬',
-        img:'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp'},
-      {t:'Passover', type:'simple', c:'#8a2e3a', g:'🍷',
-        img:'images/illustration-projects/passover/passover-cover.webp'},
-      {t:'Parents Against Child Arrests', type:'simple', c:'#111111', g:'✊',
-        img:'images/illustration-projects/parents-against-child-arrests/parents-against-child-arrests-cover.png'},
-      {t:'Poriah', type:'simple', c:'#1e5f6e', g:'🌊',
+      {t:'Poriah', type:'simple', c:'#1e5f6e', g:'🌊', span:3, col:2,
         img:'images/illustration-projects/poriah/poriah-cover.png'},
-      {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕',
-        img:'images/illustration-projects/sex/sex-cover.png',
-        d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
-        caseStudy:{bg:'#8a2e5a', intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.'}},
-      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗',
-        img:'images/illustration-projects/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png'},
+      {t:'The Road Begins In Capernaum', type:'simple', c:'#3a6b8a', g:'⛵', col:0,
+        img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-cover.png',
+        images:[
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-cover.png', wide:true},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-2.png', wide:true},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-3.png', wide:true},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-4.png', wide:true},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-5.png', wide:true},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-6.jpg', wide:true},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-7.jpg', wide:true}
+        ]},
+      {t:'Parents Against Child Arrests', type:'simple', c:'#111111', g:'✊', col:5,
+        img:'images/illustration-projects/parents-against-child-arrests/parents-against-child-arrests-cover.png'},
+      {t:'Passover', type:'simple', c:'#8a2e3a', g:'🍷', col:7,
+        img:'images/illustration-projects/passover/passover-cover.webp'},
+      {t:'Justice', type:'simple', c:'#111111', g:'⚖️', span:2, col:2,
+        img:'images/illustration-projects/justice/justice-cover.jpg'},
+      {t:'Runs in the family', type:'simple', c:'#e8a24a', g:'👪', col:4,
+        img:'images/illustration-projects/runs-in-the-family/runs-in-the-family-cover.gif'},
+      {t:'Jerusalem snow', type:'simple', c:'#eef2f5', g:'❄️', span:3, col:6,
+        img:'images/illustration-projects/jerusalem-snow/jerusalem-snow-cover.png',
+        images: galleryRange('images/illustration-projects/jerusalem-snow', 'jerusalem-snow', 'png', 8)},
+      {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌', col:0,
+        img:'images/illustration-projects/kuli-alma-club-valentine/kuli-alma-club-valentine-cover.jpg'},
     ],
     editorial: [
       {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺',
@@ -621,20 +688,42 @@ const CATS = {
       {t:'The Estonian Sting | Calcalist', type:'simple', c:'#3a5a8a', g:'🕵️', ratio:1.3},
       {t:'Remote therapy | Calcalist', type:'simple', c:'#cfe0e8', g:'🻋️', ratio:1.3},
       {t:'The Beach | Adam Tsair Magazine', type:'simple', c:'#e8d9b0', g:'🏖️',
-        img:'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg'},
+        img:'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg',
+        images: galleryRange('images/illustration-editorial/adam-tsair-magazine-the-beach', 'adam-tsair-magazine-the-beach', 'jpg', 11)},
       {t:'Archimedes and the crown | Einayim Magazine', type:'simple', c:'#d4af37', g:'👑',
-        img:'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.png'},
+        img:'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.png',
+        images: galleryRange('images/illustration-editorial/einayim-magazine-archimedes-and-the-crown', 'einayim-magazine-archimedes-and-the-crown', 'png', 4)},
       {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖',
-        img:'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg'},
+        img:'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg',
+        images: galleryRange('images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'jpg', 9)},
       {t:'Crypto conservatives | Calcalist', type:'simple', c:'#111111', g:'🪙', ratio:1.3},
       {t:'Where does salt comes from? | Einayim Magazine', type:'simple', c:'#eef2f5', g:'🧂', ratio:1.3},
       {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️',
-        img:'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg'},
+        img:'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg',
+        images: galleryRange('images/illustration-editorial/einayim-magazine-election-for-children', 'einayim-magazine-election-for-children', 'jpg', 3)},
       {t:'Chuzpa! | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📰',
         slug:'einayim-magazine-huzpa',
         img:'images/illustration-editorial/einayim-magazine-Huzpa/einayim-magazine-Huzpa-cover.jpg'},
       {t:'What my father never told me', type:'simple', c:'#dcdcdc', g:'👨',
-        img:'images/illustration-editorial/What-my-father-never-told-me/What-my-father-never-told-me-cover.jpg'},
+        img:'images/illustration-editorial/What-my-father-never-told-me/What-my-father-never-told-me-cover.jpg',
+        images: galleryRange('images/illustration-editorial/What-my-father-never-told-me', 'What-my-father-never-told-me', 'jpg', 4)},
+      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗',
+        img:'images/illustration-editorial/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png'},
+      {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕', span:3,
+        img:'images/illustration-editorial/sex/sex-cover.png',
+        images:[
+          {img:'images/illustration-editorial/sex/sex-cover.png', wide:true},
+          {img:'images/illustration-editorial/sex/sex-2.jpg', wide:true},
+          {img:'images/illustration-editorial/sex/sex-3.png', wide:true},
+          {img:'images/illustration-editorial/sex/sex-4.png', wide:true},
+          {img:'images/illustration-editorial/sex/sex-5.png', wide:true},
+          {img:'images/illustration-editorial/sex/sex-6.png', wide:true},
+          {img:'images/illustration-editorial/sex/sex-7.png', wide:true},
+          {img:'images/illustration-editorial/sex/sex-8.png', wide:true},
+          {img:'images/illustration-editorial/sex/sex-9.png', wide:true}
+        ],
+        d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
+        caseStudy:{bg:'#8a2e5a', intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.'}},
     ]
   },
   brand: {
@@ -711,6 +800,68 @@ Object.values(CATS).forEach(cat=>{
   if(cat.editorial) cat.editorial.forEach(item=> item.slug = item.slug || slugify(item.t));
 });
 
+// real width/height (from the source files) of every cover + gallery image,
+// so the masonry grid can size each card's rectangle to its own image
+// instead of forcing a uniform box — read once here rather than waiting on
+// each <img> to load, so layout is exact on first paint, no reflow-in.
+const IMG_RATIO = {
+  'images/Homepage/Illustraiton/ilustration 19.png': 0.4679,
+  'images/Homepage/Illustraiton/ilustration 20.png': 1.0,
+  'images/Homepage/Illustraiton/ilustration 21.png': 0.7502,
+  'images/Homepage/Illustraiton/ilustration 22.png': 0.7502,
+  'images/Homepage/Illustraiton/ilustration 23.png': 0.7502,
+  'images/Homepage/Illustraiton/ilustration 25.png': 0.6967,
+  'images/Homepage/Illustraiton/ilustration 26.png': 0.7318,
+  'images/illustration-editorial/What-my-father-never-told-me/What-my-father-never-told-me-cover.jpg': 0.7222,
+  'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.jpg': 1.0316,
+  'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg': 1.0,
+  'images/illustration-editorial/calcalist-our-digital-mirror/calcalist-our-digital-mirror-cover.png': 1.5164,
+  'images/illustration-editorial/einayim-magazine-Huzpa/einayim-magazine-Huzpa-cover.jpg': 0.7444,
+  'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.png': 1.5129,
+  'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg': 1.5008,
+  'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg': 1.2489,
+  'images/illustration-projects/city-symbol/city-symbol-1-cover.png': 1.0,
+  'images/illustration-projects/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png': 0.7069,
+  'images/illustration-projects/gibberish/gibberish-cover.jpg': 0.7151,
+  'images/illustration-projects/heimat/heimat-cover.webp': 0.6649,
+  'images/illustration-projects/herzl-eretz-israel-museum/herzl-eretz-israel-museum-cover.jpg': 1.0015,
+  'images/illustration-projects/in-the-garden/in-the-garden-cover.webp': 0.7311,
+  'images/illustration-projects/jerusalem-snow/jerusalem-snow-cover.png': 1.0,
+  'images/illustration-projects/justice/justice-cover.jpg': 0.7997,
+  'images/illustration-projects/kuli-alma-club-valentine/kuli-alma-club-valentine-cover.jpg': 0.7907,
+  'images/illustration-projects/memento-mori/memento-mori-cover.jpg': 1.4762,
+  'images/illustration-projects/parents-against-child-arrests/parents-against-child-arrests-cover.png': 1.0,
+  'images/illustration-projects/passover/passover-cover.webp': 1.0,
+  'images/illustration-projects/poriah/poriah-cover.png': 1.3943,
+  'images/illustration-projects/runs-in-the-family/runs-in-the-family-cover.gif': 1.0,
+  'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp': 0.6977,
+  'images/illustration-editorial/sex/sex-2.jpg': 1.2596,
+  'images/illustration-editorial/sex/sex-3.png': 1.2604,
+  'images/illustration-editorial/sex/sex-4.png': 1.2604,
+  'images/illustration-editorial/sex/sex-5.png': 1.2598,
+  'images/illustration-editorial/sex/sex-6.png': 1.2604,
+  'images/illustration-editorial/sex/sex-7.png': 1.2598,
+  'images/illustration-editorial/sex/sex-8.png': 1.2598,
+  'images/illustration-editorial/sex/sex-9.png': 1.2604,
+  'images/illustration-editorial/sex/sex-cover.png': 1.2604,
+  'images/illustration-projects/sublet/sublet-cover.png': 0.6961,
+  'images/illustration-projects/tarot-card/tarot-card-cover.png': 0.6417,
+  'images/illustration-projects/the-boys/the-boys-cover.jpg': 0.6667,
+  'images/illustration-projects/the-calling/the-calling-cover.jpg': 0.7453,
+  'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-2.png': 0.6675,
+  'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-3.png': 0.6675,
+  'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-4.png': 0.6675,
+  'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-5.png': 0.6675,
+  'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-6.jpg': 0.6676,
+  'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-7.jpg': 1.3317,
+  'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-cover.png': 0.6677,
+  'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-2.jpg': 1.7763,
+  'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-3.jpg': 1.7763,
+  'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-cover.jpg': 1.7763,
+  'images/illustration-projects/weizmann-institute-2026-calendar/weizmann-institute-2026-calendar-cover.png': 0.707,
+  'images/illustration-projects/welcome-to-tivon/welcome-to-tivon-cover.jpg': 0.7073,
+};
+
 /* ---------------------------------------------------------
    ELEMENTS + STATE
 --------------------------------------------------------- */
@@ -722,8 +873,6 @@ const overlayLabel= document.getElementById('overlayLabel');
 const gridPage    = document.getElementById('gridPage');
 const hero        = document.getElementById('hero');
 const navLinks    = document.querySelectorAll('.nav-links li');
-const modalScrim  = document.getElementById('modalScrim');
-const modalEl     = document.getElementById('modal');
 const casePage    = document.getElementById('casePage');
 
 let currentCat = null;
@@ -835,7 +984,8 @@ function parseHash(){
     cat: cat || null,
     slug: slug || null,
     sub: sub || null,
-    preview: params.get('preview')
+    preview: params.get('preview'),
+    previewImg: params.get('i')
   };
 }
 
@@ -857,11 +1007,11 @@ function findSymbol(item, subSlug){
 }
 
 function route(){
-  const {cat, slug, sub, preview} = parseHash();
+  const {cat, slug, sub, preview, previewImg} = parseHash();
 
   // home
   if(!cat){
-    closeModal(); closeLightbox();
+    closeLightbox();
     casePage.classList.remove('show');
     gridPage.classList.remove('show');
     hero.style.display = 'flex';
@@ -876,7 +1026,6 @@ function route(){
   if(item){
     hero.style.display = 'none';
     gridPage.classList.remove('show');
-    closeModal();
     if(casePage.dataset.slug !== item.slug){
       renderCasePage(cat, item);
       casePage.dataset.slug = item.slug;
@@ -902,11 +1051,14 @@ function route(){
     currentCat = cat;
   }
   gridPage.classList.add('show');
+  // .grid-page was display:none until the line above, so the masonry
+  // measured 0-width if computed inside renderGrid — lay out now instead
+  gridPage.querySelectorAll('.grid').forEach(layoutMasonry);
   navLinks.forEach(l=> l.classList.toggle('dim', l.dataset.cat !== cat));
 
   const previewItem = preview ? findItem(cat, preview) : null;
-  if(previewItem) openModal(cat, previewItem);
-  else closeModal();
+  if(previewItem) openProjectLightbox(cat, previewItem, previewImg ? +previewImg : 0);
+  else closeLightbox();
 }
 
 /* ---------------------------------------------------------
@@ -927,7 +1079,20 @@ function linkAttr(target){
   return FRAMED ? `data-href="${target}"` : `href="${target}"`;
 }
 
+// set right before navigating to a grid card's preview, consumed once by
+// openProjectLightbox to fly the clicked thumbnail into place instead of
+// the lightbox just appearing — the classic FLIP technique: record the
+// image's on-screen rect here (First), let the lightbox lay out normally
+// at its real size (Last), then in openProjectLightbox invert that delta
+// into a transform and animate it back to identity.
+let pendingFlight = null;
+
 document.addEventListener('click', (e)=>{
+  // buttons (thumb-nav arrows, lightbox nav/close) sit inside a card's
+  // <a> for layout reasons but have their own click handlers — without
+  // this check the capture-phase router below hijacks their clicks into
+  // a navigation before the button's own listener ever runs
+  if(e.target.closest('button')) return;
   const a = e.target.closest('a[href^="#"], a[data-href], [data-href]');
   if(!a) return;
   if(e.metaKey || e.ctrlKey || e.shiftKey) return; // let new-tab through
@@ -935,6 +1100,12 @@ document.addEventListener('click', (e)=>{
   e.stopPropagation();
   const raw = a.getAttribute('data-href') || a.getAttribute('href') || '';
   const target = raw.startsWith('#') ? raw.slice(1) : raw;
+  if(target.includes('?preview=')){
+    const srcEl = a.querySelector('img, .fill-img, .fill-block');
+    pendingFlight = srcEl ? {rect: srcEl.getBoundingClientRect()} : null;
+  } else {
+    pendingFlight = null;
+  }
   if(location.hash.slice(1) === target) route();
   else location.hash = target;
 }, true); // capture phase, ahead of any host handler
@@ -955,156 +1126,292 @@ window.addEventListener('hashchange', ()=>{
 });
 
 /* ---------------------------------------------------------
-   GRID — Pinterest-style masonry, matching the real site.
-   Each item's card height varies with its own image (or, before
-   real art is uploaded, a placeholder color block sized to a
-   guessed `ratio`, height/width). Items are bin-packed into N
-   column divs, always into the currently-shortest column, so the
-   layout looks the same "waterfall" as the reference design
-   instead of a uniform equal-height row grid.
+   GRID — a real masonry, packed in JS by layoutMasonry() below (see
+   .grid/.card rules for why CSS Grid alone can't do this). Each card
+   carries the aspect ratio of its own cover image, read once from
+   IMG_RATIO. `item.span` is a track count out of the 9-track desktop
+   grid (2 = normal, 3/4 = featured); layoutMasonry scales it down
+   proportionally at narrower track counts.
 --------------------------------------------------------- */
 function cardHTML(cat, item, i){
   const cardTarget = '#/' + cat + '?preview=' + item.slug;
   const readMoreTarget = '#/' + cat + '/' + item.slug;
   const badge = item.type === 'gallery' ? 'View' : '';
   const hasImg = !!item.img;
-  const thumbStyle = hasImg ? '' : ` style="aspect-ratio:${item.ratio || 1.3}"`;
-  const fillHTML = hasImg
-    ? `<img class="fill-img" src="${encodeImgPath(item.img)}" alt="${item.t}" loading="lazy">`
-    : `<div class="fill-block" style="${bg(item)}"></div><div class="glyph">${glyphHTML(item)}</div>`;
-  return `
-    <div class="card" data-i="${i}">
-      <a class="card-thumb-link" ${linkAttr(cardTarget)}>
-        <div class="card-thumb"${thumbStyle}>
-          ${fillHTML}
+  const ratio = (hasImg && IMG_RATIO[item.img]) || item.ratio || 1.3;
+  // a stacked card (springs of Ein Qiniyye) has no single hover-cycle
+  // thumb — each of its images is its own link, opening the lightbox at
+  // that specific image, instead of all three funneling into the same
+  // (always-first) preview
+  const thumbHTML = item.stack && item.images
+    ? `<div class="card-thumb card-thumb-stack">${item.images.map((im, imgIdx) =>
+        `<a ${linkAttr(cardTarget + '&i=' + imgIdx)}><img src="${encodeImgPath(im.img)}" alt="${item.t}" loading="lazy" style="aspect-ratio:${IMG_RATIO[im.img] || 1.3}"></a>`
+      ).join('')}</div>`
+    : `<a class="card-thumb-link" ${linkAttr(cardTarget)}>
+        <div class="card-thumb" style="aspect-ratio:${ratio}">
+          ${hasImg
+            ? `<img class="fill-img" src="${encodeImgPath(item.img)}" alt="${item.t}" loading="lazy">`
+            : `<div class="fill-block" style="${bg(item)}"></div><div class="glyph">${glyphHTML(item)}</div>`}
           ${badge ? `<div class="badge">${badge}</div>` : ''}
         </div>
-      </a>
+      </a>`;
+  const mobilePriority = item.mobilePriority !== undefined ? item.mobilePriority : i;
+  const colAttr = item.col !== undefined ? ` data-col="${item.col}"` : '';
+  return `
+    <div class="card" data-i="${i}" data-span="${item.span || 2}" data-ratio="${ratio}" data-mp="${mobilePriority}"${colAttr}>
+      ${thumbHTML}
       <div class="card-caption">
         <div class="card-title">
-          <a ${linkAttr(cardTarget)}>${item.t}</a>${item.type === 'case' ? ` <a class="readmore" ${linkAttr(readMoreTarget)}>Read more</a>` : ''}
+          <a ${linkAttr(cardTarget)}>${item.t}</a>${item.caseStudy ? ` <a class="readmore" ${linkAttr(readMoreTarget)}>Read more</a>` : ''}
         </div>
         ${item.d ? `<p class="card-desc">${item.d}</p>` : ''}
       </div>
     </div>`;
 }
 
-/* rough predicted height used only to decide which column an item goes
-   in — doesn't need to match rendered pixels exactly, just be roughly
-   proportional across items so columns balance sensibly */
-function estimateCardHeight(item, colWidth){
-  const ratio = item.ratio || 1.3;
-  const thumbH = colWidth * ratio;
-  const captionH = item.d ? 56 : 22;
-  return thumbH + captionH + 38; // + gap
+function gridHTML(cat, items, indexOffset){
+  return `<div class="grid">${items.map((it,i)=>cardHTML(cat,it,indexOffset+i)).join('')}</div>`;
 }
 
-function colCountFor(width){
-  if(width <= 520) return 1;
-  if(width <= 900) return 2;
-  return 4;
-}
+/* Packs a grid's cards into the shortest available track(s), like
+   Pinterest/Masonry — each card keeps its own real height, so a card next
+   to a much taller neighbor still continues right after its own content
+   instead of waiting for the tall one (a row-aligned layout was tried and
+   reverted: forcing every card in a "row" to share one top, sized to the
+   tallest member, left huge dead space under shorter cards whenever a
+   tall outlier like the Springs stacked triptych shared their row).
+   A card can carry a designer-assigned data-col (desktop only) to fix
+   its horizontal position — layoutMasonry still auto-stacks it vertically
+   below whatever's already in that column, it just skips the "shortest
+   column" search. Track count and gap are the values measured off the
+   Figma export (see the .grid comment above). Recomputed on render and
+   on resize (debounced), since it depends on measured pixel widths. */
+const GRID_ROW_GAP = 18; // vertical space after a card's caption, before the next card in that track (horizontal colGap stays 14, unrelated to this)
+function layoutMasonry(gridEl){
+  const cards = Array.from(gridEl.children).filter(el => el.classList.contains('card'));
+  if(!cards.length){ gridEl.style.height = ''; return; }
+  const w = gridEl.clientWidth;
+  const trackCount = w >= 901 ? 9 : w >= 521 ? 2 : 1;
+  const colGap = 14;
+  const trackW = (w - colGap * (trackCount - 1)) / trackCount;
+  const spanOf = card => trackCount === 9 ? Math.min(9, Math.max(1, +card.dataset.span || 2)) : 1;
 
-function masonryHTML(cat, items, indexOffset){
-  const colCount = colCountFor(gridPage.clientWidth || window.innerWidth);
-  const colWidth = 300; // nominal, only used for relative comparison between items
-  const heights = new Array(colCount).fill(0);
-  const cols = Array.from({length: colCount}, ()=> []);
-  items.forEach((item, i)=>{
-    let target = 0;
-    for(let c = 1; c < colCount; c++){ if(heights[c] < heights[target]) target = c; }
-    cols[target].push(cardHTML(cat, item, indexOffset + i));
-    heights[target] += estimateCardHeight(item, colWidth);
+  cards.forEach(card=>{
+    const span = spanOf(card);
+    card.style.width = (trackW * span + colGap * (span - 1)) + 'px';
   });
-  return `<div class="grid">${cols.map(col=>`<div class="grid-col">${col.join('')}</div>`).join('')}</div>`;
+
+  // mobile is a single column, so stacking order IS reading order — most
+  // cards keep their normal (DOM/data) order, but a project can carry a
+  // mobilePriority to jump the queue (e.g. City Symbol wants to sit right
+  // after the first project on mobile, even though the desktop masonry
+  // — which doesn't care about order, only column height — places it
+  // elsewhere)
+  const orderedCards = trackCount === 1
+    ? [...cards].sort((a, b) => parseFloat(a.dataset.mp) - parseFloat(b.dataset.mp))
+    : cards;
+
+  const colHeights = new Array(trackCount).fill(0);
+  orderedCards.forEach(card=>{
+    const span = spanOf(card);
+    const explicitCol = trackCount === 9 && card.dataset.col !== undefined ? +card.dataset.col : null;
+    let bestCol = 0, bestTop = Infinity;
+    if(explicitCol !== null){
+      bestCol = explicitCol;
+      bestTop = Math.max(...colHeights.slice(explicitCol, explicitCol + span));
+    } else {
+      for(let c = 0; c <= trackCount - span; c++){
+        const top = Math.max(...colHeights.slice(c, c + span));
+        if(top < bestTop){ bestTop = top; bestCol = c; }
+      }
+    }
+    card.style.left = (bestCol * (trackW + colGap)) + 'px';
+    card.style.top = bestTop + 'px';
+    const newHeight = bestTop + card.offsetHeight + GRID_ROW_GAP;
+    for(let c = bestCol; c < bestCol + span; c++) colHeights[c] = newHeight;
+  });
+  gridEl.style.height = (Math.max(...colHeights) - GRID_ROW_GAP) + 'px';
 }
+
+let masonryResizeTimer;
+window.addEventListener('resize', ()=>{
+  clearTimeout(masonryResizeTimer);
+  masonryResizeTimer = setTimeout(()=>{
+    if(gridPage.classList.contains('show')) gridPage.querySelectorAll('.grid').forEach(layoutMasonry);
+  }, 120);
+});
 
 function renderGrid(cat){
   const data = CATS[cat];
   let html = `
     <div class="breadcrumb">Projects</div>
-    ${masonryHTML(cat, data.items, 0)}
+    ${gridHTML(cat, data.items, 0)}
   `;
   // optional labeled subsection, e.g. Illustration → Editorial and publications
   if(data.editorial && data.editorial.length){
     html += `
       <div class="breadcrumb" style="margin-top:64px">Editorial and publications</div>
-      ${masonryHTML(cat, data.editorial, data.items.length)}
+      ${gridHTML(cat, data.editorial, data.items.length)}
     `;
   }
   gridPage.innerHTML = html;
+  // not laid out here: .grid-page is still display:none at this point,
+  // so it would measure 0 width — route() lays it out once shown
   gridPage.querySelectorAll('.card-thumb').forEach((thumb,i)=>{
     setTimeout(()=> thumb.classList.add('loaded'), 150 + i*70 + Math.random()*200);
   });
-  lastGridColCount = colCountFor(window.innerWidth);
+  wireCardGalleries(cat);
 }
-
-/* re-pack columns when the viewport crosses a breakpoint (not on every
-   resize pixel — only when colCountFor(width) actually changes) */
-let lastGridColCount = null;
-window.addEventListener('resize', ()=>{
-  if(!gridPage.classList.contains('show')) return;
-  const cc = colCountFor(window.innerWidth);
-  if(cc === lastGridColCount) return;
-  lastGridColCount = cc;
-  renderGrid(currentCat);
-});
 
 /* ---------------------------------------------------------
-   MODAL — real popup: images + text together, closable,
-   and reachable by direct link via the URL hash.
+   CARD HOVER GALLERIES — a project with more than one image
+   auto-cycles through them while its card is hovered (a manual
+   arrow pair is also shown, for anyone who wants to linger on
+   one frame). Resets to the cover on mouse-leave. This is separate
+   from the lightbox's own gallery, which is manual-only.
 --------------------------------------------------------- */
-function openModal(cat, item){
-  /* PREVIEW popup: enough to judge the project, plus a way through
-     to the canonical full page. Deliberately not the whole project. */
-  const cs = item.caseStudy;
-  let preview = [];
-  if(cs && cs.series){
-    // pull a few symbols across the series as a taster
-    cs.series.forEach(s=> preview.push(...s.symbols.slice(0,2).map(sym=>({
-      img:symUrl(cat, item.slug, sym.f), n:sym.n
-    }))));
-  } else if(item.images){
-    preview = item.images.slice(0,6);
-  } else {
-    preview = [{c:item.c, g:item.g, img:item.img, wide:true}];
+function wireCardGalleries(cat){
+  const data = CATS[cat];
+  const all = data.items.concat(data.editorial || []);
+  gridPage.querySelectorAll('.card').forEach(card=>{
+    const item = all[+card.dataset.i];
+    if(!item || item.stack || !item.images || item.images.length < 2) return;
+    const thumbLink = card.querySelector('.card-thumb-link');
+    const thumb = card.querySelector('.card-thumb');
+    const fillImg = thumb.querySelector('.fill-img');
+    if(!thumbLink || !fillImg) return;
+    const imgs = item.images.map(im => encodeImgPath(im.img));
+    // true two-layer crossfade: a second image sits stacked exactly on
+    // top of the first (.fill-img is already position:absolute/inset:0),
+    // and switching images fades one out while fading the other in AT
+    // THE SAME TIME, so there's always a fully- or partly-opaque image
+    // covering the thumb — never a gap where the grey background under
+    // it shows through, which is what caused the flash on cards like
+    // Herzl when the mouse left mid-cycle.
+    const fillImg2 = fillImg.cloneNode();
+    fillImg2.style.opacity = '0';
+    fillImg.after(fillImg2);
+    let front = fillImg, back = fillImg2;
+    let idx = 0, timer = null;
+    const show = n => {
+      idx = (n + imgs.length) % imgs.length;
+      back.src = imgs[idx];
+      back.style.transition = 'opacity .35s ease';
+      front.style.transition = 'opacity .35s ease';
+      back.style.opacity = '1';
+      front.style.opacity = '0';
+      [front, back] = [back, front];
+    };
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'thumb-nav prev'; prevBtn.type = 'button';
+    prevBtn.setAttribute('aria-label', 'Previous image'); prevBtn.textContent = '‹';
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'thumb-nav next'; nextBtn.type = 'button';
+    nextBtn.setAttribute('aria-label', 'Next image'); nextBtn.textContent = '›';
+    thumb.append(prevBtn, nextBtn);
+    prevBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); show(idx - 1); });
+    nextBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); show(idx + 1); });
+    thumbLink.addEventListener('mouseenter', () => {
+      timer = setInterval(() => show(idx + 1), 1100);
+    });
+    thumbLink.addEventListener('mouseleave', () => {
+      clearInterval(timer); timer = null; show(0);
+    });
+  });
+}
+
+/* ---------------------------------------------------------
+   LIGHTBOX (general) — the generic project preview: image + text
+   floating directly on the light scrim, no card (see .lb-panel
+   comment). "close" is the same viewport-corner control the symbol
+   lightbox uses. Click-outside or Escape also dismiss it.
+--------------------------------------------------------- */
+function openProjectLightbox(cat, item, startIdx){
+  const images = item.images && item.images.length ? item.images : [{img:item.img, c:item.c, g:item.g}];
+  let idx = (startIdx > 0 && startIdx < images.length) ? startIdx : 0;
+  const frameHTML = im => im.img
+    ? `<img src="${encodeImgPath(im.img)}" alt="${item.t}">`
+    : `<div class="fill-block" style="${bg(im)}; aspect-ratio:1/1;">${glyphHTML(im)}</div>`;
+
+  // shell is built once — only the media crossfades (see .lb-media-layer);
+  // text doesn't change between images in the same gallery, so it isn't
+  // touched, and nothing about the panel gets thrown away and rebuilt
+  // just to change frames the way it used to
+  lightbox.innerHTML = `
+    <button class="lb-close" aria-label="Close">close</button>
+    <div class="lb-panel">
+      <div class="lb-project-media${images.length > 1 ? ' has-multi' : ''}">
+        <div class="lb-media-layer lb-media-a">${frameHTML(images[idx])}</div>
+        <div class="lb-media-layer lb-media-b" style="opacity:0"></div>
+        ${images.length > 1 ? `
+          <button class="lb-panel-nav prev" aria-label="Previous image">‹</button>
+          <button class="lb-panel-nav next" aria-label="Next image">›</button>
+        ` : ''}
+      </div>
+      <div class="lb-project-text">
+        <div class="lb-project-title">${item.t}</div>
+        ${item.d ? `<p class="lb-project-desc">${item.d}</p>` : ''}
+        ${item.note ? `<p class="lb-project-note">${item.note}</p>` : ''}
+        ${item.caseStudy ? `<a class="lb-project-link" ${linkAttr('#/'+cat+'/'+item.slug)}>Read more about this project</a>` : ''}
+      </div>
+    </div>
+  `;
+  let front = lightbox.querySelector('.lb-media-a');
+  let back = lightbox.querySelector('.lb-media-b');
+  const go = n => {
+    idx = (n + images.length) % images.length;
+    back.innerHTML = frameHTML(images[idx]);
+    back.style.opacity = '1';
+    front.style.opacity = '0';
+    [front, back] = [back, front];
+  };
+  lightbox.querySelector('.lb-close').addEventListener('click', e=>{ e.stopPropagation(); location.hash = '#/' + cat; });
+  if(images.length > 1){
+    lightbox.querySelector('.prev').addEventListener('click', e=>{ e.stopPropagation(); go(idx - 1); });
+    lightbox.querySelector('.next').addEventListener('click', e=>{ e.stopPropagation(); go(idx + 1); });
+    // clicking the image itself (not just the small arrows) advances too
+    lightbox.querySelector('.lb-project-media').addEventListener('click', e=>{
+      if(e.target.closest('.lb-panel-nav')) return;
+      e.stopPropagation();
+      go(idx + 1);
+    });
   }
 
-  modalEl.innerHTML = `
-    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
-    <div class="modal-title">${item.t}</div>
-    ${item.d ? `<p class="modal-desc">${item.d}</p>` : ''}
-    <div class="modal-gallery ${preview.length===1?'single':''}">
-      ${preview.map((im,i)=> `<div class="g-item ${im.wide?'wide':''}" style="${bg(im)}; transition-delay:${60+i*45}ms">${glyphHTML(im)}</div>`).join('')}
-    </div>
-    ${item.type === 'case' ? `
-      <a class="modal-cta" ${linkAttr('#/'+cat+'/'+item.slug)}>Open full project →</a>
-    ` : ''}
-  `;
-  modalScrim.classList.remove('show');
-  void modalScrim.offsetWidth;
-  modalScrim.classList.add('show');
-  document.getElementById('modalClose').addEventListener('click', ()=>{
-    location.hash = '#/' + cat;
-  });
+  lightbox.classList.add('show');
   document.body.style.overflow = 'hidden';
-}
-function closeModal(){
-  modalScrim.classList.remove('show');
-  document.body.style.overflow = '';
-}
-modalScrim.addEventListener('click', (e)=>{
-  if(e.target === modalScrim){
-    const {cat} = parseHash();
-    location.hash = '#/' + cat;
+  lightbox.onclick = (e)=>{ if(e.target === lightbox) location.hash = '#/' + cat; };
+  lightbox._keys = (e)=>{ if(e.key === 'Escape') location.hash = '#/' + cat; };
+  document.addEventListener('keydown', lightbox._keys);
+
+  // FLIP: the clicked grid thumbnail's on-screen rect (captured by the
+  // click handler before navigating) becomes the animation's start —
+  // invert the delta between it and the image's real lightbox position
+  // into a transform, then release it so it animates back to identity,
+  // i.e. the image visibly flies from its grid spot into the lightbox
+  // instead of the lightbox just appearing over it.
+  const flight = pendingFlight;
+  pendingFlight = null;
+  const flyEl = flight && front.firstElementChild;
+  if(flyEl){
+    requestAnimationFrame(()=>{
+      const finalRect = flyEl.getBoundingClientRect();
+      if(!finalRect.width || !finalRect.height) return;
+      const dx = flight.rect.left - finalRect.left;
+      const dy = flight.rect.top - finalRect.top;
+      const sx = flight.rect.width / finalRect.width;
+      const sy = flight.rect.height / finalRect.height;
+      flyEl.style.transformOrigin = 'top left';
+      flyEl.style.transition = 'none';
+      flyEl.style.transform = `translate(${dx}px,${dy}px) scale(${sx},${sy})`;
+      flyEl.getBoundingClientRect(); // force reflow before re-enabling the transition
+      requestAnimationFrame(()=>{
+        flyEl.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
+        flyEl.style.transform = 'none';
+        flyEl.addEventListener('transitionend', ()=>{ flyEl.style.transition = ''; flyEl.style.transformOrigin = ''; }, {once:true});
+      });
+    });
   }
-});
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape' && modalScrim.classList.contains('show')){
-    const {cat} = parseHash();
-    location.hash = '#/' + cat;
-  }
-});
+}
 
 /* ---------------------------------------------------------
    CASE STUDY PAGE — for the handful of projects that
@@ -1115,7 +1422,7 @@ function renderCasePage(cat, item){
 
   /* series-based case study (City Symbol shape):
      title block, then one section per city: statement + symbol grid */
-  if(cs.series){
+  if(cs && cs.series){
     casePage.innerHTML = `
       <div class="case-top">
         <div class="back" data-back="${cat}">← Back to ${CATS[cat].label}</div>
@@ -1139,8 +1446,8 @@ function renderCasePage(cat, item){
         </section>
       `).join('')}
     `;
-  } else {
-    /* long-form editorial shape (Eko, Island.io) */
+  } else if(cs){
+    /* long-form editorial shape (Eko, Island.io, Sex, Anthropomass) */
     casePage.innerHTML = `
       <div class="case-hero" style="${cs.bgImg ? `background-image:url('${cs.bgImg}'); background-size:cover; background-position:center;` : `background:${cs.bg};`}">
         <div class="back" data-back="${cat}">← Back</div>
@@ -1152,6 +1459,10 @@ function renderCasePage(cat, item){
       <div class="case-media">
         ${(cs.media||[]).map(m=>`<div class="m ${m.full?'full':''}" style="${bg(m)}">${glyphHTML(m)}</div>`).join('')}
       </div>
+      ${item.images && item.images.length ? `
+      <div class="case-gallery">
+        ${item.images.map(im=>`<img src="${encodeImgPath(im.img)}" alt="${item.t}">`).join('')}
+      </div>` : ''}
       ${cs.testimonial ? `
       <div class="case-testimonial">
         <div class="avatar">${cs.testimonial.avatar||'👤'}</div>
@@ -1160,6 +1471,21 @@ function renderCasePage(cat, item){
           <div class="who">${cs.testimonial.who}</div>
         </div>
       </div>` : ''}
+    `;
+  } else {
+    /* generic fallback: any project without a hand-written case study
+       still gets a real full page — title, description, and every
+       image in its folder as a gallery */
+    const gallery = (item.images && item.images.length) ? item.images : (item.img ? [{img:item.img}] : []);
+    casePage.innerHTML = `
+      <div class="case-top">
+        <div class="back" data-back="${cat}">← Back to ${CATS[cat].label}</div>
+        <h1 class="case-h1">${item.t}</h1>
+        ${item.d ? `<div class="case-intro-cols"><p>${item.d}</p></div>` : ''}
+      </div>
+      <div class="case-gallery">
+        ${gallery.map(im=>`<img src="${encodeImgPath(im.img)}" alt="${item.t}">`).join('')}
+      </div>
     `;
   }
 
@@ -1199,7 +1525,7 @@ function openLightbox(cat, item, sym){
   const next = all[(idx+1)%all.length];
 
   lightbox.innerHTML = `
-    <button class="lb-close" aria-label="Close">✕</button>
+    <button class="lb-close" aria-label="Close">close</button>
     <button class="lb-nav prev" aria-label="Previous">‹</button>
     <button class="lb-nav next" aria-label="Next">›</button>
     <figure class="lb-figure">
@@ -1231,7 +1557,7 @@ function closeLightbox(){
   if(!lightbox) return;
   lightbox.classList.remove('show');
   if(lightbox._keys) document.removeEventListener('keydown', lightbox._keys);
-  if(!modalScrim.classList.contains('show')) document.body.style.overflow = '';
+  document.body.style.overflow = '';
 }
 
 /* ---------------------------------------------------------
@@ -1254,12 +1580,12 @@ function closeLightbox(){
     function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
     requestAnimationFrame(raf);
 
-    // pause inertia while a modal is open so background scroll doesn't fight it
+    // pause inertia while the lightbox is open so background scroll doesn't fight it
     const scrimObserver = new MutationObserver(()=>{
-      if(document.getElementById('modalScrim').classList.contains('show')) lenis.stop();
+      if(document.getElementById('lightbox').classList.contains('show')) lenis.stop();
       else lenis.start();
     });
-    scrimObserver.observe(document.getElementById('modalScrim'), {attributes:true, attributeFilter:['class']});
+    scrimObserver.observe(document.getElementById('lightbox'), {attributes:true, attributeFilter:['class']});
   }
 </script>
 </body>
