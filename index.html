@@ -21,7 +21,7 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    font-family:"Plus Jakarta Sans","Helvetica Neue","HelveticaNeue",Helvetica,Arial,sans-serif;
+    font-family:"Plus Jakarta Sans","Helvetica Neue",Arial;
     font-weight:400;
     color:var(--ink);
     background:var(--bg);
@@ -36,48 +36,84 @@
     padding:22px 28px;
     z-index:50;
   }
-  .nav-left{display:flex; align-items:center; gap:22px;}
-  .logo{font-weight:700; font-size:14px; letter-spacing:.01em; cursor:pointer;}
+  .nav-left{display:flex; align-items:center; gap:22px; min-width:0;}
+  .logo{font-weight:700; font-size:16px; letter-spacing:.01em; cursor:pointer; white-space:nowrap;}
   .nav-links{display:flex; gap:18px; list-style:none; margin:0; padding:0;}
-  .nav-links li{font-size:12px; font-weight:600; color:var(--ink); cursor:pointer; transition:color .2s;}
+  .nav-links li{font-size:12px; font-weight:700; color:var(--ink); cursor:pointer; transition:color .2s;}
   .nav-links li.dim{color:#bdbdbd;}
-  .nav-right{display:flex; gap:18px; font-size:13px; font-weight:600;}
+  .nav-right{display:flex; gap:18px; font-size:12px; font-weight:700;}
   .nav-right a{text-decoration:none;}
+  /* 27px wide, three 1px lines 10px apart — per the tablet/mobile frames */
+  .nav-burger{
+    display:none; flex-direction:column; justify-content:space-between;
+    width:27px; height:21px; flex:none;
+    background:none; border:none; cursor:pointer; padding:0; z-index:210;
+  }
+  .nav-burger span{display:block; width:100%; height:1px; background:#000; transition:transform .25s ease, opacity .2s ease;}
+
+  /* tablet + mobile (the "new homepage 3" frames): bigger logo, burger
+     instead of inline links; the links and Instagram/Bio open as one
+     full-screen menu. Nav insets are the frames' own: logo at x=44 /
+     burger ending at x=715 on the 768 tablet frame, 30 / 346 on the 375
+     mobile frame, both with the burger's top line at y=47. */
+  @media (max-width:1024px){
+    .nav{padding:47px 53px 0 44px; align-items:flex-start;}
+    .logo{font-size:28px; letter-spacing:0; line-height:1; margin-top:1px;}
+    .nav-burger{display:flex;}
+    .nav-links, .nav-right{
+      display:none;
+      position:fixed; inset:0; z-index:200;
+      background:#fff;
+      flex-direction:column; align-items:center; justify-content:center;
+      gap:26px; list-style:none; margin:0; padding:0;
+    }
+    .nav-links li{font-size:22px;}
+    .nav-right{flex-direction:row; gap:24px; inset:auto 0 48px 0;}
+    .nav.menu-open .nav-links, .nav.menu-open .nav-right{display:flex;}
+    .nav.menu-open .nav-burger span:nth-child(1){transform:translateY(10px) rotate(45deg);}
+    .nav.menu-open .nav-burger span:nth-child(2){opacity:0;}
+    .nav.menu-open .nav-burger span:nth-child(3){transform:translateY(-10px) rotate(-45deg);}
+  }
+  @media (max-width:600px){
+    .nav{padding:47px 29px 0 30px;}
+  }
 
   /* ---------- HERO ---------- */
   .hero{
     position:relative;
-    min-height:100vh;
+    height:100vh;
+    overflow:hidden;
     display:flex; align-items:center; justify-content:center;
     padding:0 8vw;
   }
-  /* two scatter layers: one behind the text, one in front of it.
-     `layer:'front'` on a scatter entry puts it in the front layer. */
+  /* two scatter layers, behind and in front of the headline — each
+     HERO_LAYOUTS slot says which one its image goes in */
   .scatter{position:absolute; inset:0; pointer-events:none;}
   .scatter.back{z-index:1;}
   .scatter.front{z-index:3;}
   .swatch{
-    position:absolute;
-    opacity:0;
+    position:absolute; opacity:0; transform:scale(.9) translateY(8px);
     transition:opacity .22s cubic-bezier(.16,1,.3,1), transform .22s cubic-bezier(.16,1,.3,1);
-    display:flex; align-items:center; justify-content:center;
-    background-repeat:no-repeat; background-size:contain; background-position:center;
+    background:no-repeat center / contain;
   }
-  .swatch.active{opacity:1;}
+  .swatch.active{opacity:1; transform:none;}
 
+  /* Headline. Sizes, line breaks and icon placement are the Figma frames'
+     ("new homepage 4/desktop.svg" at 1920, "new homepage 3" tablet at 768
+     and mobile at 375), expressed in vw/em so each breakpoint keeps its
+     frame's proportions at any width — on a big iMac the block just scales
+     up, it never re-wraps. Breaks come from <br class="d|s"> in the markup,
+     nowrap stops anything else from breaking. */
   .lead{
     position:relative; z-index:2;
-    font-weight:400;
-    font-size:clamp(28px, 4.4vw, 52px);
-    line-height:1.28; font-weight:400;
-    max-width:1180px; margin:0;
+    font-weight:400; font-size:3.5695vw; line-height:1.2857;
+    white-space:nowrap; margin:0;
   }
+  .lead br.s{display:none;}
+  .baseline-probe{display:inline-block; width:0; height:0;}
   .lead .cat{
-    text-decoration:underline;
-    text-decoration-style:dotted;
-    text-decoration-color:#c4c4c4;
-    text-decoration-thickness:1px;
-    text-underline-offset:7px;
+    text-decoration:underline dotted #000 1px;
+    text-underline-offset:.15em;
     pointer-events:auto;
     cursor:pointer; transition:color .25s ease;
   }
@@ -85,42 +121,62 @@
   .lead .cat.on-brand{color:var(--brand); text-decoration-color:var(--brand);}
   .lead .cat.on-science{color:var(--science); text-decoration-color:var(--science);}
   .lead .cat.on-animation{color:var(--animation); text-decoration-color:var(--animation);}
-  .lead .emoji{text-decoration:none;}
-  .lead .cat-icon{
-    height:.72em; width:.72em; object-fit:contain;
-    display:inline-block; vertical-align:-0.08em;
+  /* icon size, drop below the baseline, and the gap to the text/comma on
+     either side (negative where the PNG's own transparent padding already
+     makes the gap) — all measured off desktop.svg, in em */
+  .lead .cat-icon{display:inline-block; object-fit:contain;}
+  .lead .cat[data-cat="illustration"] .cat-icon{width:1.557em; height:1.571em; vertical-align:-.392em; margin:0 .086em 0 -.113em;}
+  .lead .cat[data-cat="brand"] .cat-icon{width:1.486em; height:1.486em; vertical-align:-.492em; margin:0 -.09em 0 -.036em;}
+  .lead .cat[data-cat="science"] .cat-icon{width:1.257em; height:1.257em; vertical-align:-.221em; margin:0 -.088em 0 -.32em;}
+  .lead .cat[data-cat="animation"] .cat-icon{width:1.486em; height:1.486em; vertical-align:-.42em; margin:0 -.27em 0 .145em;}
+
+  @media (max-width:1024px){
+    .lead{text-align:center; font-size:5.844vw;} /* 52.8px on the 768 frame, at 85% */
+    .lead br.s{display:inline;}
+    .lead br.d{display:none;}
+    .lead .cat .cat-icon{width:1.364em; height:1.364em; vertical-align:-.32em; margin:0;}
+    .lead .cat[data-cat="illustration"] .cat-icon{width:1.686em; height:1.709em;}
+    .lead .cat[data-cat="science"] .cat-icon{width:1.345em; height:1.345em;}
+  }
+  @media (max-width:600px){
+    .lead{font-size:7.707vw;} /* 28.9px on the 375 frame */
+    .lead .cat .cat-icon{width:1.425em; height:1.425em;}
+    .lead .cat[data-cat="illustration"] .cat-icon{width:1.5em; height:1.537em;}
+    .lead .cat[data-cat="science"] .cat-icon{width:1.237em; height:1.237em;}
+    .lead .cat[data-cat="animation"] .cat-icon{width:1.5em; height:1.5em;}
   }
 
-  .hint{
-    position:absolute; left:28px; bottom:14px;
-    font-size:11px; color:var(--sub);
-    opacity:0; transition:opacity .2s;
+  /* looping icon motion: bird turns around, head nods, water tower
+     breathes in and out with a pause at each end, plane does a quick
+     wobble every few seconds */
+  .lead .cat[data-cat="illustration"] .cat-icon{animation:icon-flip 4s infinite;}
+  .lead .cat[data-cat="brand"] .cat-icon{transform-origin:50% 85%; animation:icon-nod 3.2s ease-in-out infinite;}
+  .lead .cat[data-cat="science"] .cat-icon{transform-origin:50% 100%; animation:icon-breathe 4.4s ease-in-out infinite;}
+  .lead .cat[data-cat="animation"] .cat-icon{animation:icon-tilt 3.6s ease-in-out infinite;}
+  @keyframes icon-flip{
+    0%, 42%{transform:scaleX(1);} 50%, 92%{transform:scaleX(-1);} 100%{transform:scaleX(1);}
   }
-  .hint.show{opacity:1;}
-
-  /* ---------- TRANSITION OVERLAY ---------- */
-  .overlay{
-    position:fixed; inset:0; background:#000; z-index:300;
-    opacity:0; pointer-events:none;
-    transition:opacity .38s ease;
+  @keyframes icon-nod{
+    0%, 50%, 100%{transform:rotate(0);} 60%{transform:rotate(-12deg);} 70%{transform:rotate(3deg);}
+    80%{transform:rotate(-12deg);} 90%{transform:rotate(0);}
   }
-  .overlay.show{opacity:1; pointer-events:all;}
-  .overlay .overlay-label{
-    position:absolute; top:22px; left:28px;
-    color:#fff; font-size:13px; font-weight:600;
-    opacity:0; transition:opacity .3s ease .15s;
+  @keyframes icon-breathe{
+    0%, 15%{transform:scale(1);} 45%, 60%{transform:scale(.84);} 90%, 100%{transform:scale(1);}
   }
-  .overlay.show .overlay-label{opacity:1;}
+  @keyframes icon-tilt{
+    0%, 76%, 100%{transform:rotate(0);} 81%{transform:rotate(-14deg);} 87%{transform:rotate(12deg);}
+    93%{transform:rotate(-5deg);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .lead .cat .cat-icon{animation:none;}
+  }
 
   /* ---------- GRID PAGE ---------- */
+  /* side padding matches .nav's own 28px exactly, so the grid's edges
+     line up with "Itai Raveh" and "Bio" instead of sitting inset from
+     them */
   .grid-page{display:none; padding:100px 28px 80px;}
   .grid-page.show{display:block;}
-  /* side margin measured off the Figma export: content sits at 99px in
-     from a 1440px canvas (1242px content width) — expressed as vw so it
-     holds the same proportion at other desktop widths */
-  @media (min-width:901px){
-    .grid-page{padding-left:max(28px, 6.875vw); padding-right:max(28px, 6.875vw);}
-  }
   .breadcrumb{
     font-size:12px; color:var(--sub);
     padding-bottom:14px; margin-bottom:34px;
@@ -161,8 +217,16 @@
      Qiniyye) — a plain vertical stack of full images instead of the
      usual single-frame hover-cycle thumb */
   .card-thumb-stack{display:flex; flex-direction:column; gap:14px;}
-  .card-thumb-stack a{display:block; text-decoration:none;}
-  .card-thumb-stack img{display:block; width:100%; border-radius:0;}
+  .card-thumb-stack a{display:block; text-decoration:none; overflow:hidden;}
+  .card-thumb-stack img{
+    display:block; width:100%; border-radius:0;
+    transition:transform .9s cubic-bezier(.16,1,.3,1);
+  }
+  /* each of the stacked images (springs of Ein Qiniyye) has its own link
+     and reacts to hover on its own — not the whole stack, and not the
+     .card-thumb-link:hover rule above, which only applies to the
+     single-image thumb layout this card doesn't use */
+  .card-thumb-stack a:hover img{transform:scale(1.01);}
   /* mobile: one plain column, every card the same size regardless of its
      image's own aspect ratio — overrides the per-item inline aspect-ratio
      set in cardHTML/layoutMasonry */
@@ -176,13 +240,6 @@
     transition:opacity .5s ease .1s;
   }
   .card-thumb.loaded .glyph{opacity:1;}
-  .card-thumb .badge{
-    position:absolute; top:8px; right:8px;
-    font-size:10px; font-weight:700; letter-spacing:.02em;
-    background:rgba(255,255,255,.9); padding:3px 7px; border-radius:0;
-    opacity:0; transition:opacity .3s ease;
-  }
-  .card-thumb-link:hover .badge{opacity:1;}
 
   /* multi-image projects: on hover the thumbnail auto-cycles through the
      gallery, and these arrows appear for manual control too */
@@ -200,16 +257,14 @@
   .thumb-nav.prev{left:8px;}
   .thumb-nav.next{right:8px;}
 
-  /* title sits below the image, description below the title */
+  /* title sits below the image, description below the title. "Read more"
+     lives only in the lightbox now (.lb-project-link) — the grid caption
+     used to duplicate it, so there's no .readmore rule here any more. */
   .card-caption{margin-top:6px;}
-  .card-title{font-size:12px; font-weight:700;}
+  .card-title{font-size:12px; font-weight:700; color:#000;}
   .card-title > a{text-decoration:none;}
-  .card-title .readmore{
-    font-weight:600; text-decoration:underline; text-decoration-style:dotted;
-    text-underline-offset:3px; margin-left:6px; white-space:nowrap;
-  }
   .card-desc{
-    font-size:12px; color:var(--sub); line-height:1.55;
+    font-size:12px; font-weight:400; color:#000; line-height:1.4;
     margin:2px 0 0;
   }
 
@@ -252,22 +307,51 @@
   .lb-project-media.has-multi .lb-media-layer{cursor:pointer;}
   .lb-project-text{
     flex:0 1 auto; max-width:280px;
+    display:flex; flex-direction:column;
     pointer-events:auto;
+    /* stretched to the image's own full height (.lb-panel otherwise
+       vertically centers its two children as a unit) so "close" can sit
+       at the image's top edge while .lb-project-body below centers the
+       rest of the text within the remaining height — two independent
+       alignments inside one column, not one alignment for the whole
+       block */
+    align-self:stretch;
     /* a padded safe zone around the text, cancelled visually by the
      matching negative margin — so selecting/copying text (a click-drag
      whose mouseup can easily land just outside the tight glyph box,
      e.g. below the last line) doesn't fall through to the backdrop and
      close the lightbox mid-selection */
-    padding:24px 8px;
-    margin:-24px -8px;
+    padding:16px 8px;
+    margin:-16px -8px;
   }
-  .lb-project-title{font-size:15px; font-weight:700; margin:0 0 8px; line-height:1.3; color:var(--ink);}
-  .lb-project-desc{font-size:13px; color:var(--sub); line-height:1.6; margin:0 0 10px;}
-  .lb-project-note{font-size:12px; font-style:italic; color:var(--sub); line-height:1.6; margin:0 0 14px;}
+  /* fills the remaining height under "close" (.lb-project-text is a flex
+     column stretched to the image's height) and centers title/desc/note/
+     link vertically within that space — independent of where "close"
+     itself sits */
+  .lb-project-body{flex:1; display:flex; flex-direction:column; justify-content:center; min-height:0;}
+  .lb-project-title{font-size:14px; font-weight:700; margin:0 0 8px; line-height:1.3; color:#000;}
+  .lb-project-desc{font-size:12px; color:#000; line-height:1.5; margin:0 0 10px;}
+  .lb-project-note{font-size:12px; font-style:italic; color:#000; line-height:1.6; margin:0 0 14px;}
   .lb-project-link{
-    font-size:12px; font-weight:600; color:var(--ink); text-decoration:underline;
+    font-size:12px; font-weight:600; color:#000; text-decoration:underline;
     text-decoration-style:dotted; text-underline-offset:3px;
   }
+  /* "close" is content-anchored (left-aligned with the text column) rather
+     than pinned to the viewport corner. It's the first child of the
+     stretched .lb-project-text column (not part of .lb-project-body's
+     centered group), so it naturally sits at the image's own top edge
+     regardless of how tall the centered text below it is. align-self
+     keeps it shrink-wrapped to its own text width — a flex column's
+     default align-items:stretch would otherwise stretch this <button>
+     to the full column width, and buttons center their text by default,
+     pulling "close" away from the left edge the rest of the text aligns to. */
+  .lb-project-close{
+    display:block; flex:none; align-self:flex-start; background:none; border:none; cursor:pointer;
+    font-size:12px; font-weight:600; color:#000; opacity:.7;
+    letter-spacing:.02em; text-decoration:underline; text-underline-offset:3px;
+    margin:0 0 14px; padding:0; transition:opacity .2s;
+  }
+  .lb-project-close:hover{opacity:1;}
   .lb-panel-nav{
     position:absolute; top:50%; transform:translateY(-50%);
     width:26px; height:26px; border-radius:50%; border:none;
@@ -330,7 +414,6 @@
   .sym:hover .sym-img{transform:scale(1.07);}
   .sym-name{
     margin-top:10px; font-size:11px; letter-spacing:.02em;
-    font-family:"SFMono-Regular",Menlo,Consolas,monospace;
     color:#444;
   }
 
@@ -341,7 +424,7 @@
      black. */
   .lightbox{
     position:fixed; inset:0; z-index:260;
-    background:rgba(255,255,255,.9);
+    background:rgba(255,255,255,.98);
     display:flex; align-items:center; justify-content:center;
     opacity:0; visibility:hidden;
     transition:opacity .3s cubic-bezier(.16,1,.3,1);
@@ -424,7 +507,7 @@
 </head>
 <body>
 
-  <nav class="nav">
+  <nav class="nav" id="nav">
     <div class="nav-left">
       <div class="logo" data-home>Itai Raveh</div>
       <ul class="nav-links" id="navLinks">
@@ -438,22 +521,25 @@
       <a href="#" target="_blank" rel="noopener">Instagram</a>
       <a href="#">Bio</a>
     </div>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <section class="hero" id="hero">
     <div class="scatter back" id="scatterBack"></div>
     <div class="scatter front" id="scatterFront"></div>
-    <p class="lead">
-      Creating smart, detailed
-      <span class="cat" data-cat="illustration">illustrations projects <img class="cat-icon" src="images/Homepage/Sections icons/illustration.png" alt=""></span>,
+    <!-- line breaks are fixed per the frames: br.d on desktop (4 lines),
+         br.s on tablet/mobile (7 lines); .lead is nowrap so nothing else breaks -->
+    <p class="lead"><span class="baseline-probe"></span>Creating smart, detailed<br class="s">
+      <span class="cat" data-cat="illustration">illustrations projects <img class="cat-icon" src="images/Homepage/Sections icons/illustration.png" alt=""></span>,<br>
       building
-      <span class="cat" data-cat="brand">brand illustration languages <img class="cat-icon" src="images/Homepage/Sections icons/brands.png" alt=""></span>,
-      visualizing
-      <span class="cat" data-cat="science">science communication <img class="cat-icon" src="images/Homepage/Sections icons/science.png" alt=""></span>,
-      and providing
-      <span class="cat" data-cat="animation">art direction for animation <img class="cat-icon" src="images/Homepage/Sections icons/animtion.webp" alt=""></span>.
+      <span class="cat" data-cat="brand">brand illustration<br class="s"> languages <img class="cat-icon" src="images/Homepage/Sections icons/brands.png" alt=""></span>,<br class="d">
+      visualizing<br class="s">
+      <span class="cat" data-cat="science">science communication<br class="s"> <img class="cat-icon" src="images/Homepage/Sections icons/science.png" alt=""></span>,
+      and<br class="d"> providing
+      <span class="cat" data-cat="animation">art<br class="s"> direction for animation <img class="cat-icon" src="images/Homepage/Sections icons/animtion.webp" alt=""></span>.
     </p>
-    <div class="hint" id="hint">itairaveh.com/</div>
   </section>
 
   <section class="grid-page" id="gridPage"></section>
@@ -461,8 +547,6 @@
   <section class="case-page" id="casePage"></section>
 
   <div class="lightbox" id="lightbox"></div>
-
-  <div class="overlay" id="overlay"><div class="overlay-label" id="overlayLabel"></div></div>
 
 <script>
 /* ---------------------------------------------------------
@@ -472,12 +556,10 @@
    Each project:
      slug   — used in the URL (#/category/slug), auto-built
               from the title if you don't set one
-     type   — 'simple'  -> title/desc only, click does nothing extra
-              'gallery' -> click opens a real popup: images + text,
-                           deep-linkable, closable, no page nav
-              'case'    -> click opens a full case-study page
-                           (hero, paragraphs, media, testimonial)
-     c, g   — placeholder color + emoji, swap for real image URLs
+     img    — cover image; images: [...] adds a gallery (hover-cycles on
+              the card, arrows/click in the preview lightbox)
+     caseStudy — adds a "Read more" long-form page (#/category/slug)
+     c, g   — placeholder color + emoji, used until the project has an img
 --------------------------------------------------------- */
 
 function symUrl(cat, projectSlug, file){
@@ -500,8 +582,8 @@ function encodeImgPath(path){
 /* builds a {cover, then -2, -3, ...} gallery array for a project folder
    that follows the {slug}-cover.ext / {slug}-N.ext naming convention */
 function galleryRange(dir, slug, ext, count){
-  const arr = [{img:`${dir}/${slug}-cover.${ext}`, wide:true}];
-  for(let i = 2; i <= count; i++) arr.push({img:`${dir}/${slug}-${i}.${ext}`, wide:true});
+  const arr = [{img:`${dir}/${slug}-cover.${ext}`}];
+  for(let i = 2; i <= count; i++) arr.push({img:`${dir}/${slug}-${i}.${ext}`});
   return arr;
 }
 
@@ -519,29 +601,24 @@ function glyphHTML(obj){
 
 const CATS = {
   illustration: {
-    accent: 'var(--illustration)',
     label: 'Illustration',
-    path: 'itairaveh.com/illustration/',
-    scatter: [
-      // exact coordinates from the Figma export (1920w light.svg), px at
-      // SCATTER_BASE_W=1920 — top/left are bare numbers here so they scale
-      // off viewport WIDTH like width/height do, avoiding the overlap bug
-      // that came from mixing height-relative % with width-relative vw
-      {top:-77, left:42,   w:398, h:572, img:'images/Homepage/Illustraiton/ilustration 25.png', rot:0},
-      {top:30,  left:688,  w:486, h:486, img:'images/Homepage/Illustraiton/ilustration 20.png', rot:0},
-      {top:41,  left:1233, w:221, h:333, img:'images/illustration-projects/heimat/heimat-cover.webp', rot:0},
-      {top:-59, left:1649, w:212, h:454, img:'images/Homepage/Illustraiton/ilustration 19.png', rot:0},
-      {top:706, left:172,  w:354, h:507, img:'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp', rot:0},
-      {top:909, left:842,  w:215, h:323, img:'images/illustration-projects/the-boys/the-boys-cover.jpg', rot:0},
-      // firm 2x2 grid, verified against the SVG's embedded image data
-      {top:576,  left:1282, w:344.69, h:459.459, img:'images/Homepage/Illustraiton/ilustration 23.png', rot:0}, // car
-      {top:594,  left:1657, w:344.69, h:459.459, img:'images/Homepage/Illustraiton/ilustration 22.png', rot:0}, // glove
-      {top:1007, left:1288, w:344.69, h:459.459, img:'images/Homepage/Illustraiton/ilustration 21.png', rot:0}, // creature
-      {top:1035, left:1646, w:335,    h:458,     img:'images/Homepage/Illustraiton/ilustration 26.png', rot:0}, // rocket
+    // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
+    hero: [
+      'images/Homepage/Illustraiton/ilustration 25.png',
+      'images/Homepage/Illustraiton/ilustration 19.png',
+      'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp',
+      'images/Homepage/Illustraiton/ilustration 22.png',
+      'images/Homepage/Illustraiton/ilustration 20.png',
+      'images/Homepage/Illustraiton/ilustration 26.png',
+      'images/illustration-projects/the-boys/the-boys-cover.jpg',
+      'images/Homepage/Illustraiton/ilustration 23.png',
+      'images/Homepage/Illustraiton/ilustration 21.png',
+      'images/illustration-projects/heimat/heimat-cover.webp',
     ],
     items: [
       {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺', col:0,
-        img:'images/illustration-projects/gibberish/gibberish-cover.jpg'},
+        img:'images/illustration-projects/gibberish/gibberish-cover.jpg',
+        images: galleryRange('images/illustration-projects/gibberish', 'gibberish', 'jpg', 2)},
       {t:'Sublet', type:'simple', c:'#101010', g:'🏙️', col:2,
         img:'images/illustration-projects/sublet/sublet-cover.png'},
       {t:'City Symbol: Street level Coat Of Arms', type:'case', span:3, col:4, mobilePriority:0.5,
@@ -549,7 +626,7 @@ const CATS = {
         img:'images/illustration-projects/city-symbol/city-symbol-1-cover.png',
         d:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.',
         caseStudy:{
-          bg:'#ffffff', dark:false,
+          bg:'#ffffff',
           intro:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape. The project contains 3 series containing 15 symbols for three different cities: Tel Aviv, Haifa and Jerusalem.',
           note:'Undergraduate project in the visual communication department in Shenkar College of Engineering, Design and Art.',
           series:[
@@ -639,9 +716,9 @@ const CATS = {
       {t:'The springs of Ein Qiniyye', type:'simple', c:'#2e6f8e', g:'💧', span:3, col:2, stack:true,
         img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-cover.jpg',
         images:[
-          {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-cover.jpg', wide:true},
-          {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-2.jpg', wide:true},
-          {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-3.jpg', wide:true}
+          {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-cover.jpg'},
+          {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-2.jpg'},
+          {img:'images/illustration-projects/the-springs-of-ein-qiniyye/the-springs-of-ein-qiniyye-3.jpg'}
         ],
         d:'A series of illustrations drawn from the folk tales surrounding the waters of one Druze village.'},
       {t:'Tarot Card', type:'simple', c:'#3a2a4a', g:'🔮', col:0,
@@ -656,13 +733,13 @@ const CATS = {
       {t:'The Road Begins In Capernaum', type:'simple', c:'#3a6b8a', g:'⛵', col:0,
         img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-cover.png',
         images:[
-          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-cover.png', wide:true},
-          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-2.png', wide:true},
-          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-3.png', wide:true},
-          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-4.png', wide:true},
-          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-5.png', wide:true},
-          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-6.jpg', wide:true},
-          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-7.jpg', wide:true}
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-cover.png'},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-2.png'},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-3.png'},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-4.png'},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-5.png'},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-6.jpg'},
+          {img:'images/illustration-projects/the-road-begins-in-capernaum/the-road-begins-in-capernaum-7.jpg'}
         ]},
       {t:'Parents Against Child Arrests', type:'simple', c:'#111111', g:'✊', col:5,
         img:'images/illustration-projects/parents-against-child-arrests/parents-against-child-arrests-cover.png'},
@@ -676,7 +753,8 @@ const CATS = {
         img:'images/illustration-projects/jerusalem-snow/jerusalem-snow-cover.png',
         images: galleryRange('images/illustration-projects/jerusalem-snow', 'jerusalem-snow', 'png', 8)},
       {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌', col:0,
-        img:'images/illustration-projects/kuli-alma-club-valentine/kuli-alma-club-valentine-cover.jpg'},
+        img:'images/illustration-projects/kuli-alma-club-valentine/kuli-alma-club-valentine-cover.jpg',
+        images: galleryRange('images/illustration-projects/kuli-alma-club-valentine', 'kuli-alma-club-valentine', 'jpg', 2)},
     ],
     editorial: [
       {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺',
@@ -712,31 +790,31 @@ const CATS = {
       {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕', span:3,
         img:'images/illustration-editorial/sex/sex-cover.png',
         images:[
-          {img:'images/illustration-editorial/sex/sex-cover.png', wide:true},
-          {img:'images/illustration-editorial/sex/sex-2.jpg', wide:true},
-          {img:'images/illustration-editorial/sex/sex-3.png', wide:true},
-          {img:'images/illustration-editorial/sex/sex-4.png', wide:true},
-          {img:'images/illustration-editorial/sex/sex-5.png', wide:true},
-          {img:'images/illustration-editorial/sex/sex-6.png', wide:true},
-          {img:'images/illustration-editorial/sex/sex-7.png', wide:true},
-          {img:'images/illustration-editorial/sex/sex-8.png', wide:true},
-          {img:'images/illustration-editorial/sex/sex-9.png', wide:true}
+          {img:'images/illustration-editorial/sex/sex-cover.png'},
+          {img:'images/illustration-editorial/sex/sex-2.jpg'},
+          {img:'images/illustration-editorial/sex/sex-3.png'},
+          {img:'images/illustration-editorial/sex/sex-4.png'},
+          {img:'images/illustration-editorial/sex/sex-5.png'},
+          {img:'images/illustration-editorial/sex/sex-6.png'},
+          {img:'images/illustration-editorial/sex/sex-7.png'},
+          {img:'images/illustration-editorial/sex/sex-8.png'},
+          {img:'images/illustration-editorial/sex/sex-9.png'}
         ],
         d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
         caseStudy:{bg:'#8a2e5a', intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.'}},
     ]
   },
   brand: {
-    accent: 'var(--brand)',
     label: 'Brands',
-    path: 'itairaveh.com/brand/',
-    scatter: [
-      {top:'3%', left:'4%',  w:220,h:150, color:'#111111', glyph:'🛠️'},
-      {top:'2%', left:'34%', w:200,h:200, color:'#f2f2f2', glyph:'🌳'},
-      {top:'5%', left:'70%', w:150,h:220, color:'#f2f2f2', glyph:'🧘'},
-      {top:'60%', left:'6%', w:190,h:150, color:'#0f2d28', glyph:'🗼'},
-      {top:'62%', left:'34%',w:190,h:190, color:'#f2b6b6', glyph:'📡'},
-      {top:'58%', left:'70%',w:200,h:200, color:'#f0c9a0', glyph:'🌊'},
+    // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
+    hero: [
+      'images/Homepage/Brand/Brand 16.png',
+      'images/Homepage/Brand/Brand 13.png',
+      'images/Homepage/Brand/Brand 17.png',
+      'images/Homepage/Brand/Brand 12.png',
+      'images/Homepage/Brand/Brand 18.png',
+      'images/Homepage/Brand/Brand 15.png',
+      'images/Homepage/Brand/Brand 14.png',
     ],
     items: [
       {t:'Eko engineering', type:'case', slug:'eko', c:'#e2434f', g:'🛠️',
@@ -754,16 +832,19 @@ const CATS = {
     ]
   },
   science: {
-    accent: 'var(--science)',
     label: 'Science',
-    path: 'itairaveh.com/science/',
-    scatter: [
-      {top:'2%', left:'2%',  w:230,h:160, color:'#e8b400', glyph:'🗼'},
-      {top:'4%', left:'40%', w:120,h:90,  color:'#f2f2f2', glyph:'🌍'},
-      {top:'3%', left:'76%', w:220,h:150, color:'#f2f2f2', glyph:'🐾'},
-      {top:'62%', left:'6%', w:170,h:190, color:'#f2f2f2', glyph:'🗼'},
-      {top:'64%', left:'32%',w:150,h:150, color:'#e8722c', glyph:'🪐'},
-      {top:'60%', left:'62%',w:220,h:190, color:'#eef2e6', glyph:'🌳'},
+    // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
+    hero: [
+      'images/Homepage/Science/science 30.png',
+      'images/Homepage/Science/science 34.png',
+      'images/Homepage/Science/science 29.png',
+      'images/Homepage/Science/science 32.png',
+      'images/Homepage/Science/science 31.png',
+      'images/Homepage/Science/science 36.png',
+      'images/Homepage/Science/science 33.png',
+      'images/Homepage/Science/science 28.png',
+      'images/Homepage/Science/science.png',
+      'images/Homepage/Science/science 35.png',
     ],
     items: [
       {t:'Anthropomass', type:'case', slug:'anthropomass', c:'#1fae70', g:'🌍',
@@ -778,14 +859,14 @@ const CATS = {
     ]
   },
   animation: {
-    accent: 'var(--animation)',
     label: 'Animation',
-    path: 'itairaveh.com/animation/',
-    scatter: [
-      {top:'2%', left:'2%',  w:170,h:150, color:'#e9e9e9', glyph:'📺'},
-      {top:'1%', left:'30%', w:210,h:170, color:'#1a1a1a', glyph:'🌊'},
-      {top:'3%', left:'66%', w:250,h:170, color:'#f2c9c9', glyph:'▶️'},
-      {top:'60%', left:'2%', w:150,h:220, color:'#dceeea', glyph:'🎬'},
+    // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
+    hero: [
+      'images/Homepage/animation/Animation1.webp',
+      'images/Homepage/animation/Animation2.webp',
+      'images/Homepage/animation/Animation4.webp',
+      'images/Homepage/animation/Animation5.webp',
+      'images/Homepage/animation/Animation3.webp',
     ],
     items: [
       {t:"A new solution to streaming technology | eko explainer", type:'simple', c:'#e07d78', g:'📺',
@@ -805,13 +886,6 @@ Object.values(CATS).forEach(cat=>{
 // instead of forcing a uniform box — read once here rather than waiting on
 // each <img> to load, so layout is exact on first paint, no reflow-in.
 const IMG_RATIO = {
-  'images/Homepage/Illustraiton/ilustration 19.png': 0.4679,
-  'images/Homepage/Illustraiton/ilustration 20.png': 1.0,
-  'images/Homepage/Illustraiton/ilustration 21.png': 0.7502,
-  'images/Homepage/Illustraiton/ilustration 22.png': 0.7502,
-  'images/Homepage/Illustraiton/ilustration 23.png': 0.7502,
-  'images/Homepage/Illustraiton/ilustration 25.png': 0.6967,
-  'images/Homepage/Illustraiton/ilustration 26.png': 0.7318,
   'images/illustration-editorial/What-my-father-never-told-me/What-my-father-never-told-me-cover.jpg': 0.7222,
   'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.jpg': 1.0316,
   'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg': 1.0,
@@ -821,7 +895,7 @@ const IMG_RATIO = {
   'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg': 1.5008,
   'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg': 1.2489,
   'images/illustration-projects/city-symbol/city-symbol-1-cover.png': 1.0,
-  'images/illustration-projects/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png': 0.7069,
+  'images/illustration-editorial/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png': 0.7069,
   'images/illustration-projects/gibberish/gibberish-cover.jpg': 0.7151,
   'images/illustration-projects/heimat/heimat-cover.webp': 0.6649,
   'images/illustration-projects/herzl-eretz-israel-museum/herzl-eretz-israel-museum-cover.jpg': 1.0015,
@@ -867,9 +941,6 @@ const IMG_RATIO = {
 --------------------------------------------------------- */
 const scatterBack  = document.getElementById('scatterBack');
 const scatterFront = document.getElementById('scatterFront');
-const hintEl      = document.getElementById('hint');
-const overlayEl   = document.getElementById('overlay');
-const overlayLabel= document.getElementById('overlayLabel');
 const gridPage    = document.getElementById('gridPage');
 const hero        = document.getElementById('hero');
 const navLinks    = document.querySelectorAll('.nav-links li');
@@ -877,83 +948,130 @@ const casePage    = document.getElementById('casePage');
 
 let currentCat = null;
 
-/* Build scatter swatches for every category up front, toggle visibility.
-   Each scatter entry supports:
-     top,left   — position, at the SCATTER_BASE_W reference width. Either a
-                  '%' string (legacy, resolves against the container's
-                  HEIGHT per the CSS spec — only safe when the reference
-                  design is square-ish) or a bare number of px (preferred —
-                  resolved with the same vw() as width/height below, so
-                  position and size both scale off viewport WIDTH only and
-                  never drift out of proportion on wide/short windows)
-     w,h        — size in px, at the SCATTER_BASE_W reference viewport width —
-                  converted to vw below so every swatch scales fluidly with
-                  the window instead of staying a fixed pixel size
-     img        — illustration URL (falls back to color+glyph placeholder)
-     pos        — background-position keyword, default 'center' (e.g. 'top'
-                  to show the top slice of a tall image instead of cropping
-                  it centered)
-     layer      — 'front' to sit in front of the text, default is behind
-     rot        — rotation in degrees, small values read as hand-placed
-*/
-const SCATTER_BASE_W = 1920; // logical viewport width the px sizes below were measured at (Figma export)
-function vw(px){ return (px / SCATTER_BASE_W * 100).toFixed(3) + 'vw'; }
-function topLeft(v){ return typeof v === 'number' ? vw(v) : v; }
+/* Homepage hover images. One layout per breakpoint, measured off the Figma
+   frames: desktop from "new homepage 4/desktop hover.svg" (1920 wide),
+   tablet and mobile from "new homepage 3" (768 / 375 wide). Each slot is
+   [x, y, w, h, front] in that frame's px; front=1 draws it over the
+   headline, as the frame does.
+   Every category shares the same slots. Its `hero` image list fills them
+   in HERO_FILL order, which spreads a short list across the frame instead
+   of bunching it into the first few slots — illustration's list is
+   written in that order so each image lands in the slot it has in the
+   design. Slot 9 only exists on desktop (the small frames drop Heimat).
+   An image is fitted inside its slot (background-size:contain), so a
+   category whose images have other proportions still works.
+   Positions scale with viewport width like the frame does (tablet at 85%,
+   around the centre), and are anchored to the headline's first baseline,
+   not the top of the screen — so a window taller or shorter than the
+   frame keeps the same image-to-text relationship. */
+const HERO_FILL = [0, 2, 3, 6, 1, 8, 4, 5, 7, 9];
+const HERO_LAYOUTS = {
+  desktop: {frameW:1920, baseline:471.831, scale:1, slots:[
+    [28, -122, 398, 572, 1], [674, -15, 486, 486, 1], [1635, -104, 212, 454, 1],
+    [77, 709, 354, 507, 1], [809, 801, 215, 323, 1],
+    [1268, 531, 344.69, 459.459, 0], [1643, 549, 344.69, 459.459, 0],
+    [1274, 962, 344.69, 459.459, 0], [1632, 990, 335, 458, 0],
+    [1219, -4, 221, 333, 1],
+  ]},
+  tablet: {frameW:768, baseline:329.47, scale:.85, slots:[
+    [-199, -226, 398, 572, 0], [199, -96, 486, 486, 0], [609, -226, 212, 454, 0],
+    [-100, 712, 250.476, 359, 0], [254, 822, 93, 139, 0],
+    [469, 664, 210.873, 281.087, 0], [698.417, 675.012, 210.873, 281.087, 0],
+    [472.671, 927.676, 210.873, 281.087, 0], [691.687, 944.877, 204.998, 280.123, 0],
+  ]},
+  mobile: {frameW:375, baseline:279.38, scale:1, slots:[
+    [-59, -46, 177.027, 254.111, 0], [103, 124, 216.037, 216.037, 1], [299, 0, 94.3328, 201.611, 1],
+    [-71, 549, 141.661, 203.039, 1], [134, 476, 41.2664, 61.8996, 1],
+    [189, 523, 132.667, 176.84, 1], [333.333, 529.928, 132.667, 176.84, 1],
+    [191.31, 688.887, 132.667, 176.84, 1], [329.1, 699.709, 128.97, 176.234, 1],
+  ]},
+};
 
+const heroSwatches = [];
 Object.entries(CATS).forEach(([key, cat]) => {
-  cat.scatter.forEach((s, i) => {
-    const div = document.createElement('div');
-    div.className = 'swatch cat-' + key;
-    const rot = s.rot || 0;
-    div.style.cssText = `
-      top:${topLeft(s.top)}; left:${topLeft(s.left)};
-      width:${vw(s.w)}; aspect-ratio:${s.w}/${s.h};
-      font-size:${vw(38)};
-      ${bg(s.img ? s : {c:s.color})}
-      ${s.pos ? `background-position:${s.pos};` : ''}
-    `;
-    div.dataset.rot = rot;
-    div.style.transform = `rotate(${rot}deg) scale(.9) translateY(8px)`;
-    div.innerHTML = s.img ? '' : (s.glyph || '');
-    (s.layer === 'front' ? scatterFront : scatterBack).appendChild(div);
+  cat.hero.forEach((src, k) => {
+    const el = document.createElement('div');
+    el.className = 'swatch cat-' + key;
+    el.style.backgroundImage = `url('${encodeImgPath(src)}')`;
+    heroSwatches.push({el, k});
   });
 });
 
-function showScatter(cat){
-  document.querySelectorAll('.swatch').forEach(el=>{
-    const on = el.classList.contains('cat-'+cat);
-    const rot = el.dataset.rot || 0;
-    el.classList.toggle('active', on);
-    el.style.transform = on
-      ? `rotate(${rot}deg) scale(1) translateY(0)`
-      : `rotate(${rot}deg) scale(.9) translateY(8px)`;
+const baselineProbe = document.querySelector('.baseline-probe');
+function layoutHero(){
+  if(!hero.offsetParent) return; // hero is display:none — nothing to measure against
+  const vw = window.innerWidth; // breakpoints match the CSS media queries
+  const L = vw <= 600 ? HERO_LAYOUTS.mobile : vw <= 1024 ? HERO_LAYOUTS.tablet : HERO_LAYOUTS.desktop;
+  const s = vw / L.frameW * L.scale;
+  const base = baselineProbe.getBoundingClientRect().top - hero.getBoundingClientRect().top;
+  heroSwatches.forEach(({el, k})=>{
+    const slot = L.slots[HERO_FILL[k]];
+    el.hidden = !slot;
+    if(!slot) return;
+    const [x, y, w, h, front] = slot;
+    Object.assign(el.style, {
+      left: vw / 2 + (x - L.frameW / 2) * s + 'px', top: base + (y - L.baseline) * s + 'px',
+      width: w * s + 'px', height: h * s + 'px',
+    });
+    const layer = front ? scatterFront : scatterBack;
+    if(el.parentNode !== layer) layer.appendChild(el);
   });
-  if(cat){
-    hintEl.textContent = CATS[cat].path;
-    hintEl.classList.add('show');
-  } else {
-    hintEl.classList.remove('show');
-  }
 }
+window.addEventListener('resize', layoutHero);
 
-document.querySelectorAll('.lead .cat').forEach(el=>{
+const catEls = document.querySelectorAll('.lead .cat');
+function setActiveCat(cat){
+  if(cat) layoutHero(); // the hero may have been hidden, or fonts not loaded, at the last layout
+  catEls.forEach(c => c.classList.toggle('on-' + c.dataset.cat, c.dataset.cat === cat));
+  heroSwatches.forEach(({el}) => el.classList.toggle('active', el.classList.contains('cat-' + cat)));
+}
+/* Mouse: hover shows a category's scatter, click goes there. Touch has no
+   hover (and fires an emulated mouseenter right before click, which would
+   otherwise show + navigate in one tap), so there the first tap shows it,
+   a second tap on the same word goes there, and tapping anywhere else
+   hides it. */
+const canHover = window.matchMedia('(hover: hover)');
+let tappedCat = null;
+catEls.forEach(el=>{
   const cat = el.dataset.cat;
-  el.addEventListener('mouseenter', ()=>{
-    document.querySelectorAll('.lead .cat').forEach(c=>c.classList.remove('on-illustration','on-brand','on-science','on-animation'));
-    el.classList.add('on-'+cat);
-    showScatter(cat);
+  el.addEventListener('mouseenter', ()=>{ if(canHover.matches) setActiveCat(cat); });
+  el.addEventListener('mouseleave', ()=>{ if(canHover.matches) setActiveCat(null); });
+  el.addEventListener('click', e=>{
+    if(!canHover.matches && tappedCat !== cat){
+      e.stopPropagation();
+      tappedCat = cat;
+      setActiveCat(cat);
+      return;
+    }
+    tappedCat = null;
+    setActiveCat(null);
+    location.hash = '#/' + cat;
   });
-  el.addEventListener('mouseleave', ()=>{
-    el.classList.remove('on-'+cat);
-    showScatter(null);
-  });
-  el.addEventListener('click', ()=> { location.hash = '#/' + cat; });
+});
+document.addEventListener('click', e=>{
+  if(tappedCat && !e.target.closest('.lead .cat')){ tappedCat = null; setActiveCat(null); }
 });
 
 navLinks.forEach(li=>{
   li.addEventListener('click', ()=> { location.hash = '#/' + li.dataset.cat; });
 });
 document.querySelector('[data-home]').addEventListener('click', ()=> { location.hash = ''; });
+
+// tablet/mobile nav: burger opens a full-screen menu (categories +
+// Instagram/Bio, see the max-width:1024px nav rules); any click inside it — a category,
+// Instagram, Bio, or the burger itself again — closes it back up
+const navEl = document.getElementById('nav');
+const navBurger = document.getElementById('navBurger');
+navBurger.addEventListener('click', ()=>{
+  const open = navEl.classList.toggle('menu-open');
+  navBurger.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+navEl.querySelectorAll('.nav-links li, .nav-right a').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    navEl.classList.remove('menu-open');
+    navBurger.setAttribute('aria-expanded', 'false');
+  });
+});
 
 /* ---------------------------------------------------------
    ROUTER — URL design, and why it is shaped this way.
@@ -967,8 +1085,8 @@ document.querySelector('[data-home]').addEventListener('click', ()=> { location.
    grid you were already looking at. It gets its own restorable
    URL so the back button closes it and a refresh reopens it:
      #/illustration?preview=city-symbol
-   Inside the preview there is an "Open full project" link that
-   goes to the canonical URL above.
+   A preview of a project with a case study has a "Read more" link
+   to the canonical URL above.
 
    A third level deep-links one symbol inside a project:
      #/illustration/city-symbol/ymca
@@ -1008,6 +1126,7 @@ function findSymbol(item, subSlug){
 
 function route(){
   const {cat, slug, sub, preview, previewImg} = parseHash();
+  stopAllCardGalleries();
 
   // home
   if(!cat){
@@ -1113,14 +1232,27 @@ document.addEventListener('click', (e)=>{
 window.addEventListener('hashchange', route);
 window.addEventListener('load', route);
 
-/* transition flash only on cross-section navigation (home <-> category) */
+/* fade the newly-entered top-level section in from white on cross-section
+   navigation (home <-> category, category <-> category) — replaces the
+   old black overlay, which dipped to opaque black and back instead of
+   revealing cleanly, and was still mid-dip while the grid underneath was
+   itself still blurred-up/loading, reading as a flash. Any lightbox the
+   same navigation opens (e.g. a grid landing on ?preview=) already fades
+   in on its own via .lb-panel's transition, at a matching duration, so
+   page and project appear together without extra sync code here.
+   Same-section navigation (opening a preview/symbol on a page you're
+   already on) isn't touched — this only fires on a genuine new entrance. */
 let lastTopLevel = null;
 window.addEventListener('hashchange', ()=>{
   const {cat} = parseHash();
   if(cat !== lastTopLevel){
-    overlayLabel.textContent = cat ? CATS[cat].label : '';
-    overlayEl.classList.add('show');
-    setTimeout(()=> overlayEl.classList.remove('show'), 260);
+    const target = !cat ? hero : (casePage.classList.contains('show') ? casePage : gridPage);
+    target.style.transition = 'none';
+    target.style.opacity = '0';
+    requestAnimationFrame(()=> requestAnimationFrame(()=>{
+      target.style.transition = 'opacity .45s cubic-bezier(.16,1,.3,1)';
+      target.style.opacity = '1';
+    }));
   }
   lastTopLevel = cat;
 });
@@ -1135,8 +1267,6 @@ window.addEventListener('hashchange', ()=>{
 --------------------------------------------------------- */
 function cardHTML(cat, item, i){
   const cardTarget = '#/' + cat + '?preview=' + item.slug;
-  const readMoreTarget = '#/' + cat + '/' + item.slug;
-  const badge = item.type === 'gallery' ? 'View' : '';
   const hasImg = !!item.img;
   const ratio = (hasImg && IMG_RATIO[item.img]) || item.ratio || 1.3;
   // a stacked card (springs of Ein Qiniyye) has no single hover-cycle
@@ -1152,17 +1282,16 @@ function cardHTML(cat, item, i){
           ${hasImg
             ? `<img class="fill-img" src="${encodeImgPath(item.img)}" alt="${item.t}" loading="lazy">`
             : `<div class="fill-block" style="${bg(item)}"></div><div class="glyph">${glyphHTML(item)}</div>`}
-          ${badge ? `<div class="badge">${badge}</div>` : ''}
         </div>
       </a>`;
   const mobilePriority = item.mobilePriority !== undefined ? item.mobilePriority : i;
   const colAttr = item.col !== undefined ? ` data-col="${item.col}"` : '';
   return `
-    <div class="card" data-i="${i}" data-span="${item.span || 2}" data-ratio="${ratio}" data-mp="${mobilePriority}"${colAttr}>
+    <div class="card" data-i="${i}" data-span="${item.span || 2}" data-mp="${mobilePriority}"${colAttr}>
       ${thumbHTML}
       <div class="card-caption">
         <div class="card-title">
-          <a ${linkAttr(cardTarget)}>${item.t}</a>${item.caseStudy ? ` <a class="readmore" ${linkAttr(readMoreTarget)}>Read more</a>` : ''}
+          <a ${linkAttr(cardTarget)}>${item.t}</a>
         </div>
         ${item.d ? `<p class="card-desc">${item.d}</p>` : ''}
       </div>
@@ -1267,9 +1396,19 @@ function renderGrid(cat){
    CARD HOVER GALLERIES — a project with more than one image
    auto-cycles through them while its card is hovered (a manual
    arrow pair is also shown, for anyone who wants to linger on
-   one frame). Resets to the cover on mouse-leave. This is separate
-   from the lightbox's own gallery, which is manual-only.
+   one frame). Leaving stops on whatever frame is showing. This is
+   separate from the lightbox's own gallery, which is manual-only.
 --------------------------------------------------------- */
+// cross-card registry of "stop cycling" fns for any gallery currently
+// hovered — route() clears all of them on every navigation, since a
+// click that opens a lightbox never fires mouseleave on the thumb it
+// clicked (see wireCardGalleries)
+const activeCardTimers = new Set();
+function stopAllCardGalleries(){
+  activeCardTimers.forEach(stop => stop());
+  activeCardTimers.clear();
+}
+
 function wireCardGalleries(cat){
   const data = CATS[cat];
   const all = data.items.concat(data.editorial || []);
@@ -1293,14 +1432,25 @@ function wireCardGalleries(cat){
     fillImg.after(fillImg2);
     let front = fillImg, back = fillImg2;
     let idx = 0, timer = null;
+    // wait for the incoming image to actually be decoded before starting
+    // the crossfade — setting src + opacity:1 in the same tick fades in
+    // a still-blank <img> the instant it isn't already cached (every
+    // gallery beyond the first couple of views, e.g. Herzl's 16 images
+    // or Memento's 6), which is what showed as a white/grey flash
     const show = n => {
       idx = (n + imgs.length) % imgs.length;
-      back.src = imgs[idx];
-      back.style.transition = 'opacity .35s ease';
-      front.style.transition = 'opacity .35s ease';
-      back.style.opacity = '1';
-      front.style.opacity = '0';
-      [front, back] = [back, front];
+      const target = imgs[idx];
+      const reveal = () => {
+        back.style.transition = 'opacity .35s ease';
+        front.style.transition = 'opacity .35s ease';
+        back.style.opacity = '1';
+        front.style.opacity = '0';
+        [front, back] = [back, front];
+      };
+      back.onload = null;
+      back.src = target;
+      if(back.complete) reveal();
+      else back.onload = reveal;
     };
     const prevBtn = document.createElement('button');
     prevBtn.className = 'thumb-nav prev'; prevBtn.type = 'button';
@@ -1311,11 +1461,24 @@ function wireCardGalleries(cat){
     thumb.append(prevBtn, nextBtn);
     prevBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); show(idx - 1); });
     nextBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); show(idx + 1); });
+    // leaving hover only stops the auto-advance — it does NOT jump back to
+    // the cover. Whatever image was on screen when the mouse left stays as
+    // the thumbnail, so the gallery reads as "settled here" rather than
+    // snapping back every time. Also called from route() on every
+    // navigation (see activeCardTimers below): a click that opens the
+    // lightbox never fires mouseleave on the thumb it clicked, so without
+    // this the interval would keep advancing images forever underneath
+    // the (98%-opaque) lightbox scrim, reading as a flicker bleeding
+    // through it.
+    const stop = () => { clearInterval(timer); timer = null; };
     thumbLink.addEventListener('mouseenter', () => {
+      if(timer) return;
       timer = setInterval(() => show(idx + 1), 1100);
+      activeCardTimers.add(stop);
     });
     thumbLink.addEventListener('mouseleave', () => {
-      clearInterval(timer); timer = null; show(0);
+      activeCardTimers.delete(stop);
+      stop();
     });
   });
 }
@@ -1323,8 +1486,8 @@ function wireCardGalleries(cat){
 /* ---------------------------------------------------------
    LIGHTBOX (general) — the generic project preview: image + text
    floating directly on the light scrim, no card (see .lb-panel
-   comment). "close" is the same viewport-corner control the symbol
-   lightbox uses. Click-outside or Escape also dismiss it.
+   comment). "close" sits at the top of the text column; click-outside
+   or Escape also dismiss it.
 --------------------------------------------------------- */
 function openProjectLightbox(cat, item, startIdx){
   const images = item.images && item.images.length ? item.images : [{img:item.img, c:item.c, g:item.g}];
@@ -1338,7 +1501,6 @@ function openProjectLightbox(cat, item, startIdx){
   // touched, and nothing about the panel gets thrown away and rebuilt
   // just to change frames the way it used to
   lightbox.innerHTML = `
-    <button class="lb-close" aria-label="Close">close</button>
     <div class="lb-panel">
       <div class="lb-project-media${images.length > 1 ? ' has-multi' : ''}">
         <div class="lb-media-layer lb-media-a">${frameHTML(images[idx])}</div>
@@ -1349,23 +1511,37 @@ function openProjectLightbox(cat, item, startIdx){
         ` : ''}
       </div>
       <div class="lb-project-text">
-        <div class="lb-project-title">${item.t}</div>
-        ${item.d ? `<p class="lb-project-desc">${item.d}</p>` : ''}
-        ${item.note ? `<p class="lb-project-note">${item.note}</p>` : ''}
-        ${item.caseStudy ? `<a class="lb-project-link" ${linkAttr('#/'+cat+'/'+item.slug)}>Read more about this project</a>` : ''}
+        <button class="lb-project-close" aria-label="Close">close</button>
+        <div class="lb-project-body">
+          <div class="lb-project-title">${item.t}</div>
+          ${item.d ? `<p class="lb-project-desc">${item.d}</p>` : ''}
+          ${item.note ? `<p class="lb-project-note">${item.note}</p>` : ''}
+          ${item.caseStudy ? `<a class="lb-project-link" ${linkAttr('#/'+cat+'/'+item.slug)}>Read more about this project</a>` : ''}
+        </div>
       </div>
     </div>
   `;
   let front = lightbox.querySelector('.lb-media-a');
   let back = lightbox.querySelector('.lb-media-b');
+  // same load-gating as the grid thumb's crossfade (see wireCardGalleries):
+  // reveal only once the incoming image has actually decoded, so a
+  // not-yet-cached image never shows as a blank/grey frame mid-crossfade
+  let goSeq = 0;
   const go = n => {
     idx = (n + images.length) % images.length;
+    const seq = ++goSeq; // a slower, superseded image mustn't swap the layers when it finally loads
+    const reveal = () => {
+      if(seq !== goSeq) return;
+      back.style.opacity = '1';
+      front.style.opacity = '0';
+      [front, back] = [back, front];
+    };
     back.innerHTML = frameHTML(images[idx]);
-    back.style.opacity = '1';
-    front.style.opacity = '0';
-    [front, back] = [back, front];
+    const incoming = back.querySelector('img');
+    if(incoming && !incoming.complete) incoming.onload = reveal;
+    else reveal();
   };
-  lightbox.querySelector('.lb-close').addEventListener('click', e=>{ e.stopPropagation(); location.hash = '#/' + cat; });
+  lightbox.querySelector('.lb-project-close').addEventListener('click', e=>{ e.stopPropagation(); location.hash = '#/' + cat; });
   if(images.length > 1){
     lightbox.querySelector('.prev').addEventListener('click', e=>{ e.stopPropagation(); go(idx - 1); });
     lightbox.querySelector('.next').addEventListener('click', e=>{ e.stopPropagation(); go(idx + 1); });
@@ -1380,8 +1556,7 @@ function openProjectLightbox(cat, item, startIdx){
   lightbox.classList.add('show');
   document.body.style.overflow = 'hidden';
   lightbox.onclick = (e)=>{ if(e.target === lightbox) location.hash = '#/' + cat; };
-  lightbox._keys = (e)=>{ if(e.key === 'Escape') location.hash = '#/' + cat; };
-  document.addEventListener('keydown', lightbox._keys);
+  setLightboxKeys(e=>{ if(e.key === 'Escape') location.hash = '#/' + cat; });
 
   // FLIP: the clicked grid thumbnail's on-screen rect (captured by the
   // click handler before navigating) becomes the animation's start —
@@ -1434,7 +1609,7 @@ function renderCasePage(cat, item){
       </div>
       ${cs.series.map(s=>`
         <section class="series" data-series="${s.key}">
-          <p class="series-statement" style="--accent:${s.accent}">${s.statement}</p>
+          <p class="series-statement">${s.statement}</p>
           <div class="series-grid">
             ${s.symbols.map((sym,i)=>`
               <a class="sym" ${linkAttr('#/'+cat+'/'+item.slug+'/'+slugify(sym.n))} style="transition-delay:${i*28}ms">
@@ -1545,18 +1720,25 @@ function openLightbox(cat, item, sym){
   lightbox.querySelector('.next').onclick = ()=> location.hash = base + '/' + slugify(next.n);
   lightbox.onclick = (e)=>{ if(e.target === lightbox) location.hash = base; };
 
-  lightbox._keys = (e)=>{
+  setLightboxKeys(e=>{
     if(e.key === 'Escape') location.hash = base;
     if(e.key === 'ArrowLeft') location.hash = base + '/' + slugify(prev.n);
     if(e.key === 'ArrowRight') location.hash = base + '/' + slugify(next.n);
-  };
-  document.addEventListener('keydown', lightbox._keys);
+  });
+}
+
+// one keydown handler at a time: stepping from symbol to symbol reopens
+// the lightbox without closing it, and each open used to add another
+// listener on top of the last, so every key press ran all of them
+function setLightboxKeys(fn){
+  if(lightbox._keys) document.removeEventListener('keydown', lightbox._keys);
+  lightbox._keys = fn;
+  if(fn) document.addEventListener('keydown', fn);
 }
 
 function closeLightbox(){
-  if(!lightbox) return;
   lightbox.classList.remove('show');
-  if(lightbox._keys) document.removeEventListener('keydown', lightbox._keys);
+  setLightboxKeys(null);
   document.body.style.overflow = '';
 }
 
