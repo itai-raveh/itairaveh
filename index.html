@@ -13,21 +13,31 @@
     --brand:#ef5da8;
     --science:#1fae70;
     --animation:#f2822f;
-    --ink:#171717;
+    --ink:#000;
     --sub:#8c8c8c;
     --bg:#ffffff;
     --line:#ececec;
+    /* type system — three sizes, two weights, two line heights; every
+       text on the site uses one of these (the logo is the only exception) */
+    --fs-text:12px;      /* everything: nav, captions, descriptions, intros, bio */
+    --fs-title:19.6px;   /* a project's name on its page / in the lightbox */
+    --fs-display:3.5695vw; /* homepage headline and every statement line */
+    --lh-text:1.4;
+    --lh-display:1.2857;
   }
+  @media (max-width:1024px){ :root{--fs-display:5.844vw;} } /* 52.8px on the 768 frame, at 85% */
+  @media (max-width:600px){ :root{--fs-display:7.707vw;} }  /* 28.9px on the 375 frame */
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     font-family:"Plus Jakarta Sans","Helvetica Neue",Arial;
-    font-weight:400;
+    font-weight:400; font-size:var(--fs-text); line-height:var(--lh-text);
     color:var(--ink);
     background:var(--bg);
     overflow-x:hidden;
   }
   a{color:inherit;}
+  button{font-family:inherit; line-height:inherit; color:inherit;}
 
   /* ---------- NAV ---------- */
   .nav{
@@ -37,11 +47,11 @@
     z-index:50;
   }
   .nav-left{display:flex; align-items:center; gap:22px; min-width:0;}
-  .logo{font-weight:700; font-size:16px; letter-spacing:.01em; cursor:pointer; white-space:nowrap;}
+  .logo{font-weight:700; font-size:16px; cursor:pointer; white-space:nowrap;}
   .nav-links{display:flex; gap:18px; list-style:none; margin:0; padding:0;}
-  .nav-links li{font-size:12px; font-weight:700; color:var(--ink); cursor:pointer; transition:color .2s;}
-  .nav-links li.dim{color:#bdbdbd;}
-  .nav-right{display:flex; gap:18px; font-size:12px; font-weight:700;}
+  .nav-links li{font-size:var(--fs-text); font-weight:700; color:var(--ink); cursor:pointer; transition:color .2s;}
+  .nav-links li.dim{color:var(--sub);}
+  .nav-right{display:flex; gap:18px; font-size:var(--fs-text); font-weight:700;}
   .nav-right a{text-decoration:none;}
   /* 27px wide, three 1px lines 10px apart — per the tablet/mobile frames */
   .nav-burger{
@@ -53,11 +63,11 @@
 
   /* tablet + mobile (the "new homepage 3" frames): bigger logo, burger
      instead of inline links; the links and Instagram/Bio open as one
-     full-screen menu. Nav insets are the frames' own: logo at x=44 /
-     burger ending at x=715 on the 768 tablet frame, 30 / 346 on the 375
-     mobile frame, both with the burger's top line at y=47. */
+     full-screen menu. Burger ends at x=715 on the 768 tablet frame and
+     346 on the 375 mobile frame, top line at y=47 (the frames' insets);
+     the logo sits on the page's 28px side margin. */
   @media (max-width:1024px){
-    .nav{padding:47px 53px 0 44px; align-items:flex-start;}
+    .nav{padding:47px 53px 0 28px; align-items:flex-start;}
     .logo{font-size:28px; letter-spacing:0; line-height:1; margin-top:1px;}
     .nav-burger{display:flex;}
     .nav-links, .nav-right{
@@ -67,7 +77,7 @@
       flex-direction:column; align-items:center; justify-content:center;
       gap:26px; list-style:none; margin:0; padding:0;
     }
-    .nav-links li{font-size:22px;}
+    .nav-links li{font-size:var(--fs-title);}
     .nav-right{flex-direction:row; gap:24px; inset:auto 0 48px 0;}
     .nav.menu-open .nav-links, .nav.menu-open .nav-right{display:flex;}
     .nav.menu-open .nav-burger span:nth-child(1){transform:translateY(10px) rotate(45deg);}
@@ -75,7 +85,7 @@
     .nav.menu-open .nav-burger span:nth-child(3){transform:translateY(-10px) rotate(-45deg);}
   }
   @media (max-width:600px){
-    .nav{padding:47px 29px 0 30px;}
+    .nav{padding:47px 29px 0 28px;}
   }
 
   /* ---------- HERO ---------- */
@@ -91,12 +101,13 @@
   .scatter{position:absolute; inset:0; pointer-events:none;}
   .scatter.back{z-index:1;}
   .scatter.front{z-index:3;}
+  /* a plain fade, no movement */
   .swatch{
-    position:absolute; opacity:0; transform:scale(.9) translateY(8px);
-    transition:opacity .22s cubic-bezier(.16,1,.3,1), transform .22s cubic-bezier(.16,1,.3,1);
+    position:absolute; opacity:0;
+    transition:opacity .5s ease;
     background:no-repeat center / contain;
   }
-  .swatch.active{opacity:1; transform:none;}
+  .swatch.active{opacity:1;}
 
   /* Headline. Sizes, line breaks and icon placement are the Figma frames'
      ("new homepage 4/desktop.svg" at 1920, "new homepage 3" tablet at 768
@@ -106,7 +117,7 @@
      nowrap stops anything else from breaking. */
   .lead{
     position:relative; z-index:2;
-    font-weight:400; font-size:3.5695vw; line-height:1.2857;
+    font-weight:400; font-size:var(--fs-display); line-height:var(--lh-display);
     white-space:nowrap; margin:0;
   }
   .lead br.s{display:none;}
@@ -131,7 +142,7 @@
   .lead .cat[data-cat="animation"] .cat-icon{width:1.486em; height:1.486em; vertical-align:-.42em; margin:0 -.27em 0 .145em;}
 
   @media (max-width:1024px){
-    .lead{text-align:center; font-size:5.844vw;} /* 52.8px on the 768 frame, at 85% */
+    .lead{text-align:center;}
     .lead br.s{display:inline;}
     .lead br.d{display:none;}
     .lead .cat .cat-icon{width:1.364em; height:1.364em; vertical-align:-.32em; margin:0;}
@@ -139,7 +150,6 @@
     .lead .cat[data-cat="science"] .cat-icon{width:1.345em; height:1.345em;}
   }
   @media (max-width:600px){
-    .lead{font-size:7.707vw;} /* 28.9px on the 375 frame */
     .lead .cat .cat-icon{width:1.425em; height:1.425em;}
     .lead .cat[data-cat="illustration"] .cat-icon{width:1.5em; height:1.537em;}
     .lead .cat[data-cat="science"] .cat-icon{width:1.237em; height:1.237em;}
@@ -178,7 +188,7 @@
   .grid-page{display:none; padding:100px 28px 80px;}
   .grid-page.show{display:block;}
   .breadcrumb{
-    font-size:12px; color:var(--sub);
+    font-size:var(--fs-text); color:var(--sub);
     padding-bottom:14px; margin-bottom:34px;
     border-bottom:1px solid var(--line);
   }
@@ -208,6 +218,7 @@
   .card-thumb .fill-block{
     position:absolute; inset:0;
   }
+  .card-thumb.contain .fill-img{object-fit:contain;}
   .card-thumb .fill-img, .card-thumb .fill-block{
     filter:blur(18px); transform:scale(1.15); opacity:.9;
     transition:filter .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1), opacity .25s ease;
@@ -260,12 +271,52 @@
   /* title sits below the image, description below the title. "Read more"
      lives only in the lightbox now (.lb-project-link) — the grid caption
      used to duplicate it, so there's no .readmore rule here any more. */
+  /* title (+ "Read more" under it) on the left; with a description, the
+     description takes the right column from 44% of the card — measured off
+     the Brands / Science / Editorial layouts */
   .card-caption{margin-top:6px;}
-  .card-title{font-size:12px; font-weight:700; color:#000;}
-  .card-title > a{text-decoration:none;}
+  .card-caption.has-desc{display:grid; grid-template-columns:44% 1fr; column-gap:14px;}
+  .card-title{font-size:var(--fs-text); font-weight:400; color:#000; line-height:var(--lh-text);}
+  .card-title strong{font-weight:700;}
+  .card-title a{text-decoration:none;}
+  .card-more{
+    display:inline-block; margin-top:2px; font-size:var(--fs-text); line-height:var(--lh-text); color:#000;
+    text-decoration:underline; text-underline-offset:2px; cursor:pointer;
+  }
   .card-desc{
-    font-size:12px; font-weight:400; color:#000; line-height:1.4;
-    margin:2px 0 0;
+    font-size:var(--fs-text); font-weight:400; color:#000; line-height:var(--lh-text);
+    margin:0;
+  }
+
+  /* a looping film (Vimeo background mode) — the button over it opens it
+     with sound in the lightbox */
+  .vid-box{position:relative; overflow:hidden; background:#f1f1f1;}
+  .vid-box iframe{position:absolute; inset:0; width:100%; height:100%; border:0; pointer-events:none;}
+  .vid-open{position:absolute; inset:0; width:100%; height:100%; background:none; border:0; padding:0; cursor:pointer;}
+  .vid-open span{
+    position:absolute; right:12px; bottom:12px; width:22px; height:22px;
+    border:1px solid #fff; border-radius:3px; opacity:0; transition:opacity .2s;
+  }
+  .vid-open span::before{
+    content:""; position:absolute; left:8px; top:5px;
+    border-left:7px solid #fff; border-top:5px solid transparent; border-bottom:5px solid transparent;
+  }
+  .vid-open:hover span, .vid-open:focus-visible span{opacity:.9;}
+  .card-thumb.loaded-now{background:none;}
+  .lb-video{width:min(92vw, calc(88vh * var(--r))); aspect-ratio:var(--r);}
+  .lb-video iframe{width:100%; height:100%; border:0; display:block;}
+
+  /* Animation list: one centred column; a set of loops as a small grid.
+     Caption description sits as a block on the right. */
+  .anim-list{display:flex; flex-direction:column; align-items:center; gap:48px;}
+  .anim-item{width:var(--w);}
+  .anim-set{display:grid; grid-template-columns:repeat(var(--cols),minmax(0,1fr)); gap:10px;}
+  /* title, then the description below it */
+  .anim-item .card-caption.has-desc{display:block;}
+  @media (max-width:956px){ .anim-item{width:100% !important;} }
+  @media (max-width:520px){
+    .anim-set{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .card-caption.has-desc{grid-template-columns:1fr; row-gap:4px;}
   }
 
   /* ---------- MODAL (the popup Readymag couldn't do) ---------- */
@@ -329,11 +380,11 @@
      link vertically within that space — independent of where "close"
      itself sits */
   .lb-project-body{flex:1; display:flex; flex-direction:column; justify-content:center; min-height:0;}
-  .lb-project-title{font-size:14px; font-weight:700; margin:0 0 8px; line-height:1.3; color:#000;}
-  .lb-project-desc{font-size:12px; color:#000; line-height:1.5; margin:0 0 10px;}
-  .lb-project-note{font-size:12px; font-style:italic; color:#000; line-height:1.6; margin:0 0 14px;}
+  .lb-project-title{font-size:var(--fs-title); font-weight:700; margin:0 0 8px; line-height:var(--lh-text); color:#000;}
+  .lb-project-desc{font-size:var(--fs-text); color:#000; line-height:var(--lh-text); margin:0 0 10px;}
+  .lb-project-note{font-size:var(--fs-text); font-style:italic; color:#000; line-height:var(--lh-text); margin:0 0 14px;}
   .lb-project-link{
-    font-size:12px; font-weight:600; color:#000; text-decoration:underline;
+    font-size:var(--fs-text); font-weight:400; color:#000; text-decoration:underline;
     text-decoration-style:dotted; text-underline-offset:3px;
   }
   /* "close" is content-anchored (left-aligned with the text column) rather
@@ -347,8 +398,8 @@
      pulling "close" away from the left edge the rest of the text aligns to. */
   .lb-project-close{
     display:block; flex:none; align-self:flex-start; background:none; border:none; cursor:pointer;
-    font-size:12px; font-weight:600; color:#000; opacity:.7;
-    letter-spacing:.02em; text-decoration:underline; text-underline-offset:3px;
+    font-size:var(--fs-text); font-weight:400; color:#000; opacity:.7;
+    text-decoration:underline; text-underline-offset:3px;
     margin:0 0 14px; padding:0; transition:opacity .2s;
   }
   .lb-project-close:hover{opacity:1;}
@@ -366,14 +417,9 @@
 
   /* ---------- CASE STUDY: SERIES LAYOUT ---------- */
   .case-top{max-width:1180px; margin:0 auto; padding:110px 28px 20px; position:relative;}
-  .case-top .back{
-    position:static; display:inline-block; margin-bottom:38px;
-    font-size:13px; font-weight:600; color:var(--sub); cursor:pointer;
-  }
-  .case-top .back:hover{color:var(--ink);}
   .case-h1{
-    font-size:clamp(28px,4vw,46px); font-weight:700;
-    line-height:1.12; letter-spacing:-.01em;
+    font-size:var(--fs-title); font-weight:700;
+    line-height:var(--lh-text);
     max-width:14ch; margin:0 0 30px;
   }
   .case-intro-cols{
@@ -381,12 +427,12 @@
     gap:26px; max-width:760px;
   }
   @media (max-width:720px){ .case-intro-cols{grid-template-columns:1fr;} }
-  .case-intro-cols p{font-size:15px; line-height:1.6; margin:0; color:#222;}
-  .case-note{font-style:italic; color:var(--sub);}
+  .case-intro-cols p{font-size:var(--fs-text); line-height:var(--lh-text); margin:0; color:#000;}
+  .case-note{font-style:italic;}
 
   .series{padding:90px 28px 20px; max-width:1500px; margin:0 auto;}
   .series-statement{
-    font-size:clamp(22px,3.1vw,40px); font-weight:400; line-height:1.3;
+    font-size:var(--fs-display); font-weight:400; line-height:var(--lh-display);
     text-align:center; max-width:22ch; margin:0 auto 70px;
     opacity:0; transform:translateY(14px);
     transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
@@ -413,8 +459,8 @@
   }
   .sym:hover .sym-img{transform:scale(1.07);}
   .sym-name{
-    margin-top:10px; font-size:11px; letter-spacing:.02em;
-    color:#444;
+    margin-top:10px; font-size:var(--fs-text); line-height:var(--lh-text);
+    color:#000;
   }
 
   /* ---------- LIGHTBOX (single symbol, deep-linked) ---------- */
@@ -437,17 +483,17 @@
   .lightbox.show .lb-figure{transform:scale(1);}
   .lb-figure img{width:100%; height:auto; display:block;}
   .lb-figure figcaption{
-    margin-top:22px; font-size:13px; color:var(--ink);
+    margin-top:22px; font-size:var(--fs-text); color:var(--ink);
     display:flex; gap:10px; justify-content:center; align-items:baseline;
   }
-  .lb-figure figcaption span{font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:700;}
+  .lb-figure figcaption span{font-weight:700;}
   .lb-close, .lb-nav{
     position:absolute; background:none; border:none; cursor:pointer;
-    line-height:1;
   }
+  .lb-nav{line-height:1;}
   .lb-close{
-    top:14px; right:18px; font-size:14px; font-weight:600;
-    color:var(--ink); letter-spacing:.02em; text-decoration:underline;
+    top:14px; right:18px; font-size:var(--fs-text); font-weight:400;
+    color:var(--ink); text-decoration:underline;
     text-underline-offset:3px; opacity:.85; transition:opacity .2s;
     padding:14px 16px; /* bigger hit target than the text alone */
   }
@@ -457,52 +503,162 @@
   .lb-nav.prev{left:12px;}
   .lb-nav.next{right:12px;}
 
-  /* ---------- CASE STUDY PAGE ---------- */
-  .case-page{display:none;}
+  /* ---------- INNER PAGE (project page template) ---------- */
+  /* Decoded from the project PDFs onto the site's own grid: the same 28px
+     side margins and 9 tracks / 14px gutter as the category masonry,
+     card-caption type for captions (12px), homepage headline size for
+     statements. A media section is centred on --span of the 9 tracks
+     (the side padding below is exactly that many tracks narrower). */
+  .case-page{display:none; padding-bottom:80px;}
   .case-page.show{display:block;}
-  .case-hero{
-    min-height:56vh; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; text-align:center;
-    padding:120px 8vw 60px; color:#fff;
-  }
-  .case-hero .back{
-    position:absolute; top:22px; left:28px;
-    font-size:13px; font-weight:600; color:#fff;
-    cursor:pointer; z-index:60; opacity:.85;
-  }
-  .case-hero .back:hover{opacity:1;}
-  .case-hero-glyph{font-size:64px; margin-bottom:18px;}
-  .case-hero h1{font-size:clamp(24px,4vw,40px); font-weight:700; margin:0 0 14px;}
-  .case-hero p{font-size:16px; max-width:52ch; line-height:1.6; opacity:.92; margin:0;}
+  .case-hero-img img{width:100%; max-height:100vh; object-fit:cover; display:block;}
+  /* a hero with its own proportions (caseStudy.heroRatio): the image keeps
+     its shape inside, the rest is filled with its edge colour */
+  .case-hero-img.fixed{box-sizing:content-box; aspect-ratio:var(--ratio);}
+  .case-hero-img.fixed img{height:100%; max-height:none; object-fit:contain; object-position:var(--align);}
+  /* tablet/mobile nav is taller than the image's own top margin, so the
+     hero gets extra height above the image, filled with the image's own
+     edge colour (sampled in JS), to keep the illustration clear of it */
+  @media (max-width:1024px){ .case-hero-img{padding-top:68px;} }
+  @media (max-width:600px){ .case-hero-img{padding-top:80px;} }
 
-  .case-body{max-width:760px; margin:0 auto; padding:60px 24px;}
-  .case-body p{font-size:16px; line-height:1.75; color:#333; margin:0 0 22px;}
-  .case-media{
-    display:grid; grid-template-columns:1fr 1fr; gap:16px;
-    max-width:1040px; margin:0 auto 60px; padding:0 24px;
+  .case-back{
+    display:inline-block; font-size:var(--fs-text); font-weight:400; color:#000;
+    cursor:pointer; text-decoration:none;
   }
-  .case-media .m{
-    aspect-ratio:4/3; border-radius:0;
-    display:flex; align-items:center; justify-content:center; font-size:38px;
+  .case-intro{
+    display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); column-gap:14px;
+    align-items:baseline; padding:60px 28px 100px;
   }
-  .case-media .m.full{grid-column:1/-1; aspect-ratio:21/9;}
-  .case-gallery{
-    display:grid; grid-template-columns:repeat(2,1fr); gap:16px;
-    max-width:1040px; margin:0 auto 80px; padding:0 24px;
-  }
-  .case-gallery img{width:100%; height:auto; display:block; border-radius:0;}
-  @media (max-width:720px){ .case-gallery{grid-template-columns:1fr;} }
+  .case-page > .case-intro:first-child{padding-top:100px;}
+  .case-foot{padding:46px 28px 0;}
+  .case-intro h1{grid-column:3/span 2; font-size:var(--fs-title); font-weight:700; line-height:var(--lh-text); color:#000; margin:0;}
+  .case-intro-text{grid-column:5/span 3;}
+  .case-intro-text p{font-size:var(--fs-text); line-height:var(--lh-text); color:#000; margin:0;}
+  .case-intro-text p + p{margin-top:1em;}
+  .rich-link{color:inherit; text-decoration:underline dotted; text-underline-offset:3px;}
+  .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
 
-  .case-testimonial{
-    max-width:640px; margin:0 auto 100px; padding:0 24px;
-    display:flex; gap:16px; align-items:flex-start;
+  .case-statement{
+    display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); column-gap:14px;
+    padding:82px 28px 100px;
   }
-  .case-testimonial .avatar{
-    width:52px; height:52px; border-radius:50%; background:#ddd;
-    flex:none; display:flex; align-items:center; justify-content:center; font-size:20px;
+  .case-statement p{
+    grid-column:2/span 7; text-align:center; margin:0;
+    font-size:var(--fs-display); font-weight:400; line-height:var(--lh-display);
   }
-  .case-testimonial p{font-size:14px; color:#444; line-height:1.6; margin:0 0 6px;}
-  .case-testimonial .who{font-size:12px; color:var(--sub); font-weight:600;}
+  .case-statement.italic p{font-style:italic;}
+
+  .case-media-grid{
+    --cols:2; --span:9;
+    display:grid; grid-template-columns:repeat(var(--cols),minmax(0,1fr)); gap:18px 14px;
+    padding:0 calc(28px + (100% - 42px) * (9 - var(--span)) / 18); margin-bottom:18px;
+  }
+  .case-media-grid figure{margin:0; min-width:0;}
+  .case-media-grid img{width:100%; height:auto; display:block; cursor:zoom-in;}
+  .case-media-grid figcaption{margin-top:6px; font-size:var(--fs-text); line-height:var(--lh-text); color:#000;}
+  .case-media-grid.center figcaption{text-align:center;}
+  .case-media-grid.large figcaption{margin-top:14px;}
+  /* one row of images at a shared height: each figure grows in proportion
+     to its own aspect ratio (--r) */
+  .case-media-grid.row{display:flex; gap:14px; align-items:flex-start;}
+  .case-media-grid.row figure{flex:var(--r) 1 0;}
+  /* a box of a given ratio: the image fits inside it, or fills and crops */
+  .m-box{position:relative; aspect-ratio:var(--r); overflow:hidden;}
+  .m-box img, .m-box video{position:absolute; inset:0; width:100%; height:100%; object-fit:contain;}
+  .m-box.crop img{object-fit:cover; object-position:var(--pos, center);}
+  /* videos are encoded at their box's exact shape, padded in their own
+     colour, so they cover it edge to edge — the box's CSS colour only shows
+     while the video loads (a CSS colour next to video pixels never quite
+     matches: browsers render video colour through a separate pipeline) */
+  .m-box.video video{object-fit:cover;}
+  .m-box.placeholder{display:flex; align-items:center; justify-content:center;}
+  .m-box.placeholder span{font-size:var(--fs-text); color:var(--sub);}
+
+  /* full-bleed coloured band holding its own sections */
+  .case-band{padding:70px 0; margin:64px 0 32px;}
+  .case-band.flush{padding-bottom:0;}
+  .case-band > :last-child{margin-bottom:0;}
+  .case-band .case-statement{padding:0 28px 56px;}
+  /* cut-out figures placed on a coloured band, positions as fractions of
+     the band (measured off the PDF) so the arrangement scales as one */
+  .case-collage{position:relative; overflow:hidden; aspect-ratio:var(--ratio);}
+  .case-collage img{position:absolute; display:block; height:auto;}
+  .case-collage.v-tab, .case-collage.v-mob{display:none;}
+  @media (max-width:1024px){ .case-collage.v-desk{display:none;} .case-collage.v-tab{display:block;} }
+  @media (max-width:600px){ .case-collage.v-tab{display:none;} .case-collage.v-mob{display:block;} }
+  .case-media-grid.bleed{padding:0;}
+  .case-hero-img.fixed.crop img{object-fit:cover;}
+  .m-box.embed iframe, .case-media-grid .vid-box{display:block;}
+  .m-box.embed iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+
+  /* same breakpoint the masonry drops from 9 tracks to 2 (901px of grid) */
+  @media (max-width:956px){
+    .case-intro, .case-statement{grid-template-columns:minmax(0,1fr);}
+    .case-intro{row-gap:14px; padding-top:40px; padding-bottom:64px;}
+    .case-intro h1, .case-intro-text, .case-statement p{grid-column:1/-1;}
+    .case-intro-text{max-width:520px;}
+    .case-statement{padding-top:46px; padding-bottom:64px;}
+    .case-media-grid{padding:0 28px;}
+    .case-band{padding:48px 0; margin:40px 0 24px;}
+    .case-band .case-statement{padding-bottom:40px;}
+  }
+  @media (max-width:576px){
+    .case-media-grid{grid-template-columns:minmax(0,1fr);}
+    .case-media-grid.row{flex-direction:column;}
+    .case-media-grid.row figure{flex:none; width:100%;}
+  }
+
+  /* ---------- ABOUT (#/about) ---------- */
+  /* on the site's 9-track grid: text on tracks 2-5, an empty track as the
+     gap, portrait on 7-9. The clients sit below, from the text's left edge
+     to where the portrait begins (tracks 2-6), under a hairline — one logo
+     per track, each sized relative to the widest (their widths in the PDF) */
+  .about{
+    display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); column-gap:14px;
+    align-items:start; padding:112px 28px 0;
+  }
+  .about-photo{grid-column:7/span 3; grid-row:1;}
+  .about-photo img, .about-photo .m-box{width:100%; display:block;}
+  .about-main{grid-column:2/span 4; grid-row:1;}
+  .about-main > p{margin:0 0 12px; color:#000;}
+  .about-main > p.about-lead{font-weight:700;}
+  .about-cols{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:32px 14px; margin-top:40px;}
+  .about-cols h2, .about-clients h2{font-size:var(--fs-text); font-weight:700; line-height:var(--lh-text); margin:0 0 12px; color:#000;}
+  .about-cols h2 + ul + h2{margin-top:32px;}
+  .about-cols ul{list-style:none; margin:0; padding:0;}
+  .about-cols li{margin:0 0 10px; color:#000;}
+  .about-clients{
+    grid-column:2/span 5; grid-row:2; margin-top:64px; padding-top:20px;
+    border-top:1px solid var(--line);
+  }
+  .about-logos{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); column-gap:14px; row-gap:28px; align-items:center; margin-top:8px;}
+  .about-logos img{display:block; height:auto; width:var(--w);}
+  @media (max-width:956px){
+    .about{grid-template-columns:minmax(0,1fr); row-gap:40px;}
+    .about-photo, .about-main, .about-clients{grid-column:1/-1; grid-row:auto;}
+    .about-photo{max-width:420px;}
+    .about-cols{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .about-clients{margin-top:24px;}
+  }
+  @media (max-width:576px){
+    .about-logos{grid-template-columns:repeat(3,minmax(0,1fr)); row-gap:22px;}
+  }
+  .nav-right a.dim{color:var(--sub);}
+  @media (max-width:956px){
+    .about{grid-template-columns:minmax(0,1fr); row-gap:40px;}
+    .about-photo, .about-main{grid-column:1/-1; grid-row:auto;}
+    .about-photo{max-width:420px;}
+    .about-cols{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .about-logos{flex-wrap:wrap; justify-content:flex-start; gap:18px 26px;}
+  }
+
+  /* full-screen image view: just the image on the site's white scrim,
+     with room left at the sides for the ‹ › arrows */
+  .lb-full{
+    display:block; max-width:calc(100vw - 144px); max-height:calc(100vh - 56px);
+    width:auto; height:auto; object-fit:contain; cursor:zoom-out;
+  }
 </style>
 </head>
 <body>
@@ -518,8 +674,8 @@
       </ul>
     </div>
     <div class="nav-right">
-      <a href="#" target="_blank" rel="noopener">Instagram</a>
-      <a href="#">Bio</a>
+      <a href="https://www.instagram.com/itairaveh/" target="_blank" rel="noopener">Instagram</a>
+      <a href="#/about" id="bioLink">Bio</a>
     </div>
     <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -532,13 +688,13 @@
     <!-- line breaks are fixed per the frames: br.d on desktop (4 lines),
          br.s on tablet/mobile (7 lines); .lead is nowrap so nothing else breaks -->
     <p class="lead"><span class="baseline-probe"></span>Creating smart, detailed<br class="s">
-      <span class="cat" data-cat="illustration">illustrations projects <img class="cat-icon" src="images/Homepage/Sections icons/illustration.png" alt=""></span>,<br>
+      <span class="cat" data-cat="illustration">illustrations projects <img class="cat-icon" src="images/homepage/icons/illustration.png" alt=""></span>,<br>
       building
-      <span class="cat" data-cat="brand">brand illustration<br class="s"> languages <img class="cat-icon" src="images/Homepage/Sections icons/brands.png" alt=""></span>,<br class="d">
+      <span class="cat" data-cat="brand">brand illustration<br class="s"> languages <img class="cat-icon" src="images/homepage/icons/brand.png" alt=""></span>,<br class="d">
       visualizing<br class="s">
-      <span class="cat" data-cat="science">science communication<br class="s"> <img class="cat-icon" src="images/Homepage/Sections icons/science.png" alt=""></span>,
+      <span class="cat" data-cat="science">science communication<br class="s"> <img class="cat-icon" src="images/homepage/icons/science.png" alt=""></span>,
       and<br class="d"> providing
-      <span class="cat" data-cat="animation">art<br class="s"> direction for animation <img class="cat-icon" src="images/Homepage/Sections icons/animtion.webp" alt=""></span>.
+      <span class="cat" data-cat="animation">art<br class="s"> direction for animation <img class="cat-icon" src="images/homepage/icons/animation.webp" alt=""></span>.
     </p>
   </section>
 
@@ -548,6 +704,7 @@
 
   <div class="lightbox" id="lightbox"></div>
 
+<script src="site-text.js"></script>
 <script>
 /* ---------------------------------------------------------
    DATA — this whole site is driven from this one object.
@@ -587,6 +744,15 @@ function galleryRange(dir, slug, ext, count){
   return arr;
 }
 
+/* cut-out figures on a coloured band: size is the band in the reference
+   PDF's pixels, each item [file, x, y, width] in those same pixels */
+function collage(dir, bg, size, items, variants){
+  const paths = list=> list.map(([f, ...pos])=> [dir + '/' + f, ...pos]);
+  const c = {type:'collage', bg, size, items: paths(items)};
+  Object.entries(variants || {}).forEach(([k, v])=> c[k] = {size:v.size, items:paths(v.items)});
+  return c;
+}
+
 /* Any object with c/g (color+glyph) can instead carry img:'url' and it
    will render as a real photo/illustration, cover-fit, no code changes
    needed elsewhere. Leave img unset to keep using placeholder color+emoji. */
@@ -601,24 +767,23 @@ function glyphHTML(obj){
 
 const CATS = {
   illustration: {
-    label: 'Illustration',
+    name: 'Illustration projects', // full name; the nav's short one is in its markup
     // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
     hero: [
-      'images/Homepage/Illustraiton/ilustration 25.png',
-      'images/Homepage/Illustraiton/ilustration 19.png',
+      'images/homepage/illustration/illustration-25.png',
+      'images/homepage/illustration/illustration-19.png',
       'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp',
-      'images/Homepage/Illustraiton/ilustration 22.png',
-      'images/Homepage/Illustraiton/ilustration 20.png',
-      'images/Homepage/Illustraiton/ilustration 26.png',
+      'images/homepage/illustration/illustration-22.png',
+      'images/homepage/illustration/illustration-20.png',
+      'images/homepage/illustration/illustration-26.png',
       'images/illustration-projects/the-boys/the-boys-cover.jpg',
-      'images/Homepage/Illustraiton/ilustration 23.png',
-      'images/Homepage/Illustraiton/ilustration 21.png',
+      'images/homepage/illustration/illustration-23.png',
+      'images/homepage/illustration/illustration-21.png',
       'images/illustration-projects/heimat/heimat-cover.webp',
     ],
     items: [
       {t:'Gibberish', type:'simple', c:'#e6ddc9', g:'🏺', col:0,
-        img:'images/illustration-projects/gibberish/gibberish-cover.jpg',
-        images: galleryRange('images/illustration-projects/gibberish', 'gibberish', 'jpg', 2)},
+        img:'images/illustration-projects/gibberish/gibberish-cover.jpg'},
       {t:'Sublet', type:'simple', c:'#101010', g:'🏙️', col:2,
         img:'images/illustration-projects/sublet/sublet-cover.png'},
       {t:'City Symbol: Street level Coat Of Arms', type:'case', span:3, col:4, mobilePriority:0.5,
@@ -626,7 +791,6 @@ const CATS = {
         img:'images/illustration-projects/city-symbol/city-symbol-1-cover.png',
         d:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.',
         caseStudy:{
-          bg:'#ffffff',
           intro:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape. The project contains 3 series containing 15 symbols for three different cities: Tel Aviv, Haifa and Jerusalem.',
           note:'Undergraduate project in the visual communication department in Shenkar College of Engineering, Design and Art.',
           series:[
@@ -756,121 +920,337 @@ const CATS = {
         img:'images/illustration-projects/kuli-alma-club-valentine/kuli-alma-club-valentine-cover.jpg',
         images: galleryRange('images/illustration-projects/kuli-alma-club-valentine', 'kuli-alma-club-valentine', 'jpg', 2)},
     ],
+    editorialTracks:11, // the editorial layout is an 11-track grid
+    // order and span/col follow the Editorial layout
     editorial: [
-      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺',
-        img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.jpg'},
-      {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞',
+      {t:'Future of medicine | Calcalist', type:'simple', c:'#005edb', g:'', span:3, col:0,
+        img:'images/illustration-editorial/calcalist-future-of-medicine/calcalist-future-of-medicine-cover.webp'},
+      {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞', span:4, col:3,
         img:'images/illustration-editorial/calcalist-our-digital-mirror/calcalist-our-digital-mirror-cover.png'},
-      {t:'Future of medicine | Calcalist', type:'simple', c:'#cfe8e2', g:'⚕️', ratio:1.3},
-      {t:'Work in post COVID times | Globes', type:'simple', c:'#e6e6e6', g:'💼', ratio:1.3},
-      {t:'The Estonian Sting | Calcalist', type:'simple', c:'#3a5a8a', g:'🕵️', ratio:1.3},
-      {t:'Remote therapy | Calcalist', type:'simple', c:'#cfe0e8', g:'🻋️', ratio:1.3},
-      {t:'The Beach | Adam Tsair Magazine', type:'simple', c:'#e8d9b0', g:'🏖️',
-        img:'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg',
-        images: galleryRange('images/illustration-editorial/adam-tsair-magazine-the-beach', 'adam-tsair-magazine-the-beach', 'jpg', 11)},
-      {t:'Archimedes and the crown | Einayim Magazine', type:'simple', c:'#d4af37', g:'👑',
-        img:'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.png',
-        images: galleryRange('images/illustration-editorial/einayim-magazine-archimedes-and-the-crown', 'einayim-magazine-archimedes-and-the-crown', 'png', 4)},
-      {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖',
-        img:'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg',
-        images: galleryRange('images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'jpg', 9)},
-      {t:'Crypto conservatives | Calcalist', type:'simple', c:'#111111', g:'🪙', ratio:1.3},
-      {t:'Where does salt comes from? | Einayim Magazine', type:'simple', c:'#eef2f5', g:'🧂', ratio:1.3},
-      {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️',
-        img:'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg',
-        images: galleryRange('images/illustration-editorial/einayim-magazine-election-for-children', 'einayim-magazine-election-for-children', 'jpg', 3)},
-      {t:'Chuzpa! | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📰',
-        slug:'einayim-magazine-huzpa',
-        img:'images/illustration-editorial/einayim-magazine-Huzpa/einayim-magazine-Huzpa-cover.jpg'},
-      {t:'What my father never told me', type:'simple', c:'#dcdcdc', g:'👨',
-        img:'images/illustration-editorial/What-my-father-never-told-me/What-my-father-never-told-me-cover.jpg',
-        images: galleryRange('images/illustration-editorial/What-my-father-never-told-me', 'What-my-father-never-told-me', 'jpg', 4)},
-      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗',
-        img:'images/illustration-editorial/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png'},
-      {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕', span:3,
-        img:'images/illustration-editorial/sex/sex-cover.png',
+      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺', span:4, col:7,
+        img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp', images:[{img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-2.jpg'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-3.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-4.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-5.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-6.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-7.webp'}]},
+      {t:'Work in post COVID times | Globes', type:'simple', c:'#565656', g:'', span:3, col:0,
+        img:'images/illustration-editorial/globes-work-in-post-covid-times/globes-work-in-post-covid-times-cover.webp'},
+      {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕', span:4, col:3,
+        img:'images/illustration-editorial/sex/sex-cover.webp',
         images:[
-          {img:'images/illustration-editorial/sex/sex-cover.png'},
-          {img:'images/illustration-editorial/sex/sex-2.jpg'},
-          {img:'images/illustration-editorial/sex/sex-3.png'},
-          {img:'images/illustration-editorial/sex/sex-4.png'},
-          {img:'images/illustration-editorial/sex/sex-5.png'},
-          {img:'images/illustration-editorial/sex/sex-6.png'},
-          {img:'images/illustration-editorial/sex/sex-7.png'},
-          {img:'images/illustration-editorial/sex/sex-8.png'},
-          {img:'images/illustration-editorial/sex/sex-9.png'}
+          {img:'images/illustration-editorial/sex/sex-cover.webp'},
+          {img:'images/illustration-editorial/sex/sex-2.webp'},
+          {img:'images/illustration-editorial/sex/sex-3.webp'},
+          {img:'images/illustration-editorial/sex/sex-4.webp'},
+          {img:'images/illustration-editorial/sex/sex-5.webp'},
+          {img:'images/illustration-editorial/sex/sex-6.webp'},
+          {img:'images/illustration-editorial/sex/sex-7.webp'},
+          {img:'images/illustration-editorial/sex/sex-8.webp'},
+          {img:'images/illustration-editorial/sex/sex-9.webp'},
+          {img:'images/illustration-editorial/sex/sex-10.webp'},
+          {img:'images/illustration-editorial/sex/sex-11.webp'},
+          {img:'images/illustration-editorial/sex/sex-12.webp'},
+          {img:'images/illustration-editorial/sex/sex-13.webp'}
         ],
         d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
-        caseStudy:{bg:'#8a2e5a', intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.'}},
+        caseStudy:{intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.'}},
+      {t:'The Estonian Sting | Calcalist', type:'simple', c:'#efefef', g:'', span:4, col:7,
+        img:'images/illustration-editorial/calcalist-the-estonian-sting/calcalist-the-estonian-sting-cover.webp'},
+      // image not in its folder yet
+      {t:'Remote therapy | Calcalist', type:'simple', c:'#cfe0e8', g:'', span:3, col:0, ratio:1.3},
+      {t:'The Beach | Adam Tsair Magazine', type:'simple', c:'#e8d9b0', g:'🏖️', span:4, col:3,
+        img:'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg',
+        images: galleryRange('images/illustration-editorial/adam-tsair-magazine-the-beach', 'adam-tsair-magazine-the-beach', 'jpg', 11)},
+      {t:'Archimedes and the crown | Einayim Magazine', type:'simple', c:'#d4af37', g:'👑', span:4, col:7,
+        img:'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.png',
+        images: galleryRange('images/illustration-editorial/einayim-magazine-archimedes-and-the-crown', 'einayim-magazine-archimedes-and-the-crown', 'png', 4)},
+      {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖', span:3, col:0,
+        img:'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg',
+        images: galleryRange('images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'jpg', 9)},
+      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗', span:3, col:7,
+        img:'images/illustration-editorial/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png'},
+      {t:'Where does salt comes from? | Einayim Magazine', type:'simple', c:'#ffffff', g:'', span:4, col:0,
+        img:'images/illustration-editorial/einayim-magazine-where-does-salt-comes-from/einayim-magazine-where-does-salt-comes-from-cover.webp'},
+      {t:'Crypto conservatives | Calcalist', type:'simple', c:'#ffffff', g:'', span:3, col:5,
+        img:'images/illustration-editorial/calcalist-crypto-conservatives/calcalist-crypto-conservatives-cover.webp'},
+      {t:'Chuzpa! | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📰', span:2, col:0,
+        slug:'einayim-magazine-huzpa',
+        img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-cover.jpg'},
+      {t:'What my father never told me', type:'simple', c:'#dcdcdc', g:'👨', span:4, col:3,
+        img:'images/illustration-editorial/what-my-father-never-told-me/what-my-father-never-told-me-cover.jpg',
+        images: galleryRange('images/illustration-editorial/what-my-father-never-told-me', 'what-my-father-never-told-me', 'jpg', 4)},
+      {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️', span:3, col:7,
+        img:'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg',
+        images: galleryRange('images/illustration-editorial/einayim-magazine-election-for-children', 'einayim-magazine-election-for-children', 'jpg', 3)},
     ]
   },
   brand: {
-    label: 'Brands',
+    name: 'Branded illustration language',
+    heroFit:'area',
+    // two columns, images whole inside their card, wider gaps, no heading — from the Brands layout
+    tracks:2, defaultSpan:1, heading:false, gaps:[20, 44],
     // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
     hero: [
-      'images/Homepage/Brand/Brand 16.png',
-      'images/Homepage/Brand/Brand 13.png',
-      'images/Homepage/Brand/Brand 17.png',
-      'images/Homepage/Brand/Brand 12.png',
-      'images/Homepage/Brand/Brand 18.png',
-      'images/Homepage/Brand/Brand 15.png',
-      'images/Homepage/Brand/Brand 14.png',
+      'images/homepage/brand/brand-16.png',
+      'images/homepage/brand/brand-13.png',
+      'images/homepage/brand/brand-17.png',
+      'images/homepage/brand/brand-12.png',
+      'images/homepage/brand/brand-18.png',
+      'images/homepage/brand/brand-15.png',
+      'images/homepage/brand/brand-14.png',
     ],
     items: [
-      {t:'Eko engineering', type:'case', slug:'eko', c:'#e2434f', g:'🛠️',
+      {t:'eko engineering', type:'case', slug:'eko', c:'#e2434f', g:'🛠️', cardRatio:1.5, fit:'contain',
         d:'The illustration language created for Eko Engineering is a harmonious blend of hand-drawn whimsy, smart and human-centric charm.',
+        img:'images/brand/eko/gallery/1.png',
+        images:[{img:'images/brand/eko/gallery/1.png'}, {img:'images/brand/eko/gallery/2.png'}, {img:'images/brand/eko/gallery/3.png'}, {img:'images/brand/eko/gallery/4.png'}, {img:'images/brand/eko/gallery/5.png'}, {img:'images/brand/eko/gallery/6.png'}, {img:'images/brand/eko/gallery/7.png'}],
         caseStudy:{
-          bg:'#e2434f',
-          intro:'The illustration language created for Eko Engineering is a harmonious blend of hand-drawn whimsy, smart and human-centric charm.'
+          hero:'images/brand/eko/header.webp',
+          intro:'The illustration language created for Eko Engineering is a harmonious blend of hand-drawn whimsy, smart and human-centric charm. The human nature of the language helps bring to the forefront the company\'s working culture of a "flat organization," promoting a direct and open line of communication between employees and leadership.',
+          sections:[
+            {type:'media', items:[
+              {img:'images/brand/eko/1.webp', caption:'Mutual work'},
+              {img:'images/brand/eko/2.webp', caption:'The flat organization'},
+              {img:'images/brand/eko/3.webp', caption:'Working together'},
+              {img:'images/brand/eko/4.webp', caption:'Different opinions'},
+              {img:'images/brand/eko/5.webp', caption:'Tests'},
+              {img:'images/brand/eko/6.webp', caption:'The flow of work'}
+            ]},
+            {type:'statement', text:'The illustrations found prominent use on the company\'s blog, annual reports showcasing yearly figures, collaborative projects with partners, and more.'},
+            {type:'media', full:true, items:[
+              {img:'images/brand/eko/7.webp', caption:'Custom player'},
+              {img:'images/brand/eko/8.webp', caption:'Developing custom plug ins'},
+              {img:'images/brand/eko/9.webp', caption:'Crash testing'}
+            ]},
+            {type:'statement', text:'Merchandise and apparel for eko Engineering, embodying the brand\'s identity and working culture'},
+            {type:'media', items:[
+              {img:'images/brand/eko/10.webp', caption:'Sweatshirt'},
+              {img:'images/brand/eko/11.webp', caption:'Sweatshirt design'}
+            ]},
+            {type:'media', full:true, items:[
+              {img:'images/brand/eko/12.webp'}
+            ]}
+          ]
         }},
-      {t:'Island.io', type:'case', slug:'island', c:'#0f2a4a', g:'🧘',
+      // Island's animations: compressed copies in images/brand/island/video
+      // (the transparent WebMs flattened onto their box colour). The coffee-cup
+      // user-selection scene has no video yet and stays a placeholder.
+      {t:'Island.io', type:'case', slug:'island', c:'#f2ede8', g:'🧘',
         d:'Illustration language for the Island.io product and web application. Island’s illustration system is based on the concept of a Zen garden in a metaphorical sense.',
+        img:'images/brand/island/gallery/1.png', cardRatio:1.5, fit:'contain',
+        images:[{img:'images/brand/island/gallery/1.png'}, {img:'images/brand/island/gallery/2.png'}, {img:'images/brand/island/gallery/3.png'}, {img:'images/brand/island/gallery/4.png'}, {img:'images/brand/island/gallery/5.png'}, {img:'images/brand/island/gallery/6.png'}, {img:'images/brand/island/gallery/7.png'}, {img:'images/brand/island/gallery/8.png'}],
         caseStudy:{
-          bg:'#0f2a4a',
-          intro:'Illustration language for the Island.io product and web application. Island’s illustration system is based on the concept of a Zen garden in a metaphorical sense.'
+          hero:{video:'images/brand/island/video/hero', bg:'#fdfdfd', ratio:2.35},
+          sections:[
+            {type:'media', cols:1, span:8, items:[{id:'user-selection', placeholder:'#faf9f7', ratio:2.13}]},
+            {type:'media', cols:1, span:8, top:40, items:[{id:'login', video:'images/brand/island/video/login', bg:'#0f472f', ratio:1.889}]},
+            {type:'statement'},
+            {type:'media', cols:1, span:8, items:[{id:'screen-frozen', video:'images/brand/island/video/screen-frozen', bg:'#fbf9f7', ratio:1.99}]},
+            {type:'statement'},
+            {type:'media', span:7, ratio:1.2, items:[4,5,6,7,8,9].map(n=>({img:`images/brand/island/${n}.webp`}))},
+            {type:'media', cols:1, span:8, top:60, items:[{id:'user-disconnected', video:'images/brand/island/video/user-disconnected', bg:'#0f472f', ratio:2.19}]},
+            {type:'media', cols:1, span:8, top:110, items:[{img:'images/brand/island/10.webp'}]},
+            {type:'media', cols:3, span:9, top:100, items:[11,12,13].map(n=>({img:`images/brand/island/${n}.webp`}))},
+            {type:'statement'},
+            {type:'media', span:9, items:[{img:'images/brand/island/14.webp'}, {img:'images/brand/island/15.webp'}]},
+            {type:'band', bg:'#f2ede8', sections:[
+              {type:'media', cols:1, span:5, items:[{img:'images/brand/island/16.webp'}]},
+            ]},
+          ]
+        }},
+      {t:'Benny Goren', type:'case', slug:'benny-goren', c:'#f7e2e1', g:'📐',
+        img:'images/brand/benny-goren/gallery/1.png', cardRatio:1.47, fit:'contain',
+        images:[{img:'images/brand/benny-goren/gallery/1.png'}, {img:'images/brand/benny-goren/gallery/2.png'}, {img:'images/brand/benny-goren/gallery/3.png'}, {img:'images/brand/benny-goren/gallery/4.png'}, {img:'images/brand/benny-goren/gallery/5.png'}, {img:'images/brand/benny-goren/gallery/6.png'}],
+        caseStudy:{
+          hero:'images/brand/benny-goren/header.webp', heroRatio:2.3, heroAlign:'center bottom',
+          sections:[
+            {type:'media', items:[
+              {img:'images/brand/benny-goren/1.webp'},
+              {img:'images/brand/benny-goren/2.webp'},
+              {img:'images/brand/benny-goren/3.webp'},
+              {img:'images/brand/benny-goren/4.webp'},
+              {img:'images/brand/benny-goren/5.webp'},
+              {img:'images/brand/benny-goren/6.webp'},
+            ]},
+            {type:'statement'},
+            {type:'media', cols:1, span:8, items:[
+              {img:'images/brand/benny-goren/7.webp'},
+              {img:'images/brand/benny-goren/8.webp'},
+            ]},
+          ]
+        }},
+      // text for the four below (description, intro, statements, captions) lives only in site-text.js
+      {t:'Kaltura', type:'case', slug:'kaltura', c:'#0370fa', g:'▶️',
+        img:'images/brand/kaltura/gallery/1.png', cardRatio:1.47, fit:'contain',
+        images:[{img:'images/brand/kaltura/gallery/1.png'}, {img:'images/brand/kaltura/gallery/2.png'}, {img:'images/brand/kaltura/gallery/3.png'}, {img:'images/brand/kaltura/gallery/4.png'}, {img:'images/brand/kaltura/gallery/5.png'}, {img:'images/brand/kaltura/gallery/6.png'}, {img:'images/brand/kaltura/gallery/7.png'}],
+        caseStudy:{
+          hero:'images/brand/kaltura/header.png', heroRatio:1.654, noIntro:true,
+          sections:[
+            {type:'statement'},
+            {type:'media', span:8, items:[1,2,3,4,5,6].map(n=>({img:`images/brand/kaltura/${n}.jpg`}))},
+            {type:'statement'},
+            {type:'media', cols:1, span:5, items:[{img:'images/brand/kaltura/7.jpg'}]},
+            {type:'media', cols:1, span:7, ratio:1.92, fill:true, items:[{img:'images/brand/kaltura/8.jpg'}, {img:'images/brand/kaltura/9.jpg'}]},
+            {type:'media', cols:1, span:8, items:[{img:'images/brand/kaltura/10.jpg'}]},
+            {type:'statement'},
+            {type:'media', cols:1, span:8, items:[{img:'images/brand/kaltura/11.jpg'}]},
+            {type:'media', span:8, items:[{img:'images/brand/kaltura/12.jpg'}, {img:'images/brand/kaltura/13.jpg'}]},
+            {type:'media', cols:1, span:7, items:[{img:'images/brand/kaltura/14.jpg'}, {img:'images/brand/kaltura/15.jpg'}]},
+          ]
+        }},
+      {t:'Moshal Scholarship Program Branding', type:'case', slug:'moshal', c:'#313e87', g:'🎓',
+        img:'images/brand/moshal/11.webp', cardRatio:1.365, fit:'contain',
+        images:[{img:'images/brand/moshal/11.webp'}, ...[{img:'images/brand/moshal/gallery/1.png'}, {img:'images/brand/moshal/gallery/2.png'}, {img:'images/brand/moshal/gallery/3.png'}, {img:'images/brand/moshal/gallery/4.png'}, {img:'images/brand/moshal/gallery/5.png'}]],
+        caseStudy:{
+          // four figures as in the PDF; tablet keeps 1-3, mobile 1 and 3
+          hero: collage('images/brand/moshal', '#323e81', [1762, 715], [
+            ['header-1.webp', 95, 104, 502], ['header-2.webp', 486, 120, 556],
+            ['header-3.webp', 908, 119, 409], ['header-4.webp', 1291, 132, 467],
+          ], {
+            tablet:{size:[1450, 715], items:[['header-1.webp', 75, 104, 502], ['header-2.webp', 555, 120, 556], ['header-3.webp', 1035, 119, 409]]},
+            mobile:{size:[1000, 700], items:[['header-1.webp', 70, 60, 502], ['header-3.webp', 570, 75, 409]]},
+          }),
+          sections:[
+            // the PDF's arrangement at 85%, with more room below
+            collage('images/brand/moshal', '#8c89ce', [1762, 1140], [
+              ['2.png', 225, 73, 405], ['3.png', 544, 158, 468], ['1.png', 1009, 127, 555],
+              ['4.png', 204, 407, 403], ['5.png', 799, 504, 461],
+            ]),
+            {type:'statement'},
+            collage('images/brand/moshal', '#323e81', [1762, 1200], [
+              ['7.png', 1158, 55, 653], ['8.png', 455, 336, 653], ['6.png', 16, 520, 483], ['10.png', 953, 650, 653],
+            ]),
+            {type:'statement'},
+            {type:'band', bg:'#313e87', sections:[
+              {type:'media', cols:1, span:7, items:[{img:'images/brand/moshal/11.webp'}]},
+            ]},
+            {type:'statement'},
+            {type:'media', cols:1, span:7, center:true, items:[{img:'images/brand/moshal/12.webp'}]},
+            {type:'media', cols:1, span:8, items:[
+              {img:'images/brand/moshal/13.webp'}, {img:'images/brand/moshal/14.webp'},
+              {img:'images/brand/moshal/15.webp'},
+            ]},
+          ]
+        }},
+      {t:'Help One Billion', type:'case', slug:'help-one-billion', c:'#f19ad7', g:'🐶',
+        img:'images/brand/help-one-billion/gallery/1.webp', cardRatio:1.365, fit:'contain',
+        images:[{img:'images/brand/help-one-billion/gallery/1.webp'}, {img:'images/brand/help-one-billion/gallery/2.png'}, {img:'images/brand/help-one-billion/gallery/3.webp'}, {img:'images/brand/help-one-billion/gallery/4.webp'}, {img:'images/brand/help-one-billion/gallery/5.webp'}, {img:'images/brand/help-one-billion/gallery/6.png'}],
+        caseStudy:{
+          hero:'images/brand/help-one-billion/header.png', heroRatio:2.73, heroAlign:'center bottom',
+          sections:[
+            {type:'media', cols:1, span:8, items:[{img:'images/brand/help-one-billion/1.jpg'}, {img:'images/brand/help-one-billion/2.jpg'}]},
+            {type:'statement'},
+            {type:'media', cols:1, span:8, items:[{img:'images/brand/help-one-billion/3.jpg'}, {img:'images/brand/help-one-billion/4.jpg'}, {img:'images/brand/help-one-billion/5.jpg'}]},
+            {type:'statement'},
+            {type:'media', cols:1, span:8, items:[{img:'images/brand/help-one-billion/6.jpg'}, {img:'images/brand/help-one-billion/7.png'}]},
+          ]
         }},
     ]
   },
   science: {
-    label: 'Science',
+    name: 'Science communication',
+    heading:false,
     // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
     hero: [
-      'images/Homepage/Science/science 30.png',
-      'images/Homepage/Science/science 34.png',
-      'images/Homepage/Science/science 29.png',
-      'images/Homepage/Science/science 32.png',
-      'images/Homepage/Science/science 31.png',
-      'images/Homepage/Science/science 36.png',
-      'images/Homepage/Science/science 33.png',
-      'images/Homepage/Science/science 28.png',
-      'images/Homepage/Science/science.png',
-      'images/Homepage/Science/science 35.png',
+      'images/homepage/science/science-30.png',
+      'images/homepage/science/science-34.png',
+      'images/homepage/science/science-29.png',
+      'images/homepage/science/science-32.png',
+      'images/homepage/science/science-31.png',
+      'images/homepage/science/science-36.png',
+      'images/homepage/science/science-33.png',
+      'images/homepage/science/science-28.png',
+      'images/homepage/science/science-1.png',
+      'images/homepage/science/science-35.png',
     ],
     items: [
-      {t:'Anthropomass', type:'case', slug:'anthropomass', c:'#1fae70', g:'🌍',
+      // order and span/col follow the Science layout (9 tracks)
+      {t:'Watertowers of israel', type:'simple', c:'#0f2d50', g:'', span:4, col:0,
+        img:'images/science/watertowers-of-israel/watertowers-of-israel-cover.png', images:[{img:'images/science/watertowers-of-israel/watertowers-of-israel-cover.png'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-2.png'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-3.png'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-4.png'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-5.png'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-6.png'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-7.png'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-8.png'}]},
+      // intro, statements and captions live only in site-text.js
+      {t:'Anthropomass', type:'case', slug:'anthropomass', c:'#ead5ba', g:'🌍', span:5, col:4,
         d:'Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has suppressed the amount of all living things.',
+        img:'images/science/anthropomass/header.gif',
         caseStudy:{
-          bg:'#1fae70',
-          intro:'Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has suppressed the amount of all living things.',
-          media:[{c:'#eef2e6', g:'🐃'}],
-          testimonial:{quote:'Biomass of mammals', who:'Ron Milo', avatar:'👤'}
+          hero:'images/science/anthropomass/header.gif', heroRatio:2.42,
+          sections:[
+            {type:'media', items:[{img:'images/science/anthropomass/1.webp'}, {img:'images/science/anthropomass/2.webp'}]},
+            {type:'band', bg:'#d9d9d9', top:100, sections:[
+              {type:'media', cols:1, span:6, center:true, large:true, items:[{id:'talk', youtube:'yTsacQcwxFU', ratio:16/9}]},
+            ]},
+            {type:'media', ratio:1.779, top:100, items:[{img:'images/science/anthropomass/3.webp'}, {img:'images/science/anthropomass/4.webp'}]},
+            {type:'media', cols:1, span:6, top:100, items:[{img:'images/science/anthropomass/5.gif'}]},
+            {type:'band', bg:'#ead5ba', flush:true, top:100, sections:[
+              {type:'statement', italic:true},
+              {type:'media', cols:1, span:4, ratio:1.48, crop:true, pos:'top', items:[{img:'images/science/anthropomass/6.webp'}]},
+            ]},
+            {type:'media', cols:1, span:5, top:100, items:[{img:'images/science/anthropomass/7.webp'}]},
+            {type:'statement'},
+            {type:'media', cols:1, span:8, items:[{img:'images/science/anthropomass/8.webp'}]},
+            {type:'band', bg:'#dcdcdc', top:100, sections:[
+              {type:'statement'},
+              {type:'media', row:true, span:8, items:[
+                {img:'images/science/anthropomass/9.webp', ratio:0.655},
+                {img:'images/science/anthropomass/10.webp', ratio:0.716},
+                {img:'images/science/anthropomass/11.webp', ratio:1.506},
+              ]},
+            ]},
+            {type:'band', bg:'#ead5ba', top:100, sections:[
+              {type:'media', cols:1, span:8, items:[{img:'images/science/anthropomass/12.webp'}]},
+            ]},
+          ]
         }},
-      {t:'Watertowers of israel', type:'simple', c:'#e8b400', g:'🗼'},
+      {t:'Biomass of mammals | Ron Milo', type:'simple', c:'#ffffff', g:'', span:4, col:0,
+        img:'images/science/biomass-of-mammals/biomass-of-mammals-cover.png', images:[{img:'images/science/biomass-of-mammals/biomass-of-mammals-cover.png'}, {img:'images/science/biomass-of-mammals/biomass-of-mammals-2.png'}, {img:'images/science/biomass-of-mammals/biomass-of-mammals-3.png'}, {img:'images/science/biomass-of-mammals/biomass-of-mammals-4.png'}, {img:'images/science/biomass-of-mammals/biomass-of-mammals-5.png'}, {img:'images/science/biomass-of-mammals/biomass-of-mammals-6.png'}, {img:'images/science/biomass-of-mammals/biomass-of-mammals-7.jpg'}]},
+      // the stars page; its card is titled "Space Omelette" (card title in site-text.js)
+      {t:'Cosmic Heat: Frying an Egg on the Hottest Worlds', type:'case', slug:'space-omelette', c:'#262626', g:'', span:2, col:4,
+        img:'images/science/space-omelette/gallery/1.png', images:[{img:'images/science/space-omelette/gallery/1.png'}, {img:'images/science/space-omelette/gallery/2.png'}, {img:'images/science/space-omelette/gallery/3.png'}, {img:'images/science/space-omelette/gallery/4.png'}, {img:'images/science/space-omelette/gallery/5.png'}, {img:'images/science/space-omelette/gallery/6.png'}],
+        caseStudy:{
+          hero:'images/science/space-omelette/header.webp', heroRatio:2.476, heroCrop:true,
+          sections:[
+            {type:'band', bg:'#dedccf', sections:[
+              {type:'media', cols:1, span:8, items:[{img:'images/science/space-omelette/1.webp'}]},
+            ]},
+            {type:'statement'},
+            {type:'media', cols:1, bleed:true, items:[{img:'images/science/space-omelette/2.jpg'}]},
+          ]
+        }},
+      {t:'Cell replacement by the Numbers | Ron Milo', type:'simple', c:'#f8ddd4', g:'', span:3, col:6,
+        vimeo:'1166912331', ratio:1},
+      {t:'A sea of cows | Ron Milo', type:'simple', c:'#f5f5f5', g:'', span:3, col:0,
+        img:'images/science/a-sea-of-cows/a-sea-of-cows-cover.jpg'},
+      {t:'Specialization of antigen-presenting cells | Ranit Kedmi', type:'simple', c:'#ffffff', g:'', span:3, col:3,
+        img:'images/science/antigen-presenting-cells/antigen-presenting-cells-cover.jpg'},
+      {t:'Meet your digital twin | Eran Segal', type:'simple', c:'#ffefdb', g:'', span:3, col:6,
+        img:'images/science/digital-twin/digital-twin-cover.jpg'},
+      {t:'Cryptochrome Discovery | Jonathan Gressel', type:'simple', c:'#f5f5f5', g:'', span:3, col:0,
+        img:'images/science/cryptochrome-discovery/cryptochrome-discovery-cover.png'},
+      {t:'Balance of anthropomass and Biomass', type:'simple', c:'#10956c', g:'', span:2, col:3,
+        img:'images/science/balance-of-anthropomass-and-biomass/balance-of-anthropomass-and-biomass-cover.webp'},
+      {t:'TREM2-targeted CAR therapy | Ido Amit', type:'simple', c:'#ffffff', g:'', span:4, col:5,
+        img:'images/science/trem2-car-therapy/trem2-car-therapy-cover.jpg'},
+      {t:'Shift in mammel biomass | Lior Greenspoone', type:'simple', c:'#ffffff', g:'', span:3, col:0,
+        img:'images/science/shift-in-mammal-biomass/shift-in-mammal-biomass-cover.jpg'},
     ]
   },
   animation: {
-    label: 'Animation',
+    name: 'Art direction for animation',
+    heroFit:'area',
     // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
     hero: [
-      'images/Homepage/animation/Animation1.webp',
-      'images/Homepage/animation/Animation2.webp',
-      'images/Homepage/animation/Animation4.webp',
-      'images/Homepage/animation/Animation5.webp',
-      'images/Homepage/animation/Animation3.webp',
+      'images/homepage/animation/animation-1.webp',
+      'images/homepage/animation/animation-2.webp',
+      'images/homepage/animation/animation-4.webp',
+      'images/homepage/animation/animation-5.webp',
+      'images/homepage/animation/animation-3.webp',
     ],
+    layout:'list', // one centred column of films, from the Animation layout
+    // text lives in site-text.js
     items: [
-      {t:"A new solution to streaming technology | eko explainer", type:'simple', c:'#e07d78', g:'📺',
-        d:"An explainer on how eko's streaming technology works, and what makes it different."},
+      {t:"A new solution to streaming technology | eko explainer", type:'simple', c:'#3a5bd9', g:'',
+        slug:'a-new-solution-to-streaming-technology-eko-explainer', vimeo:'435668440', ratio:16/9},
+      {t:'The problem with advertising | eko explainer', type:'simple', c:'#2e3440', g:'', vimeo:'463755957', ratio:16/9},
+      {t:'The art of storytelling | eko explainer', type:'simple', c:'#222', g:'', ratio:0.889, cols:3,
+        vimeos:['637160984', '637160541', '637161970', '637161724', '637161480', '637161228']},
+      {t:'Every nation is a submarine | "Aleinu": Animated explainer', type:'simple', c:'#000', g:'', slug:'aleinu-submarines', vimeo:'1153473786', ratio:16/9},
+      {t:'The problem with e-commerce | eko explainer', type:'simple', c:'#f0c64a', g:'', vimeo:'463732433', ratio:16/9},
+      {t:'On the Revolutions', type:'simple', c:'#f2a53a', g:'', vimeo:'824623122', ratio:0.5625, width:28.6},
     ]
   }
 };
@@ -881,19 +1261,183 @@ Object.values(CATS).forEach(cat=>{
   if(cat.editorial) cat.editorial.forEach(item=> item.slug = item.slug || slugify(item.t));
 });
 
+/* ---------------------------------------------------------
+   SITE TEXT — site-text.js holds every word on the site and
+   overrides the text written in CATS / the markup here (which
+   stays only as a fallback if that file is missing). Applied
+   after slugs are fixed, so retitling a project never changes
+   its URL. See the top of site-text.js for the format.
+--------------------------------------------------------- */
+const UI_TEXT = {
+  projects:'Projects', editorial:'Editorial and publications',
+  readMore:'Read more about this project', cardReadMore:'Read more', backTo:'Back to', close:'close',
+};
+// the About page's words; its lists and paragraphs are filled from the
+// "# about" part of site-text.js (a label repeated = one more line)
+const ABOUT_TEXT = {
+  lead:'', text:[],
+  services:'Services', service:[],
+  exhibitions:'Exhibitions', exhibition:[],
+  talks:'Talks', talk:[],
+  teachings:'Teachings', teaching:[],
+  contact:'Contact', 'contact line':[],
+  clients:'Selected Clients',
+};
+const HEADLINE_CATS = ['illustration', 'brand', 'science', 'animation'];
+const CAT_ICONS = {
+  illustration:'images/homepage/icons/illustration.png',
+  brand:'images/homepage/icons/brand.png',
+  science:'images/homepage/icons/science.png',
+  animation:'images/homepage/icons/animation.webp',
+};
+
+function headlineHTML(src){
+  let n = 0;
+  return '<span class="baseline-probe"></span>' + src
+    .replace(/\[([^\]]+)\]/g, (m, words)=>{
+      const cat = HEADLINE_CATS[n++];
+      return `<span class="cat" data-cat="${cat}">${words} <img class="cat-icon" src="${CAT_ICONS[cat]}" alt=""></span>`;
+    })
+    .replace(/\{d\}/g, '<br class="d">').replace(/\{s\}/g, '<br class="s">').replace(/\{b\}/g, '<br>');
+}
+
+function applySiteText(src){
+  const general = {
+    'browser tab title': v=> document.title = v,
+    'projects heading': v=> UI_TEXT.projects = v,
+    'editorial heading': v=> UI_TEXT.editorial = v,
+    'read more link': v=> UI_TEXT.readMore = v,
+    'card read more link': v=> UI_TEXT.cardReadMore = v,
+    'back link': v=> UI_TEXT.backTo = v,
+    'close button': v=> UI_TEXT.close = v,
+  };
+  const navLinkEl = k=> document.querySelector(`.nav-links li[data-cat="${k}"]`);
+  const navRight = document.querySelectorAll('.nav-right a');
+  const nav = {
+    logo: v=> document.querySelector('.logo').textContent = v,
+    instagram: v=> navRight[0].textContent = v,
+    bio: v=> navRight[1].textContent = v,
+  };
+  HEADLINE_CATS.forEach(k=> nav[k] = v=> navLinkEl(k).textContent = v);
+
+  const flatSections = list=> (list || []).flatMap(s=> s.type === 'band' ? flatSections(s.sections) : [s]);
+  const fileText = new Map(); // item → which of intro/description the file set
+  let section = null, item = null;
+  src.split('\n').forEach(raw=>{
+    const line = raw.trim();
+    if(!line || line.startsWith('//')) return;
+    let m;
+    if((m = line.match(/^##\s+(.+)$/))){ item = CATS[section] ? findItem(section, m[1].trim()) : null; return; }
+    if((m = line.match(/^#\s+(.+)$/))){ section = m[1].trim().toLowerCase(); item = null; return; }
+    const colon = line.indexOf(':');
+    if(colon < 0) return;
+    const key = line.slice(0, colon).trim(), val = line.slice(colon + 1).trim();
+    const k = key.toLowerCase();
+
+    if(section === 'nav'){ if(nav[k]) nav[k](val); return; }
+    if(section === 'homepage'){ if(k === 'headline') document.querySelector('.lead').innerHTML = headlineHTML(val); return; }
+    if(section === 'general'){ if(general[k]) general[k](val); return; }
+    if(section === 'about'){
+      if(Array.isArray(ABOUT_TEXT[k])){ if(val) ABOUT_TEXT[k].push(val); }
+      else if(k in ABOUT_TEXT) ABOUT_TEXT[k] = val;
+      return;
+    }
+    if(!CATS[section]) return;
+    if(!item){ if(k === 'name') CATS[section].name = val; return; }
+
+    const cs = item.caseStudy;
+    const seen = fileText.get(item) || {};
+    fileText.set(item, seen);
+    if(k === 'title') item.t = val;
+    else if(k === 'card title') item.cardT = val;
+    else if(k === 'description'){ item.d = val; seen.description = true; }
+    else if(k === 'note'){ if(cs && 'note' in cs) cs.note = val; else item.note = val; }
+    else if(k === 'intro'){
+      // each intro: line is one paragraph
+      if(cs){ cs.intro = seen.intro ? [].concat(cs.intro, val) : [val]; seen.intro = true; }
+    }
+    else if(cs && (m = key.match(/^statement\s+(\d+)$/i))){
+      const st = flatSections(cs.sections).filter(s=> s.type === 'statement')[m[1] - 1];
+      if(st) st.text = val;
+    }
+    else if(cs && (m = key.match(/^caption\s+(.+)$/i))){
+      flatSections(cs.sections).forEach(s=> (s.items || []).forEach(it=>{
+        if((it.id || (it.img || '').split('/').pop()) === m[1]) it.caption = val;
+      }));
+    }
+    else if(cs && cs.series && (m = key.match(/^(series|statement)\s+(.+)$/i))){
+      const s = cs.series.find(s=> s.key === m[2]);
+      if(s){ if(m[1].toLowerCase() === 'series') s.name = val; else s.statement = val; }
+    }
+    else if(cs && cs.series){
+      cs.series.forEach(s=> s.symbols.forEach(sym=>{ if(sym.f === key) sym.n = val; }));
+    }
+  });
+  // a project whose file entry gives a description but no intro uses the
+  // description as its page text too
+  fileText.forEach((seen, it)=>{
+    if(seen.description && !seen.intro && it.caseStudy && !it.caseStudy.series) it.caseStudy.intro = it.d;
+  });
+}
+if(window.SITE_TEXT) applySiteText(window.SITE_TEXT);
+
 // real width/height (from the source files) of every cover + gallery image,
 // so the masonry grid can size each card's rectangle to its own image
 // instead of forcing a uniform box — read once here rather than waiting on
 // each <img> to load, so layout is exact on first paint, no reflow-in.
 const IMG_RATIO = {
-  'images/illustration-editorial/What-my-father-never-told-me/What-my-father-never-told-me-cover.jpg': 0.7222,
-  'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.jpg': 1.0316,
+  'images/science/balance-of-anthropomass-and-biomass/balance-of-anthropomass-and-biomass-cover.webp': 0.6547,
+  'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp': 1.3883,
   'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg': 1.0,
+  'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg': 1.2498,
+  'images/illustration-editorial/what-my-father-never-told-me/what-my-father-never-told-me-cover.jpg': 1.3028,
+  'images/illustration-editorial/sex/sex-cover.webp': 1.5485,
+  'images/illustration-editorial/sex/sex-2.webp': 1.0882,
+  'images/illustration-editorial/sex/sex-3.webp': 1.5907,
+  'images/illustration-editorial/sex/sex-4.webp': 1.1223,
+  'images/illustration-editorial/sex/sex-5.webp': 1.549,
+  'images/illustration-editorial/sex/sex-6.webp': 1.1223,
+  'images/illustration-editorial/sex/sex-7.webp': 1.5491,
+  'images/illustration-editorial/sex/sex-8.webp': 0.8771,
+  'images/illustration-editorial/sex/sex-9.webp': 1.8889,
+  'images/illustration-editorial/sex/sex-10.webp': 1.8889,
+  'images/illustration-editorial/sex/sex-11.webp': 1.2111,
+  'images/illustration-editorial/sex/sex-12.webp': 1.888,
+  'images/illustration-editorial/sex/sex-13.webp': 1.0199,
+  'images/brand/eko/gallery/1.png': 1.7481,
+  'images/brand/island/gallery/1.png': 1.4994,
+  'images/brand/benny-goren/gallery/1.png': 1.1996,
+  'images/brand/kaltura/gallery/1.png': 1.3329,
+  'images/brand/help-one-billion/gallery/1.webp': 1.7774,
+  'images/science/watertowers-of-israel/watertowers-of-israel-cover.png': 1.7522,
+  'images/science/biomass-of-mammals/biomass-of-mammals-cover.png': 1.268,
+  'images/science/space-omelette/gallery/1.png': 1.0,
+  'images/science/a-sea-of-cows/a-sea-of-cows-cover.jpg': 1.4981,
+  'images/science/antigen-presenting-cells/antigen-presenting-cells-cover.jpg': 1.7937,
+  'images/science/digital-twin/digital-twin-cover.jpg': 0.8,
+  'images/science/cryptochrome-discovery/cryptochrome-discovery-cover.png': 1.3322,
+  'images/science/trem2-car-therapy/trem2-car-therapy-cover.jpg': 2.7429,
+  'images/science/shift-in-mammal-biomass/shift-in-mammal-biomass-cover.jpg': 1.7774,
+  'images/illustration-editorial/calcalist-future-of-medicine/calcalist-future-of-medicine-cover.webp': 1.0913,
+  'images/illustration-editorial/globes-work-in-post-covid-times/globes-work-in-post-covid-times-cover.webp': 1.779,
+  'images/illustration-editorial/calcalist-the-estonian-sting/calcalist-the-estonian-sting-cover.webp': 1.5952,
+  'images/illustration-editorial/calcalist-crypto-conservatives/calcalist-crypto-conservatives-cover.webp': 1.7812,
+  'images/illustration-editorial/einayim-magazine-where-does-salt-comes-from/einayim-magazine-where-does-salt-comes-from-cover.webp': 1.4908,
+  'images/brand/island/10.webp': 1.8702,
+  'images/brand/eko/header.webp': 2.3139,
+  'images/brand/kaltura/header.png': 1.9794,
+  'images/brand/benny-goren/header.webp': 2.5935,
+  'images/brand/help-one-billion/header.png': 3.0961,
+  'images/brand/moshal/11.webp': 1.101,
+  'images/science/anthropomass/header.gif': 1.5221,
+  'images/illustration-editorial/what-my-father-never-told-me/what-my-father-never-told-me-4.jpg': 0.7222,
+  'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-2.jpg': 1.0316,
+  'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-10.jpg': 1.0,
   'images/illustration-editorial/calcalist-our-digital-mirror/calcalist-our-digital-mirror-cover.png': 1.5164,
-  'images/illustration-editorial/einayim-magazine-Huzpa/einayim-magazine-Huzpa-cover.jpg': 0.7444,
+  'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-cover.jpg': 0.7444,
   'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.png': 1.5129,
   'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg': 1.5008,
-  'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg': 1.2489,
+  'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-9.jpg': 1.2489,
   'images/illustration-projects/city-symbol/city-symbol-1-cover.png': 1.0,
   'images/illustration-editorial/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png': 0.7069,
   'images/illustration-projects/gibberish/gibberish-cover.jpg': 0.7151,
@@ -909,15 +1453,6 @@ const IMG_RATIO = {
   'images/illustration-projects/poriah/poriah-cover.png': 1.3943,
   'images/illustration-projects/runs-in-the-family/runs-in-the-family-cover.gif': 1.0,
   'images/illustration-projects/saint-clara-film-poster/saint-clara-film-poster-cover.webp': 0.6977,
-  'images/illustration-editorial/sex/sex-2.jpg': 1.2596,
-  'images/illustration-editorial/sex/sex-3.png': 1.2604,
-  'images/illustration-editorial/sex/sex-4.png': 1.2604,
-  'images/illustration-editorial/sex/sex-5.png': 1.2598,
-  'images/illustration-editorial/sex/sex-6.png': 1.2604,
-  'images/illustration-editorial/sex/sex-7.png': 1.2598,
-  'images/illustration-editorial/sex/sex-8.png': 1.2598,
-  'images/illustration-editorial/sex/sex-9.png': 1.2604,
-  'images/illustration-editorial/sex/sex-cover.png': 1.2604,
   'images/illustration-projects/sublet/sublet-cover.png': 0.6961,
   'images/illustration-projects/tarot-card/tarot-card-cover.png': 0.6417,
   'images/illustration-projects/the-boys/the-boys-cover.jpg': 0.6667,
@@ -945,6 +1480,7 @@ const gridPage    = document.getElementById('gridPage');
 const hero        = document.getElementById('hero');
 const navLinks    = document.querySelectorAll('.nav-links li');
 const casePage    = document.getElementById('casePage');
+const bioLink     = document.getElementById('bioLink');
 
 let currentCat = null;
 
@@ -987,13 +1523,23 @@ const HERO_LAYOUTS = {
   ]},
 };
 
+/* heroFit:'area' (Brands, Animation): their images are mostly landscape
+   while the slots, drawn for the illustrations, are mostly portrait — fitted
+   inside a slot they came out small. Instead each image covers the same
+   area as its slot, in its own proportions, centred on the slot. */
 const heroSwatches = [];
 Object.entries(CATS).forEach(([key, cat]) => {
   cat.hero.forEach((src, k) => {
     const el = document.createElement('div');
     el.className = 'swatch cat-' + key;
     el.style.backgroundImage = `url('${encodeImgPath(src)}')`;
-    heroSwatches.push({el, k});
+    const sw = {el, k, fit: cat.heroFit, ratio: 0};
+    if(cat.heroFit === 'area'){
+      const im = new Image();
+      im.onload = ()=>{ sw.ratio = im.naturalWidth / im.naturalHeight; layoutHero(); };
+      im.src = encodeImgPath(src);
+    }
+    heroSwatches.push(sw);
   });
 });
 
@@ -1004,11 +1550,16 @@ function layoutHero(){
   const L = vw <= 600 ? HERO_LAYOUTS.mobile : vw <= 1024 ? HERO_LAYOUTS.tablet : HERO_LAYOUTS.desktop;
   const s = vw / L.frameW * L.scale;
   const base = baselineProbe.getBoundingClientRect().top - hero.getBoundingClientRect().top;
-  heroSwatches.forEach(({el, k})=>{
+  heroSwatches.forEach(({el, k, fit, ratio})=>{
     const slot = L.slots[HERO_FILL[k]];
     el.hidden = !slot;
     if(!slot) return;
-    const [x, y, w, h, front] = slot;
+    let [x, y, w, h, front] = slot;
+    if(fit === 'area' && ratio){
+      const cx = x + w / 2, cy = y + h / 2, area = w * h;
+      w = Math.sqrt(area * ratio); h = Math.sqrt(area / ratio);
+      x = cx - w / 2; y = cy - h / 2;
+    }
     Object.assign(el.style, {
       left: vw / 2 + (x - L.frameW / 2) * s + 'px', top: base + (y - L.baseline) * s + 'px',
       width: w * s + 'px', height: h * s + 'px',
@@ -1130,10 +1681,25 @@ function route(){
 
   // home
   if(!cat){
+    bioLink.classList.remove('dim');
     closeLightbox();
     casePage.classList.remove('show');
     gridPage.classList.remove('show');
     hero.style.display = 'flex';
+    navLinks.forEach(l=>l.classList.remove('dim'));
+    return;
+  }
+  bioLink.classList.toggle('dim', cat === 'about');
+  if(cat === 'about'){
+    closeLightbox();
+    hero.style.display = 'none';
+    gridPage.classList.remove('show');
+    if(casePage.dataset.slug !== 'about'){
+      renderAbout();
+      casePage.dataset.slug = 'about';
+      window.scrollTo(0,0);
+    }
+    casePage.classList.add('show');
     navLinks.forEach(l=>l.classList.remove('dim'));
     return;
   }
@@ -1265,41 +1831,84 @@ window.addEventListener('hashchange', ()=>{
    grid (2 = normal, 3/4 = featured); layoutMasonry scales it down
    proportionally at narrower track counts.
 --------------------------------------------------------- */
-function cardHTML(cat, item, i){
+// "Name | Publication" → name bold, the part after the bar regular
+function titleHTML(t){
+  const i = t.indexOf('|');
+  return i < 0 ? `<strong>${rich(t)}</strong>` : `<strong>${rich(t.slice(0, i).trim())}</strong> | ${rich(t.slice(i + 1).trim())}`;
+}
+
+// Vimeo in background mode: autoplays muted and looped, no controls. The
+// button over it opens the full player (sound, controls) in the lightbox.
+function vimeoLoopHTML(id, ratio){
+  return `<div class="vid-box" style="aspect-ratio:${ratio}">
+    <iframe src="https://player.vimeo.com/video/${id}?background=1&dnt=1" loading="lazy" allow="autoplay; fullscreen" title="video"></iframe>
+    <button class="vid-open" type="button" data-vimeo="${id}" data-ratio="${ratio}" aria-label="Play with sound"><span></span></button>
+  </div>`;
+}
+
+function captionHTML(cat, item, target){
+  const more = item.caseStudy ? `<a class="card-more" ${linkAttr('#/' + cat + '/' + item.slug)}>${UI_TEXT.cardReadMore}</a>` : '';
+  return `
+      <div class="card-caption${item.d ? ' has-desc' : ''}">
+        <div class="card-head">
+          <div class="card-title">${target ? `<a ${linkAttr(target)}>${titleHTML(item.cardT || item.t)}</a>` : titleHTML(item.cardT || item.t)}</div>
+          ${more}
+        </div>
+        ${item.d ? `<p class="card-desc">${rich(item.d)}</p>` : ''}
+      </div>`;
+}
+
+function cardHTML(cat, item, i, defaultSpan){
   const cardTarget = '#/' + cat + '?preview=' + item.slug;
   const hasImg = !!item.img;
-  const ratio = (hasImg && IMG_RATIO[item.img]) || item.ratio || 1.3;
+  const ratio = item.cardRatio || (hasImg && IMG_RATIO[item.img]) || item.ratio || 1.3;
   // a stacked card (springs of Ein Qiniyye) has no single hover-cycle
   // thumb — each of its images is its own link, opening the lightbox at
   // that specific image, instead of all three funneling into the same
   // (always-first) preview
-  const thumbHTML = item.stack && item.images
+  const thumbHTML = item.vimeo
+    ? `<div class="card-thumb loaded-now">${vimeoLoopHTML(item.vimeo, ratio)}</div>`
+    : item.stack && item.images
     ? `<div class="card-thumb card-thumb-stack">${item.images.map((im, imgIdx) =>
-        `<a ${linkAttr(cardTarget + '&i=' + imgIdx)}><img src="${encodeImgPath(im.img)}" alt="${item.t}" loading="lazy" style="aspect-ratio:${IMG_RATIO[im.img] || 1.3}"></a>`
+        `<a ${linkAttr(cardTarget + '&i=' + imgIdx)}><img src="${encodeImgPath(im.img)}" alt="${plain(item.t)}" loading="lazy" style="aspect-ratio:${IMG_RATIO[im.img] || 1.3}"></a>`
       ).join('')}</div>`
     : `<a class="card-thumb-link" ${linkAttr(cardTarget)}>
-        <div class="card-thumb" style="aspect-ratio:${ratio}">
+        <div class="card-thumb${item.fit === 'contain' ? ' contain' : ''}" style="aspect-ratio:${ratio}">
           ${hasImg
-            ? `<img class="fill-img" src="${encodeImgPath(item.img)}" alt="${item.t}" loading="lazy">`
+            ? `<img class="fill-img" src="${encodeImgPath(item.img)}" alt="${plain(item.t)}" loading="lazy">`
             : `<div class="fill-block" style="${bg(item)}"></div><div class="glyph">${glyphHTML(item)}</div>`}
         </div>
       </a>`;
   const mobilePriority = item.mobilePriority !== undefined ? item.mobilePriority : i;
   const colAttr = item.col !== undefined ? ` data-col="${item.col}"` : '';
   return `
-    <div class="card" data-i="${i}" data-span="${item.span || 2}" data-mp="${mobilePriority}"${colAttr}>
+    <div class="card" data-i="${i}" data-span="${item.span || defaultSpan || 2}" data-mp="${mobilePriority}"${colAttr}>
       ${thumbHTML}
-      <div class="card-caption">
-        <div class="card-title">
-          <a ${linkAttr(cardTarget)}>${item.t}</a>
-        </div>
-        ${item.d ? `<p class="card-desc">${item.d}</p>` : ''}
-      </div>
+      ${captionHTML(cat, item, item.vimeo ? null : cardTarget)}
     </div>`;
 }
 
-function gridHTML(cat, items, indexOffset){
-  return `<div class="grid">${items.map((it,i)=>cardHTML(cat,it,indexOffset+i)).join('')}</div>`;
+// tracks = the desktop track count of this grid (9 for most, 11 for
+// Illustration's editorial section, 2 for Brands — each measured off its
+// own layout); items can carry span/col in those tracks
+function gridHTML(cat, items, indexOffset, tracks, defaultSpan, gaps){
+  const [colGap, rowGap] = gaps || [14, GRID_ROW_GAP];
+  return `<div class="grid" data-tracks="${tracks || 9}" data-colgap="${colGap}" data-rowgap="${rowGap}">${items.map((it,i)=>cardHTML(cat,it,indexOffset+i,defaultSpan)).join('')}</div>`;
+}
+
+// an image shown whole inside a card of another shape: the space around
+// it takes its own corner colour (white where the corner is transparent)
+function paintBehind(img, box){
+  try{
+    const c = document.createElement('canvas');
+    c.width = c.height = 1;
+    const ctx = c.getContext('2d');
+    // a few pixels in: some exports carry a stray 1px edge
+    const k = Math.max(4, Math.round(img.naturalWidth * .006));
+    ctx.drawImage(img, k, k, 1, 1, 0, 0, 1, 1);
+    const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+    box.style.background = a < 128 ? '#fff' : `rgb(${r},${g},${b})`;
+  }catch(e){}
 }
 
 /* Packs a grid's cards into the shortest available track(s), like
@@ -1312,18 +1921,19 @@ function gridHTML(cat, items, indexOffset){
    A card can carry a designer-assigned data-col (desktop only) to fix
    its horizontal position — layoutMasonry still auto-stacks it vertically
    below whatever's already in that column, it just skips the "shortest
-   column" search. Track count and gap are the values measured off the
-   Figma export (see the .grid comment above). Recomputed on render and
-   on resize (debounced), since it depends on measured pixel widths. */
+   column" search. Recomputed on render and on resize (debounced), since
+   it depends on measured pixel widths. */
 const GRID_ROW_GAP = 18; // vertical space after a card's caption, before the next card in that track (horizontal colGap stays 14, unrelated to this)
 function layoutMasonry(gridEl){
   const cards = Array.from(gridEl.children).filter(el => el.classList.contains('card'));
   if(!cards.length){ gridEl.style.height = ''; return; }
   const w = gridEl.clientWidth;
-  const trackCount = w >= 901 ? 9 : w >= 521 ? 2 : 1;
-  const colGap = 14;
+  const full = +gridEl.dataset.tracks || 9;
+  const trackCount = w >= 901 ? full : w >= 521 ? Math.min(2, full) : 1;
+  const colGap = +gridEl.dataset.colgap || 14;
+  const rowGap = +gridEl.dataset.rowgap || GRID_ROW_GAP;
   const trackW = (w - colGap * (trackCount - 1)) / trackCount;
-  const spanOf = card => trackCount === 9 ? Math.min(9, Math.max(1, +card.dataset.span || 2)) : 1;
+  const spanOf = card => trackCount === full ? Math.min(full, Math.max(1, +card.dataset.span || 2)) : 1;
 
   cards.forEach(card=>{
     const span = spanOf(card);
@@ -1343,7 +1953,7 @@ function layoutMasonry(gridEl){
   const colHeights = new Array(trackCount).fill(0);
   orderedCards.forEach(card=>{
     const span = spanOf(card);
-    const explicitCol = trackCount === 9 && card.dataset.col !== undefined ? +card.dataset.col : null;
+    const explicitCol = trackCount === full && full > 2 && card.dataset.col !== undefined ? +card.dataset.col : null;
     let bestCol = 0, bestTop = Infinity;
     if(explicitCol !== null){
       bestCol = explicitCol;
@@ -1356,10 +1966,23 @@ function layoutMasonry(gridEl){
     }
     card.style.left = (bestCol * (trackW + colGap)) + 'px';
     card.style.top = bestTop + 'px';
-    const newHeight = bestTop + card.offsetHeight + GRID_ROW_GAP;
+    const newHeight = bestTop + card.offsetHeight + rowGap;
     for(let c = bestCol; c < bestCol + span; c++) colHeights[c] = newHeight;
   });
-  gridEl.style.height = (Math.max(...colHeights) - GRID_ROW_GAP) + 'px';
+  gridEl.style.height = (Math.max(...colHeights) - rowGap) + 'px';
+}
+
+/* Animation: one centred column of films (layout decoded from its
+   reference). An item is {vimeo, ratio} or, for a set of loops,
+   {vimeos:[...], ratio, cols}; width = its share of the page width. */
+function animListHTML(cat, items){
+  return `<div class="anim-list">${items.map(item=>`
+    <div class="anim-item" style="--w:${item.width || 70.6}%">
+      ${item.vimeos
+        ? `<div class="anim-set" style="--cols:${item.cols || 3}">${item.vimeos.map(id=> vimeoLoopHTML(id, item.ratio)).join('')}</div>`
+        : vimeoLoopHTML(item.vimeo, item.ratio)}
+      ${captionHTML(cat, item, null)}
+    </div>`).join('')}</div>`;
 }
 
 let masonryResizeTimer;
@@ -1372,15 +1995,19 @@ window.addEventListener('resize', ()=>{
 
 function renderGrid(cat){
   const data = CATS[cat];
+  if(data.layout === 'list'){
+    gridPage.innerHTML = animListHTML(cat, data.items);
+    return;
+  }
   let html = `
-    <div class="breadcrumb">Projects</div>
-    ${gridHTML(cat, data.items, 0)}
+    ${data.heading === false ? '' : `<div class="breadcrumb">${UI_TEXT.projects}</div>`}
+    ${gridHTML(cat, data.items, 0, data.tracks, data.defaultSpan, data.gaps)}
   `;
   // optional labeled subsection, e.g. Illustration → Editorial and publications
   if(data.editorial && data.editorial.length){
     html += `
-      <div class="breadcrumb" style="margin-top:64px">Editorial and publications</div>
-      ${gridHTML(cat, data.editorial, data.items.length)}
+      <div class="breadcrumb" style="margin-top:64px">${UI_TEXT.editorial}</div>
+      ${gridHTML(cat, data.editorial, data.items.length, data.editorialTracks)}
     `;
   }
   gridPage.innerHTML = html;
@@ -1388,6 +2015,9 @@ function renderGrid(cat){
   // so it would measure 0 width — route() lays it out once shown
   gridPage.querySelectorAll('.card-thumb').forEach((thumb,i)=>{
     setTimeout(()=> thumb.classList.add('loaded'), 150 + i*70 + Math.random()*200);
+  });
+  gridPage.querySelectorAll('.card-thumb.contain .fill-img').forEach(img=>{
+    if(img.complete) paintBehind(img, img.parentNode); else img.addEventListener('load', ()=> paintBehind(img, img.parentNode), {once:true});
   });
   wireCardGalleries(cat);
 }
@@ -1441,6 +2071,7 @@ function wireCardGalleries(cat){
       idx = (n + imgs.length) % imgs.length;
       const target = imgs[idx];
       const reveal = () => {
+        if(thumb.classList.contains('contain')) paintBehind(back, thumb);
         back.style.transition = 'opacity .35s ease';
         front.style.transition = 'opacity .35s ease';
         back.style.opacity = '1';
@@ -1493,7 +2124,7 @@ function openProjectLightbox(cat, item, startIdx){
   const images = item.images && item.images.length ? item.images : [{img:item.img, c:item.c, g:item.g}];
   let idx = (startIdx > 0 && startIdx < images.length) ? startIdx : 0;
   const frameHTML = im => im.img
-    ? `<img src="${encodeImgPath(im.img)}" alt="${item.t}">`
+    ? `<img src="${encodeImgPath(im.img)}" alt="${plain(item.t)}">`
     : `<div class="fill-block" style="${bg(im)}; aspect-ratio:1/1;">${glyphHTML(im)}</div>`;
 
   // shell is built once — only the media crossfades (see .lb-media-layer);
@@ -1511,12 +2142,12 @@ function openProjectLightbox(cat, item, startIdx){
         ` : ''}
       </div>
       <div class="lb-project-text">
-        <button class="lb-project-close" aria-label="Close">close</button>
+        <button class="lb-project-close" aria-label="Close">${UI_TEXT.close}</button>
         <div class="lb-project-body">
-          <div class="lb-project-title">${item.t}</div>
-          ${item.d ? `<p class="lb-project-desc">${item.d}</p>` : ''}
+          <div class="lb-project-title">${rich(item.t)}</div>
+          ${item.d ? `<p class="lb-project-desc">${rich(item.d)}</p>` : ''}
           ${item.note ? `<p class="lb-project-note">${item.note}</p>` : ''}
-          ${item.caseStudy ? `<a class="lb-project-link" ${linkAttr('#/'+cat+'/'+item.slug)}>Read more about this project</a>` : ''}
+          ${item.caseStudy ? `<a class="lb-project-link" ${linkAttr('#/'+cat+'/'+item.slug)}>${UI_TEXT.readMore}</a>` : ''}
         </div>
       </div>
     </div>
@@ -1589,19 +2220,124 @@ function openProjectLightbox(cat, item, startIdx){
 }
 
 /* ---------------------------------------------------------
-   CASE STUDY PAGE — for the handful of projects that
-   genuinely need a long-form page instead of a popup.
+   PROJECT PAGE (#/category/slug) — one template for every inner
+   page: optional hero, intro (name + paragraphs), then the
+   caseStudy's sections in order. A project without sections gets
+   its images as a single media grid. City Symbol keeps its own
+   series layout.
+     caseStudy.hero      — top image under the nav, a collage(), or
+                           {video | placeholder:'#colour', ratio, id, bg?}
+     caseStudy.heroRatio — give the hero its own proportions (image
+                           kept whole inside, filled with its edge
+                           colour); heroAlign positions it ('center bottom')
+     caseStudy.noIntro   — the hero already carries the name and text
+     caseStudy.sections  — in page order:
+       {type:'media', cols?, span?, ratio?, crop?, pos?, row?, center?,
+        large?, items:[{img | video | placeholder:'#colour', id?, ratio?}]}
+          cols 2 by default (1 = stacked), span = how many of the 9
+          tracks it's centred on (9 for 2 columns, 7 for 1), ratio =
+          fixed box (image or video fitted — fill: pad with its edge colour —
+          or cropped with crop), row = one
+          equal-height row, top = extra space above (px), id = caption
+          key for a placeholder
+       {type:'statement', italic?}
+       {type:'band', bg, flush?, sections:[...]} — full-bleed colour
+       collage(...) — cut-outs placed on a coloured band
+   All text (intro, statements, captions) comes from site-text.js.
 --------------------------------------------------------- */
+function backLinkHTML(cat){
+  return `<a class="case-back" data-back="${cat}">← ${UI_TEXT.backTo} ${CATS[cat].name}</a>`;
+}
+
+// text without the markup, for alt text and other plain places
+function plain(s){ return String(s).replace(/\*+/g, '').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1'); }
+
+// [text](url) → link (no url: underlined text only), **text** → bold,
+// *text* → italic, {b} → line break
+function rich(s){
+  return String(s)
+    .replace(/\[([^\]]+)\]\(([^)]*)\)/g, (m, text, url)=> url
+      ? `<a class="rich-link" href="${url}" target="_blank" rel="noopener">${text}</a>`
+      : `<span class="rich-link">${text}</span>`)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/\{b\}/g, '<br>');
+}
+
+function collageHTML(c){
+  const one = (size, items, cls)=>{
+    const [W, H] = size;
+    return `<div class="case-collage${cls}" style="--ratio:${W}/${H}; background:${c.bg}">${
+      items.map(([src, x, y, w])=> `<img src="${encodeImgPath(src)}" alt="" style="left:${x / W * 100}%; top:${y / H * 100}%; width:${w / W * 100}%">`).join('')
+    }</div>`;
+  };
+  // optional own arrangement for tablet / mobile (c.tablet / c.mobile)
+  if(!c.tablet && !c.mobile) return one(c.size, c.items, '');
+  const t = c.tablet || c, m = c.mobile || t;
+  return one(c.size, c.items, ' v-desk') + one(t.size, t.items, ' v-tab') + one(m.size, m.items, ' v-mob');
+}
+
+function mediaItemHTML(m, sec, alt){
+  const r = m.ratio || sec.ratio;
+  if(m.placeholder) return `<div class="m-box placeholder" style="--r:${r}; background:${m.placeholder}"><span>${m.id || ''}</span></div>`;
+  if(m.youtube) return `<div class="m-box embed" style="--r:${r || 16/9}"><iframe src="https://www.youtube-nocookie.com/embed/${m.youtube}?rel=0" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="video"></iframe></div>`;
+  if(m.vimeo) return vimeoLoopHTML(m.vimeo, r || 16/9);
+  // video: path without extension — <name>.av1.mp4 (small, used where the
+  // browser can play AV1), <name>.mp4 (H.264, everywhere else), <name>.webp
+  // (poster); bg = the box colour shown until it loads
+  if(m.video){
+    const v = encodeImgPath(m.video);
+    return `<div class="m-box video" style="--r:${r}${m.bg ? `; background:${m.bg}` : ''}"><video autoplay muted loop playsinline poster="${v}.webp">
+      <source src="${v}.av1.mp4" type='video/mp4; codecs="av01.0.09M.08"'>
+      <source src="${v}.mp4" type="video/mp4">
+    </video></div>`;
+  }
+  const img = `<img src="${encodeImgPath(m.img)}" alt="${plain(alt)}" loading="lazy">`;
+  if(!r || sec.row) return img;
+  return `<div class="m-box${sec.crop ? ' crop' : ''}${sec.fill ? ' fill' : ''}" style="--r:${r}${sec.pos ? `; --pos:${sec.pos}` : ''}">${img}</div>`;
+}
+
+function mediaGridHTML(sec, alt){
+  const cols = sec.cols || (sec.full ? 1 : 2);
+  const span = sec.span || (cols === 1 ? 7 : 9);
+  const cls = ['case-media-grid', sec.row && 'row', sec.center && 'center', sec.large && 'large', sec.bleed && 'bleed'].filter(Boolean).join(' ');
+  return `
+    <div class="${cls}" style="--cols:${cols}; --span:${span}${sec.top ? `; margin-top:${sec.top}px` : ''}">
+      ${sec.items.map(m=>`
+        <figure${sec.row ? ` style="--r:${m.ratio}"` : ''}>
+          ${mediaItemHTML(m, sec, alt)}
+          ${m.caption ? `<figcaption>${rich(m.caption)}</figcaption>` : ''}
+        </figure>
+      `).join('')}
+    </div>`;
+}
+
+function sectionsHTML(sections, alt){
+  return sections.map(sec=>{
+    const top = sec.top ? ` style="margin-top:${sec.top}px"` : '';
+    if(sec.type === 'statement') return sec.text ? `<div class="case-statement${sec.italic ? ' italic' : ''}"${top}><p>${rich(sec.text)}</p></div>` : '';
+    if(sec.type === 'band') return `<div class="case-band${sec.flush ? ' flush' : ''}" style="background:${sec.bg}${sec.top ? `; margin-top:${sec.top}px` : ''}">${sectionsHTML(sec.sections, alt)}</div>`;
+    if(sec.type === 'collage') return `<div${top}>${collageHTML(sec)}</div>`;
+    return mediaGridHTML(sec, alt);
+  }).join('');
+}
+
+function heroHTML(cs, alt){
+  const h = cs && cs.hero;
+  if(!h) return '';
+  if(h.type === 'collage') return `<div class="case-hero-img collage" style="background:${h.bg}">${collageHTML(h)}</div>`;
+  if(h.placeholder || h.video) return `<div class="case-hero-img collage" style="background:${h.placeholder || h.bg || '#fff'}">${mediaItemHTML(h, {}, alt)}</div>`;
+  const fixed = cs.heroRatio ? ` fixed${cs.heroCrop ? ' crop' : ''}" style="--ratio:${cs.heroRatio}; --align:${cs.heroAlign || 'center'}` : '';
+  return `<div class="case-hero-img${fixed}"><img src="${encodeImgPath(h)}" alt="${plain(alt)}"></div>`;
+}
+
 function renderCasePage(cat, item){
   const cs = item.caseStudy;
 
-  /* series-based case study (City Symbol shape):
-     title block, then one section per city: statement + symbol grid */
   if(cs && cs.series){
     casePage.innerHTML = `
       <div class="case-top">
-        <div class="back" data-back="${cat}">← Back to ${CATS[cat].label}</div>
-        <h1 class="case-h1">${item.t}</h1>
+        <h1 class="case-h1">${rich(item.t)}</h1>
         <div class="case-intro-cols">
           <p>${cs.intro}</p>
           ${cs.note ? `<p class="case-note">${cs.note}</p>` : ''}
@@ -1621,49 +2357,33 @@ function renderCasePage(cat, item){
         </section>
       `).join('')}
     `;
-  } else if(cs){
-    /* long-form editorial shape (Eko, Island.io, Sex, Anthropomass) */
-    casePage.innerHTML = `
-      <div class="case-hero" style="${cs.bgImg ? `background-image:url('${cs.bgImg}'); background-size:cover; background-position:center;` : `background:${cs.bg};`}">
-        <div class="back" data-back="${cat}">← Back</div>
-        <div class="case-hero-glyph">${item.g||''}</div>
-        <h1>${item.t}</h1>
-        <p>${cs.intro}</p>
-      </div>
-      <div class="case-body">${(cs.paragraphs||[]).map(p=>`<p>${p}</p>`).join('')}</div>
-      <div class="case-media">
-        ${(cs.media||[]).map(m=>`<div class="m ${m.full?'full':''}" style="${bg(m)}">${glyphHTML(m)}</div>`).join('')}
-      </div>
-      ${item.images && item.images.length ? `
-      <div class="case-gallery">
-        ${item.images.map(im=>`<img src="${encodeImgPath(im.img)}" alt="${item.t}">`).join('')}
-      </div>` : ''}
-      ${cs.testimonial ? `
-      <div class="case-testimonial">
-        <div class="avatar">${cs.testimonial.avatar||'👤'}</div>
-        <div>
-          <p>"${cs.testimonial.quote}"</p>
-          <div class="who">${cs.testimonial.who}</div>
-        </div>
-      </div>` : ''}
-    `;
   } else {
-    /* generic fallback: any project without a hand-written case study
-       still gets a real full page — title, description, and every
-       image in its folder as a gallery */
     const gallery = (item.images && item.images.length) ? item.images : (item.img ? [{img:item.img}] : []);
+    const sections = (cs && cs.sections) || (gallery.length ? [{type:'media', items:gallery}] : []);
+    const intro = [].concat((cs && cs.intro) || item.d || []);
     casePage.innerHTML = `
-      <div class="case-top">
-        <div class="back" data-back="${cat}">← Back to ${CATS[cat].label}</div>
-        <h1 class="case-h1">${item.t}</h1>
-        ${item.d ? `<div class="case-intro-cols"><p>${item.d}</p></div>` : ''}
-      </div>
-      <div class="case-gallery">
-        ${gallery.map(im=>`<img src="${encodeImgPath(im.img)}" alt="${item.t}">`).join('')}
-      </div>
+      ${heroHTML(cs, item.t)}
+      ${cs && cs.noIntro ? `<h1 class="sr-only">${plain(item.t)}</h1>` : `
+      <div class="case-intro">
+        <h1>${rich(item.t)}</h1>
+        ${intro.length ? `<div class="case-intro-text">${intro.map(p=>`<p>${rich(p)}</p>`).join('')}</div>` : ''}
+      </div>`}
+      ${sectionsHTML(sections, item.t)}
     `;
+    const pageImgs = [...casePage.querySelectorAll('.case-media-grid img')];
+    pageImgs.forEach((img, i)=> img.addEventListener('click', ()=> openImageLightbox(pageImgs.map(im=> im.currentSrc || im.src), i)));
+
+    // space around an image that doesn't fill its box (the hero's tablet/mobile
+    // top, fixed-ratio heroes, fill sections) takes the image's own corner colour
+    casePage.querySelectorAll('.case-hero-img:not(.collage) img, .m-box.fill img').forEach(el=>{
+      const fill = ()=> paintBehind(el, el.parentNode);
+      if(el.complete) fill(); else el.addEventListener('load', fill, {once:true});
+    });
   }
 
+  // the way back sits at the end of the page, after the work — the nav
+  // already covers getting around from the top
+  casePage.insertAdjacentHTML('beforeend', `<div class="case-foot">${backLinkHTML(cat)}</div>`);
   casePage.querySelector('[data-back]').addEventListener('click', ()=>{
     location.hash = '#/' + cat;
   });
@@ -1677,6 +2397,97 @@ function renderCasePage(cat, item){
   } else {
     casePage.querySelectorAll('.sym, .series-statement').forEach(el=> el.classList.add('in'));
   }
+}
+
+/* ---------------------------------------------------------
+   ABOUT (#/about) — layout decoded from about.pdf. Words come
+   from the "# about" part of site-text.js; the portrait and client
+   logos are set here.
+--------------------------------------------------------- */
+const ABOUT = {
+  photo: 'images/about/portrait.webp',
+  // in order, with each logo's width in the PDF (keeps their relative sizes)
+  clients: [
+    ['logo-weizmann.jpg', 114], ['logo-tau.jpg', 59], ['logo-huji.jpg', 117], ['logo-caltech.jpg', 60], ['logo-nif.jpg', 68], ['logo-nil.jpg', 83], ['logo-muza.jpg', 42],
+    ['logo-monday.jpg', 111], ['logo-kaltura.jpg', 85], ['logo-island.jpg', 68], ['logo-eko.jpg', 37], ['logo-calcalist-eng.jpg', 72], ['logo-haaretz.jpg', 75], ['logo-globes.jpg', 52],
+  ],
+};
+
+function renderAbout(){
+  const T = ABOUT_TEXT;
+  const list = (heading, lines)=> `<h2>${heading}</h2><ul>${lines.map(l=>`<li>${rich(l)}</li>`).join('')}</ul>`;
+  casePage.innerHTML = `
+    <div class="about">
+      <div class="about-photo">${ABOUT.photo
+        ? `<img src="${encodeImgPath(ABOUT.photo)}" alt="">`
+        : `<div class="m-box placeholder" style="--r:1; background:#e6e6e6"><span>portrait</span></div>`}</div>
+      <div class="about-main">
+        ${T.lead ? `<p class="about-lead">${rich(T.lead)}</p>` : ''}
+        ${T.text.map(p=>`<p>${rich(p)}</p>`).join('')}
+        <div class="about-cols">
+          <div>${list(T.services, T.service)}</div>
+          <div>${list(T.exhibitions, T.exhibition)}</div>
+          <div>${list(T.talks, T.talk)}${list(T.teachings, T.teaching)}</div>
+          <div>${list(T.contact, T['contact line'])}</div>
+        </div>
+      </div>
+      <div class="about-clients">
+        <h2>${T.clients}</h2>
+        <div class="about-logos">${(()=>{
+          const widest = Math.max(...ABOUT.clients.map(([, w])=> w));
+          return ABOUT.clients.map(([f, w])=>`<img src="${encodeImgPath('images/about/clients/' + f)}" alt="" style="--w:${(w / widest * 100).toFixed(1)}%">`).join('');
+        })()}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* a film, full player (sound, controls), in the lightbox — opened from
+   any looping Vimeo preview's button. Not in the URL, like the image view. */
+function openVideoLightbox(id, ratio){
+  lightbox.innerHTML = `
+    <button class="lb-close" aria-label="Close">${UI_TEXT.close}</button>
+    <div class="lb-video" style="--r:${ratio}">
+      <iframe src="https://player.vimeo.com/video/${id}?autoplay=1&dnt=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="video"></iframe>
+    </div>`;
+  lightbox.onclick = e=>{ if(!e.target.closest('iframe')) closeVideo(); };
+  const closeVideo = ()=>{ lightbox.innerHTML = ''; closeLightbox(); };
+  setLightboxKeys(e=>{ if(e.key === 'Escape') closeVideo(); });
+  lightbox.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+document.addEventListener('click', e=>{
+  const b = e.target.closest('.vid-open');
+  if(b) openVideoLightbox(b.dataset.vimeo, b.dataset.ratio);
+});
+
+/* full-screen view of a project page's images: image only, arrows/keys
+   step through the page's images, a click anywhere or Escape closes.
+   Not in the URL — it's a zoom, the page itself stays the link. */
+function openImageLightbox(srcs, start){
+  let idx = start;
+  const multi = srcs.length > 1;
+  lightbox.innerHTML = `
+    ${multi ? `
+      <button class="lb-nav prev" aria-label="Previous image">‹</button>
+      <button class="lb-nav next" aria-label="Next image">›</button>` : ''}
+    <img class="lb-full" alt="">
+  `;
+  const img = lightbox.querySelector('.lb-full');
+  const go = n => { idx = (n + srcs.length) % srcs.length; img.src = srcs[idx]; };
+  go(idx);
+  if(multi){
+    lightbox.querySelector('.prev').onclick = e=>{ e.stopPropagation(); go(idx - 1); };
+    lightbox.querySelector('.next').onclick = e=>{ e.stopPropagation(); go(idx + 1); };
+  }
+  lightbox.onclick = closeLightbox;
+  setLightboxKeys(e=>{
+    if(e.key === 'Escape') closeLightbox();
+    if(multi && e.key === 'ArrowLeft') go(idx - 1);
+    if(multi && e.key === 'ArrowRight') go(idx + 1);
+  });
+  lightbox.classList.add('show');
+  document.body.style.overflow = 'hidden';
 }
 
 /* ---------------------------------------------------------
@@ -1700,7 +2511,7 @@ function openLightbox(cat, item, sym){
   const next = all[(idx+1)%all.length];
 
   lightbox.innerHTML = `
-    <button class="lb-close" aria-label="Close">close</button>
+    <button class="lb-close" aria-label="Close">${UI_TEXT.close}</button>
     <button class="lb-nav prev" aria-label="Previous">‹</button>
     <button class="lb-nav next" aria-label="Next">›</button>
     <figure class="lb-figure">
