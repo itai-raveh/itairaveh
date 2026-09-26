@@ -26,7 +26,7 @@
     --lh-display:1.2857;
   }
   @media (max-width:1024px){ :root{--fs-display:5.844vw;} } /* 52.8px on the 768 frame, at 85% */
-  @media (max-width:600px){ :root{--fs-display:7.707vw;} }  /* 28.9px on the 375 frame */
+  @media (max-width:600px){ :root{--fs-display:7.707vw; --fs-text:13px;} }  /* 28.9px on the 375 frame; text a touch larger on phones */
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -271,21 +271,13 @@
   /* title sits below the image, description below the title. "Read more"
      lives only in the lightbox now (.lb-project-link) — the grid caption
      used to duplicate it, so there's no .readmore rule here any more. */
-  /* title (+ "Read more" under it) on the left; with a description, the
-     description takes the right column from 44% of the card — measured off
-     the Brands / Science / Editorial layouts */
   .card-caption{margin-top:6px;}
-  .card-caption.has-desc{display:grid; grid-template-columns:44% 1fr; column-gap:14px;}
   .card-title{font-size:var(--fs-text); font-weight:400; color:#000; line-height:var(--lh-text);}
   .card-title strong{font-weight:700;}
   .card-title a{text-decoration:none;}
-  .card-more{
-    display:inline-block; margin-top:2px; font-size:var(--fs-text); line-height:var(--lh-text); color:#000;
-    text-decoration:underline; text-underline-offset:2px; cursor:pointer;
-  }
   .card-desc{
     font-size:var(--fs-text); font-weight:400; color:#000; line-height:var(--lh-text);
-    margin:0;
+    margin:2px 0 0;
   }
 
   /* a looping film (Vimeo background mode) — the button over it opens it
@@ -311,12 +303,9 @@
   .anim-list{display:flex; flex-direction:column; align-items:center; gap:48px;}
   .anim-item{width:var(--w);}
   .anim-set{display:grid; grid-template-columns:repeat(var(--cols),minmax(0,1fr)); gap:10px;}
-  /* title, then the description below it */
-  .anim-item .card-caption.has-desc{display:block;}
   @media (max-width:956px){ .anim-item{width:100% !important;} }
   @media (max-width:520px){
     .anim-set{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .card-caption.has-desc{grid-template-columns:1fr; row-gap:4px;}
   }
 
   /* ---------- MODAL (the popup Readymag couldn't do) ---------- */
@@ -639,19 +628,16 @@
     .about-photo, .about-main, .about-clients{grid-column:1/-1; grid-row:auto;}
     .about-photo{max-width:420px;}
     .about-cols{grid-template-columns:repeat(2,minmax(0,1fr));}
+    /* two columns: Services beside Contact, then Exhibitions beside Talks */
+    .about-cols > :nth-child(4){order:1;}
+    .about-cols > :nth-child(2){order:2;}
+    .about-cols > :nth-child(3){order:3;}
     .about-clients{margin-top:24px;}
   }
   @media (max-width:576px){
     .about-logos{grid-template-columns:repeat(3,minmax(0,1fr)); row-gap:22px;}
   }
   .nav-right a.dim{color:var(--sub);}
-  @media (max-width:956px){
-    .about{grid-template-columns:minmax(0,1fr); row-gap:40px;}
-    .about-photo, .about-main{grid-column:1/-1; grid-row:auto;}
-    .about-photo{max-width:420px;}
-    .about-cols{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .about-logos{flex-wrap:wrap; justify-content:flex-start; gap:18px 26px;}
-  }
 
   /* full-screen image view: just the image on the site's white scrim,
      with room left at the sides for the ‹ › arrows */
@@ -925,15 +911,29 @@ const CATS = {
     editorial: [
       {t:'Future of medicine | Calcalist', type:'simple', c:'#005edb', g:'', span:3, col:0,
         img:'images/illustration-editorial/calcalist-future-of-medicine/calcalist-future-of-medicine-cover.webp'},
-      {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞', span:4, col:3,
+      {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞', span:2, col:3,
         img:'images/illustration-editorial/calcalist-our-digital-mirror/calcalist-our-digital-mirror-cover.png'},
-      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺', span:4, col:7,
-        img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp', images:[{img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-2.jpg'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-3.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-4.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-5.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-6.webp'}, {img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-7.webp'}]},
-      {t:'Work in post COVID times | Globes', type:'simple', c:'#565656', g:'', span:3, col:0,
+      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺', span:4, col:7, cardRatio:1, // square, cropped
+        img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp',
+        images: galleryRange('images/illustration-editorial/adam-tsair-magazine-nordic-myths', 'adam-tsair-magazine-nordic-myths', 'webp', 7)},
+      {t:'Work in post COVID times | Globes', type:'simple', c:'#565656', g:'', span:2, col:5,
         img:'images/illustration-editorial/globes-work-in-post-covid-times/globes-work-in-post-covid-times-cover.webp'},
       {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕', span:4, col:3,
-        img:'images/illustration-editorial/sex/sex-cover.webp',
+        img:'images/illustration-editorial/sex/gallery/1.png',
         images:[
+          {img:'images/illustration-editorial/sex/gallery/1.png'},
+          {img:'images/illustration-editorial/sex/gallery/2.webp'},
+          {img:'images/illustration-editorial/sex/gallery/3.webp'},
+          {img:'images/illustration-editorial/sex/gallery/4.png'},
+          {img:'images/illustration-editorial/sex/gallery/5.png'},
+          {img:'images/illustration-editorial/sex/gallery/6.png'},
+          {img:'images/illustration-editorial/sex/gallery/7.png'},
+          {img:'images/illustration-editorial/sex/gallery/8.jpg'}
+        ],
+        d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
+        // the card and its preview use the gallery; the page shows the full set
+        caseStudy:{intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
+          sections:[{type:'media', items:[
           {img:'images/illustration-editorial/sex/sex-cover.webp'},
           {img:'images/illustration-editorial/sex/sex-2.webp'},
           {img:'images/illustration-editorial/sex/sex-3.webp'},
@@ -947,13 +947,12 @@ const CATS = {
           {img:'images/illustration-editorial/sex/sex-11.webp'},
           {img:'images/illustration-editorial/sex/sex-12.webp'},
           {img:'images/illustration-editorial/sex/sex-13.webp'}
-        ],
-        d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
-        caseStudy:{intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.'}},
+          ]}]}},
       {t:'The Estonian Sting | Calcalist', type:'simple', c:'#efefef', g:'', span:4, col:7,
         img:'images/illustration-editorial/calcalist-the-estonian-sting/calcalist-the-estonian-sting-cover.webp'},
       // image not in its folder yet
-      {t:'Remote therapy | Calcalist', type:'simple', c:'#cfe0e8', g:'', span:3, col:0, ratio:1.3},
+      {t:'Remote therapy | Calcalist', type:'simple', c:'#cfe0e8', g:'', span:3, col:0,
+        img:'images/illustration-editorial/calcalist-remote-therapy/calcalist-remote-therapy-cover.webp'},
       {t:'The Beach | Adam Tsair Magazine', type:'simple', c:'#e8d9b0', g:'🏖️', span:4, col:3,
         img:'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg',
         images: galleryRange('images/illustration-editorial/adam-tsair-magazine-the-beach', 'adam-tsair-magazine-the-beach', 'jpg', 11)},
@@ -963,16 +962,17 @@ const CATS = {
       {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖', span:3, col:0,
         img:'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg',
         images: galleryRange('images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'jpg', 9)},
-      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗', span:3, col:7,
+      {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗', span:2, col:5,
         img:'images/illustration-editorial/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png'},
       {t:'Where does salt comes from? | Einayim Magazine', type:'simple', c:'#ffffff', g:'', span:4, col:0,
         img:'images/illustration-editorial/einayim-magazine-where-does-salt-comes-from/einayim-magazine-where-does-salt-comes-from-cover.webp'},
-      {t:'Crypto conservatives | Calcalist', type:'simple', c:'#ffffff', g:'', span:3, col:5,
+      {t:'Crypto conservatives | Calcalist', type:'simple', c:'#ffffff', g:'', span:2, col:3,
         img:'images/illustration-editorial/calcalist-crypto-conservatives/calcalist-crypto-conservatives-cover.webp'},
       {t:'Chuzpa! | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📰', span:2, col:0,
         slug:'einayim-magazine-huzpa',
-        img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-cover.jpg'},
-      {t:'What my father never told me', type:'simple', c:'#dcdcdc', g:'👨', span:4, col:3,
+        img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-cover.jpg',
+        images:[{img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-cover.jpg'}, {img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-2.jpg'}, {img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-3.webp'}, {img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-4.webp'}, {img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-5.webp'}]},
+      {t:'What my father never told me', type:'simple', c:'#dcdcdc', g:'👨', span:4, col:7,
         img:'images/illustration-editorial/what-my-father-never-told-me/what-my-father-never-told-me-cover.jpg',
         images: galleryRange('images/illustration-editorial/what-my-father-never-told-me', 'what-my-father-never-told-me', 'jpg', 4)},
       {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️', span:3, col:7,
@@ -1029,8 +1029,7 @@ const CATS = {
           ]
         }},
       // Island's animations: compressed copies in images/brand/island/video
-      // (the transparent WebMs flattened onto their box colour). The coffee-cup
-      // user-selection scene has no video yet and stays a placeholder.
+      // (the transparent WebMs flattened onto their box colour)
       {t:'Island.io', type:'case', slug:'island', c:'#f2ede8', g:'🧘',
         d:'Illustration language for the Island.io product and web application. Island’s illustration system is based on the concept of a Zen garden in a metaphorical sense.',
         img:'images/brand/island/gallery/1.png', cardRatio:1.5, fit:'contain',
@@ -1038,7 +1037,7 @@ const CATS = {
         caseStudy:{
           hero:{video:'images/brand/island/video/hero', bg:'#fdfdfd', ratio:2.35},
           sections:[
-            {type:'media', cols:1, span:8, items:[{id:'user-selection', placeholder:'#faf9f7', ratio:2.13}]},
+            {type:'media', cols:1, span:8, items:[{id:'user-selection', video:'images/brand/island/video/user-selection', bg:'#fbf9f7', ratio:2.13}]},
             {type:'media', cols:1, span:8, top:40, items:[{id:'login', video:'images/brand/island/video/login', bg:'#0f472f', ratio:1.889}]},
             {type:'statement'},
             {type:'media', cols:1, span:8, items:[{id:'screen-frozen', video:'images/brand/island/video/screen-frozen', bg:'#fbf9f7', ratio:1.99}]},
@@ -1213,9 +1212,9 @@ const CATS = {
         }},
       {t:'Cell replacement by the Numbers | Ron Milo', type:'simple', c:'#f8ddd4', g:'', span:3, col:6,
         vimeo:'1166912331', ratio:1},
-      {t:'A sea of cows | Ron Milo', type:'simple', c:'#f5f5f5', g:'', span:3, col:0,
+      {t:'A sea of cows | Ron Milo', type:'simple', c:'#f5f5f5', g:'', span:3, col:3,
         img:'images/science/a-sea-of-cows/a-sea-of-cows-cover.jpg'},
-      {t:'Specialization of antigen-presenting cells | Ranit Kedmi', type:'simple', c:'#ffffff', g:'', span:3, col:3,
+      {t:'Specialization of antigen-presenting cells | Ranit Kedmi', type:'simple', c:'#ffffff', g:'', span:3, col:0,
         img:'images/science/antigen-presenting-cells/antigen-presenting-cells-cover.jpg'},
       {t:'Meet your digital twin | Eran Segal', type:'simple', c:'#ffefdb', g:'', span:3, col:6,
         img:'images/science/digital-twin/digital-twin-cover.jpg'},
@@ -1223,7 +1222,7 @@ const CATS = {
         img:'images/science/cryptochrome-discovery/cryptochrome-discovery-cover.png'},
       {t:'Balance of anthropomass and Biomass', type:'simple', c:'#10956c', g:'', span:2, col:3,
         img:'images/science/balance-of-anthropomass-and-biomass/balance-of-anthropomass-and-biomass-cover.webp'},
-      {t:'TREM2-targeted CAR therapy | Ido Amit', type:'simple', c:'#ffffff', g:'', span:4, col:5,
+      {t:'TREM2-targeted CAR therapy | Ido Amit', type:'simple', c:'#ffffff', g:'', span:3, col:5,
         img:'images/science/trem2-car-therapy/trem2-car-therapy-cover.jpg'},
       {t:'Shift in mammel biomass | Lior Greenspoone', type:'simple', c:'#ffffff', g:'', span:3, col:0,
         img:'images/science/shift-in-mammal-biomass/shift-in-mammal-biomass-cover.jpg'},
@@ -1270,7 +1269,7 @@ Object.values(CATS).forEach(cat=>{
 --------------------------------------------------------- */
 const UI_TEXT = {
   projects:'Projects', editorial:'Editorial and publications',
-  readMore:'Read more about this project', cardReadMore:'Read more', backTo:'Back to', close:'close',
+  readMore:'Read more about this project', backTo:'Back to', close:'close',
 };
 // the About page's words; its lists and paragraphs are filled from the
 // "# about" part of site-text.js (a label repeated = one more line)
@@ -1307,7 +1306,6 @@ function applySiteText(src){
     'projects heading': v=> UI_TEXT.projects = v,
     'editorial heading': v=> UI_TEXT.editorial = v,
     'read more link': v=> UI_TEXT.readMore = v,
-    'card read more link': v=> UI_TEXT.cardReadMore = v,
     'back link': v=> UI_TEXT.backTo = v,
     'close button': v=> UI_TEXT.close = v,
   };
@@ -1322,12 +1320,13 @@ function applySiteText(src){
 
   const flatSections = list=> (list || []).flatMap(s=> s.type === 'band' ? flatSections(s.sections) : [s]);
   const fileText = new Map(); // item → which of intro/description the file set
+  const order = [];           // projects in the order the file lists them
   let section = null, item = null;
   src.split('\n').forEach(raw=>{
     const line = raw.trim();
     if(!line || line.startsWith('//')) return;
     let m;
-    if((m = line.match(/^##\s+(.+)$/))){ item = CATS[section] ? findItem(section, m[1].trim()) : null; return; }
+    if((m = line.match(/^##\s+(.+)$/))){ item = CATS[section] ? findItem(section, m[1].trim()) : null; if(item) order.push(item); return; }
     if((m = line.match(/^#\s+(.+)$/))){ section = m[1].trim().toLowerCase(); item = null; return; }
     const colon = line.indexOf(':');
     if(colon < 0) return;
@@ -1343,13 +1342,22 @@ function applySiteText(src){
       return;
     }
     if(!CATS[section]) return;
-    if(!item){ if(k === 'name') CATS[section].name = val; return; }
+    if(!item){
+      if(k === 'name') CATS[section].name = val;
+      else if(k === 'grid columns') CATS[section].tracks = +val;
+      else if(k === 'editorial grid columns') CATS[section].editorialTracks = +val;
+      return;
+    }
 
     const cs = item.caseStudy;
     const seen = fileText.get(item) || {};
     fileText.set(item, seen);
     if(k === 'title') item.t = val;
     else if(k === 'card title') item.cardT = val;
+    // card size on the category grid: how many columns wide, and which
+    // column it starts in (1 = leftmost; blank or "auto" = wherever fits)
+    else if(k === 'columns'){ if(+val > 0) item.span = +val; }
+    else if(k === 'start column'){ if(!val || val.toLowerCase() === 'auto') delete item.col; else if(+val > 0) item.col = +val - 1; }
     else if(k === 'description'){ item.d = val; seen.description = true; }
     else if(k === 'note'){ if(cs && 'note' in cs) cs.note = val; else item.note = val; }
     else if(k === 'intro'){
@@ -1373,6 +1381,11 @@ function applySiteText(src){
       cs.series.forEach(s=> s.symbols.forEach(sym=>{ if(sym.f === key) sym.n = val; }));
     }
   });
+  // grid order follows the file: listed projects in file order, anything
+  // the file doesn't list keeps its place after them
+  const rank = new Map(order.map((it, i)=> [it, i]));
+  const byFile = list=> list && list.sort((a, b)=> (rank.has(a) ? rank.get(a) : 1e9) - (rank.has(b) ? rank.get(b) : 1e9));
+  Object.values(CATS).forEach(c=>{ byFile(c.items); byFile(c.editorial); });
   // a project whose file entry gives a description but no intro uses the
   // description as its page text too
   fileText.forEach((seen, it)=>{
@@ -1386,8 +1399,13 @@ if(window.SITE_TEXT) applySiteText(window.SITE_TEXT);
 // instead of forcing a uniform box — read once here rather than waiting on
 // each <img> to load, so layout is exact on first paint, no reflow-in.
 const IMG_RATIO = {
+  'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp': 2.0021,
+  'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-cover.jpg': 0.8,
+  'images/illustration-editorial/calcalist-remote-therapy/calcalist-remote-therapy-cover.webp': 1.0,
+  'images/illustration-editorial/sex/gallery/1.png': 1.2604,
+  'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.png': 1.5139,
+  'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg': 1.4985,
   'images/science/balance-of-anthropomass-and-biomass/balance-of-anthropomass-and-biomass-cover.webp': 0.6547,
-  'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp': 1.3883,
   'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.jpg': 1.0,
   'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.jpg': 1.2498,
   'images/illustration-editorial/what-my-father-never-told-me/what-my-father-never-told-me-cover.jpg': 1.3028,
@@ -1434,9 +1452,6 @@ const IMG_RATIO = {
   'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-2.jpg': 1.0316,
   'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-10.jpg': 1.0,
   'images/illustration-editorial/calcalist-our-digital-mirror/calcalist-our-digital-mirror-cover.png': 1.5164,
-  'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-cover.jpg': 0.7444,
-  'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.png': 1.5129,
-  'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.jpg': 1.5008,
   'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-9.jpg': 1.2489,
   'images/illustration-projects/city-symbol/city-symbol-1-cover.png': 1.0,
   'images/illustration-editorial/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.png': 0.7069,
@@ -1678,6 +1693,10 @@ function findSymbol(item, subSlug){
 function route(){
   const {cat, slug, sub, preview, previewImg} = parseHash();
   stopAllCardGalleries();
+  // any navigation closes the tablet/mobile menu — links (Bio) go through
+  // the link router, which stops the click before the menu's own handler
+  navEl.classList.remove('menu-open');
+  navBurger.setAttribute('aria-expanded', 'false');
 
   // home
   if(!cat){
@@ -1846,14 +1865,11 @@ function vimeoLoopHTML(id, ratio){
   </div>`;
 }
 
+// title, then the description under it — the same on every grid
 function captionHTML(cat, item, target){
-  const more = item.caseStudy ? `<a class="card-more" ${linkAttr('#/' + cat + '/' + item.slug)}>${UI_TEXT.cardReadMore}</a>` : '';
   return `
-      <div class="card-caption${item.d ? ' has-desc' : ''}">
-        <div class="card-head">
-          <div class="card-title">${target ? `<a ${linkAttr(target)}>${titleHTML(item.cardT || item.t)}</a>` : titleHTML(item.cardT || item.t)}</div>
-          ${more}
-        </div>
+      <div class="card-caption">
+        <div class="card-title">${target ? `<a ${linkAttr(target)}>${titleHTML(item.cardT || item.t)}</a>` : titleHTML(item.cardT || item.t)}</div>
         ${item.d ? `<p class="card-desc">${rich(item.d)}</p>` : ''}
       </div>`;
 }
@@ -1956,8 +1972,8 @@ function layoutMasonry(gridEl){
     const explicitCol = trackCount === full && full > 2 && card.dataset.col !== undefined ? +card.dataset.col : null;
     let bestCol = 0, bestTop = Infinity;
     if(explicitCol !== null){
-      bestCol = explicitCol;
-      bestTop = Math.max(...colHeights.slice(explicitCol, explicitCol + span));
+      bestCol = Math.min(explicitCol, trackCount - span); // never past the right edge
+      bestTop = Math.max(...colHeights.slice(bestCol, bestCol + span));
     } else {
       for(let c = 0; c <= trackCount - span; c++){
         const top = Math.max(...colHeights.slice(c, c + span));

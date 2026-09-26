@@ -24,6 +24,15 @@
      description: …              the text on the category grid card
      card title: …               a different name on the card than on the page
 
+   Card sizes on the category grids (Illustration, Editorial, Science)
+     grid columns: 9             how many columns that grid has
+     columns: 3                  how many columns a card spans
+     start column: 5             which column it starts in, 1 = leftmost
+                                 (leave empty or write auto to let it go
+                                 wherever there is room)
+     Cards are placed in the order they appear here; each drops to the
+     highest free spot in its columns.
+
    Project pages
      intro: …                    the text next to the project name; each
                                  intro: line is one paragraph
@@ -34,8 +43,10 @@
    Anywhere in paragraphs and captions
      [words](https://…)  a link      [words]()  underlined, no link yet
      *words*             italic      **words**  bold
-                         names of publications and exhibitions are always
-                         italic: *Calcalist*, *Nature*, *Anthropomass*
+                         always italic: names of publications, exhibitions,
+                         clients and umbrella projects — *Calcalist*,
+                         *Nature*, *eko*, *Ron Milo*, *Anthropomass*
+                         (only the name: "*eko* explainer")
      {b}                 line break
 
    The only character you can't use is the backtick ( ` ).
@@ -58,21 +69,28 @@ browser tab title: Itai Raveh — recreation
 projects heading: Projects
 editorial heading: Editorial and publications
 read more link: Read more about this project
-card read more link: Read more
 back link: Back to
 close button: close
 
 # illustration
 name: Illustration projects
+grid columns: 9
+editorial grid columns: 9
 
 ## gibberish
 title: Gibberish
+columns: 2
+start column: 1
 
 ## sublet
 title: Sublet
+columns: 2
+start column: 3
 
 ## city-symbol
 title: City Symbol: Street level Coat Of Arms
+columns: 3
+start column: 5
 description: A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.
 intro: A series of 45 symbols, portraying the various mythologies embedded in the urban landscape. The project contains 3 series containing 15 symbols for three different cities: Tel Aviv, Haifa and Jerusalem.
 note: Undergraduate project in the visual communication department in Shenkar College of Engineering, Design and Art.
@@ -130,116 +148,186 @@ sym-3-15: Shfech HaKishon
 
 ## weizmann-institute-2026-calendar
 title: Weizmann institute 2026 calendar
+columns: 2
+start column: 8
 
 ## the-boys
 title: "The Boys"
+columns: 2
+start column: 1
 
 ## the-calling
 title: The Calling
+columns: 2
+start column: 8
 
 ## herzl-eretz-israel-museum
-title: Herzl | Eretz Israel Museum
+title: Herzl | *Eretz Israel Museum*
+columns: 3
+start column: 3
 description: Part of an exhibition, a series of illustrations following the journey of a postcard from Palestine to Austria.
 
 ## in-the-garden
 title: In the garden
+columns: 2
+start column: 6
 
 ## welcome-to-tivon
 title: Welcome to tivon
+columns: 2
+start column: 8
 
 ## heimat
 title: Heimat
+columns: 2
+start column: 1
 
 ## saint-clara-film-poster
 title: Saint Clara film poster
+columns: 2
+start column: 6
 
 ## the-springs-of-ein-qiniyye
 title: The springs of Ein Qiniyye
+columns: 3
+start column: 3
 description: A series of illustrations drawn from the folk tales surrounding the waters of one Druze village.
 
 ## tarot-card
 title: Tarot Card
+columns: 2
+start column: 1
 description: Justice
 
 ## memento-mori
 title: Memento Mori
+columns: 4
+start column: 6
 description: While the world is in turmoil, the random death of some leaders in history serves as a kind reminder on the strange moves of history.
 
 ## poriah
 title: Poriah
+columns: 3
+start column: 3
 
 ## the-road-begins-in-capernaum
 title: The Road Begins In Capernaum
+columns: 2
+start column: 1
 
 ## parents-against-child-arrests
 title: Parents Against Child Arrests
+columns: 2
+start column: 6
 
 ## passover
 title: Passover
+columns: 2
+start column: 8
 
 ## justice
 title: Justice
+columns: 2
+start column: 3
 
 ## runs-in-the-family
 title: Runs in the family
+columns: 2
+start column: 5
 
 ## jerusalem-snow
 title: Jerusalem snow
+columns: 3
+start column: 7
 
 ## valentine-kuli-alma-club
-title: Valentine | Kuli Alma Club
+title: Valentine | *Kuli Alma Club*
+columns: 2
+start column: 1
 
 // editorial and publications
 
-## nordic-myths-adam-tsair-magazine
-title: Nordic Myths | *Adam Tsair Magazine*
+## future-of-medicine-calcalist
+title: Future of medicine | *Calcalist*
+columns: 3
+start column: 1
 
 ## our-digital-mirror-calcalist
 title: Our digital mirror | *Calcalist*
+columns: 3
+start column: 4
 
-## future-of-medicine-calcalist
-title: Future of medicine | *Calcalist*
+## nordic-myths-adam-tsair-magazine
+title: Nordic Myths | *Adam Tsair Magazine*
+columns: 3
+start column: 7
 
 ## work-in-post-covid-times-globes
 title: Work in post COVID times | *Globes*
+columns: 3
+start column: 4
 
 ## the-estonian-sting-calcalist
 title: The Estonian Sting | *Calcalist*
+columns: 3
+start column: 7
 
 ## remote-therapy-calcalist
 title: Remote therapy | *Calcalist*
-
-## the-beach-adam-tsair-magazine
-title: The Beach | *Adam Tsair Magazine*
-
-## archimedes-and-the-crown-einayim-magazine
-title: Archimedes and the crown | *Einayim Magazine*
-
-## the-tales-of-rabbi-nachman-of-breslev-einayim-magazine
-title: The Tales of Rabbi Nachman of Breslev | *Einayim Magazine*
-
-## crypto-conservatives-calcalist
-title: Crypto conservatives | *Calcalist*
-
-## where-does-salt-comes-from-einayim-magazine
-title: Where does salt comes from? | *Einayim Magazine*
-
-## election-for-children-einayim-magazine
-title: Election for children | *Einayim Magazine*
-
-## einayim-magazine-huzpa
-title: Chuzpa! | *Einayim Magazine*
-
-## what-my-father-never-told-me
-title: What my father never told me
-
-## geula-cohen-true-legends-book
-title: Geula Cohen | *True Legends* book
+columns: 3
+start column: 1
 
 ## sex
 title: Sex education book
+columns: 3
+start column: 4
 description: Illustrations for *Love In The 21st Century*, a sexual education book by sexologist Dr. Daniel Drai.
 intro: Illustrations for *Love In The 21st Century*, a sexual education book by sexologist Dr. Daniel Drai.
+
+## archimedes-and-the-crown-einayim-magazine
+title: Archimedes and the crown | *Einayim Magazine*
+columns: 3
+start column: 7
+
+## the-tales-of-rabbi-nachman-of-breslev-einayim-magazine
+title: The Tales of Rabbi Nachman of Breslev | *Einayim Magazine*
+columns: 3
+start column: 1
+
+## crypto-conservatives-calcalist
+title: Crypto conservatives | *Calcalist*
+columns: 3
+start column: 4
+
+## the-beach-adam-tsair-magazine
+title: The Beach | *Adam Tsair Magazine*
+columns: 3
+start column: 7
+
+## election-for-children-einayim-magazine
+title: Election for children | *Einayim Magazine*
+columns: 3
+start column: 4
+
+## where-does-salt-comes-from-einayim-magazine
+title: Where does salt comes from? | *Einayim Magazine*
+columns: 3
+start column: 1
+
+## what-my-father-never-told-me
+title: What my father never told me
+columns: 3
+start column: 3
+
+## geula-cohen-true-legends-book
+title: Geula Cohen | *True Legends* book
+columns: 2
+start column: 6
+
+## einayim-magazine-huzpa
+title: Chuzpa! | *Einayim Magazine*
+columns: 2
+start column: 1
 
 # brand
 name: Branded illustration language
@@ -247,8 +335,8 @@ name: Branded illustration language
 ## eko
 title: eko engineering
 // description = the text on the Brands grid card; intro = the text on the project page
-description: The illustration language created for Eko Engineering is a harmonious blend of hand-drawn whimsy, smart and human-centric charm.
-intro: Illustration language created for Eko Engineering blending hand-drawn whimsy lines with heavy tech centred concepts. The human nature of the language helps bring to the front the company's working culture of a "flat organization," promoting a direct and open line of communication between employees and leadership.
+description: The illustration language created for *Eko Engineering* is a harmonious blend of hand-drawn whimsy, smart and human-centric charm.
+intro: Illustration language created for *Eko Engineering* blending hand-drawn whimsy lines with heavy tech centred concepts. The human nature of the language helps bring to the front the company's working culture of a "flat organization," promoting a direct and open line of communication between employees and leadership.
 caption 1.webp: Mutual work
 caption 2.webp: The flat organization
 caption 3.webp: Working together
@@ -259,14 +347,14 @@ statement 1: The illustrations found prominent use on the company's blog, annual
 caption 7.webp: Custom player
 caption 8.webp: Developing custom plug ins
 caption 9.webp: Crash testing
-statement 2: Merchandise and apparel for eko Engineering, embodying the brand's identity and working culture
+statement 2: Merchandise and apparel for *eko Engineering*, embodying the brand's identity and working culture
 caption 10.webp: Sweatshirt
 caption 11.webp: Sweatshirt design
 
 ## island
 title: Island.io
-description: Illustration language for the Island.io product and web application. Island’s illustration system is based on the concept of a Zen garden in a metaphorical sense.
-intro: Illustration language for the Island.io product and web application. Island’s illustration system is based on the concept of a Zen garden in a metaphorical sense: A perfect, serene place, where everything is exactly the way it needs to be. The illustrations make use of empty space, elements of tension and minimalism, to create an atmosphere of lightness, clarity and serenity.
+description: Illustration language for the *Island.io* product and web application. *Island*’s illustration system is based on the concept of a Zen garden in a metaphorical sense.
+intro: Illustration language for the *Island.io* product and web application. *Island*’s illustration system is based on the concept of a Zen garden in a metaphorical sense: A perfect, serene place, where everything is exactly the way it needs to be. The illustrations make use of empty space, elements of tension and minimalism, to create an atmosphere of lightness, clarity and serenity.
 intro: Design team lead: Tami Oz Sinai
 caption user-selection: **User selection screen:**{b}The coffee cups represent different users, each with their individual style and setting. Which cup will you choose today?
 caption login: The island browser is a haven hidden behind a protected gate.{b}The login screen will give you a peek inside the garden.
@@ -276,17 +364,10 @@ statement 2: Every aspect of the typical office has been translated into the rea
 caption user-disconnected: User disconnected
 statement 3: At the conclusion of the project, the brand team received a comprehensive instruction manual for working with and further developing the illustration system
 
-## kaltura
-title: Kaltura
-description: Illustration system of 100+ elements for Kaltura, a global leader in enterprise video technology, Built as a modular framework
-statement 1: The illustration system is composed of 100+ illustrations, created around a unified logic and separated into different scenes.
-statement 2: Addressing different color palettes and utilizing a distinctive character styling, the illustration system provides a seamless representation of Kaltura’s brand values.
-statement 3: The graphic logic is based on a composition of shapes derived from the Kaltura logo, which have been rearranged to create an entire world
-
 ## benny-goren
 title: Benny Goren
-description: Illustrations for Benny Goren’s, a leading math textbook publishing house
-intro: Illustrations for Benny Goren’s new website, a leading (in almost mythic proportions) math textbook publishing. The illustration language is aiming to show the brand’s audience: young and sophisticated teachers, riding bikes and using iPads for teaching.
+description: Illustrations for *Benny Goren*’s, a leading math textbook publishing house
+intro: Illustrations for *Benny Goren*’s new website, a leading (in almost mythic proportions) math textbook publishing. The illustration language is aiming to show the brand’s audience: young and sophisticated teachers, riding bikes and using iPads for teaching.
 intro: Brand design: [Three bears studio]()
 caption 1.webp: Miniature worlds
 caption 2.webp: Accessible teachers
@@ -296,10 +377,28 @@ caption 5.webp: Aspirations
 caption 6.webp: Close up to the inner world of the teacher
 statement 1: The illustration language enables the student to encounter the already mythological brand in a new and fresh perspective
 
+## kaltura
+title: Kaltura
+description: Illustration system of 100+ elements for *Kaltura*, a global leader in enterprise video technology, Built as a modular framework
+statement 1: The illustration system is composed of 100+ illustrations, created around a unified logic and separated into different scenes.
+statement 2: Addressing different color palettes and utilizing a distinctive character styling, the illustration system provides a seamless representation of *Kaltura*’s brand values.
+statement 3: The graphic logic is based on a composition of shapes derived from the *Kaltura* logo, which have been rearranged to create an entire world
+
+## moshal
+title: Moshal Scholarship Program Branding
+card title: MOSHAL Scholarship Program
+description: Illustrated branding concept designed to accompany scholars throughout their educational journey
+intro: The illustrated branding concept for the *Moshal Scholarship Program* was designed to accompany scholars throughout their educational journey in South Africa. The visual identity would have evolved alongside students from high school through university and into their alumni phase, while maintaining cohesion.
+intro: Although this project was never realized, the collaborative work with tomorrow.io under Assaf Cohen's creative direction explored inclusive representations respecting South Africa's diverse population.
+statement 1: Early childhood illustrations featured wide-eyed youngsters with arms outstretched toward books and stars—capturing that first magical spark of learning and possibility.
+statement 2: University scholars were illustrated with open, thankful expressions, balancing textbooks while reaching toward the sky—conveying determination filled with optimism.
+statement 3: Alumni visuals showed mentors with warm, encouraging smiles, looking forward with their students—representing the full circle of hope and gratitude.
+caption 12.webp: Sketches
+
 ## help-one-billion
 title: Help One Billion
 description: Product illustrations for a job searching website for the post covid era
-intro: Bring your dog to work, adoption assistance, medical packages and other perks: a series of spot illustrations for HelpOneBillion: a job searching website for the post covid era, with new perspectives on what people are looking for when searching for a job.
+intro: Bring your dog to work, adoption assistance, medical packages and other perks: a series of spot illustrations for *HelpOneBillion*: a job searching website for the post covid era, with new perspectives on what people are looking for when searching for a job.
 intro: Brand design by Tami Oz Sinai
 caption 1.jpg: Bring you dog to work
 caption 2.jpg: Remote working
@@ -311,25 +410,22 @@ statement 2: The illustration language utilizes brand colors to create tension b
 caption 6.jpg: Medical packages
 caption 7.png: Some initial sketches
 
-## moshal
-title: Moshal Scholarship Program Branding
-card title: MOSHAL Scholarship Program
-description: Illustrated branding concept designed to accompany scholars throughout their educational journey
-intro: The illustrated branding concept for the Moshal Scholarship Program was designed to accompany scholars throughout their educational journey in South Africa. The visual identity would have evolved alongside students from high school through university and into their alumni phase, while maintaining cohesion.
-intro: Although this project was never realized, the collaborative work with tomorrow.io under Assaf Cohen's creative direction explored inclusive representations respecting South Africa's diverse population.
-statement 1: Early childhood illustrations featured wide-eyed youngsters with arms outstretched toward books and stars—capturing that first magical spark of learning and possibility.
-statement 2: University scholars were illustrated with open, thankful expressions, balancing textbooks while reaching toward the sky—conveying determination filled with optimism.
-statement 3: Alumni visuals showed mentors with warm, encouraging smiles, looking forward with their students—representing the full circle of hope and gratitude.
-caption 12.webp: Sketches
-
 # science
 name: Science communication
+grid columns: 9
+
+## watertowers-of-israel
+title: Watertowers of israel
+columns: 4
+start column: 1
 
 ## anthropomass
 title: Anthropomass.org
 card title: Anthropomass
+columns: 5
+start column: 5
 description: Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has suppressed the amount of all living things.
-intro: An web based graphic essay accompanying the publication of the groundbreaking paper "Global human-made mass exceeds all living biomass" by Ron Milo’s lab of the Department of Plant and Environmental Sciences in the Weizmann Institue of Science.
+intro: An web based graphic essay accompanying the publication of the groundbreaking paper "Global human-made mass exceeds all living biomass" by *Ron Milo*’s lab of the Department of Plant and Environmental Sciences in the *Weizmann Institue of Science*.
 intro: The paper, published december 2020 in *Nature* journal, proves that the amount of man-made stuff on earth has suppressed the amount of all living things.
 intro: Full project: [anthropomass.org](https://anthropomass.org)
 caption 1.webp: Natural material mass: the Biomass. Warm, organic colors evoking a sense of familiarity and connection to the living world.
@@ -342,65 +438,82 @@ statement 1: The mission was to translate a complex scientific concept into clea
 statement 2: Arranging the different materials into categories based on their shapes and colors allowed for visual comparisons to be made.
 statement 3: The visual language has been inspired by Otto Neurath and Gerd Arntz's ISOTYPE infographic language
 
-## watertowers-of-israel
-title: Watertowers of israel
-
 ## biomass-of-mammals-ron-milo
-title: Biomass of mammals | Ron Milo
+title: Biomass of mammals | *Weizmann Institue, Ron Milo's lab*
+columns: 4
+start column: 1
 
 ## space-omelette
 title: Cosmic Heat: Frying an Egg on the Hottest Worlds
 card title: Space Omelette
+columns: 2
+start column: 5
 description: A playful infographic exploring the scenarios of cooking an egg on the surface of different stars
-intro: A playful infographic created for the Weizmann Institute, exploring the scenarios of cooking an egg on the surface of different stars. Inspired by Dr. Naama Hallakoun's discovery of a "Jupiter" hotter than the Sun, this piece visualizes extreme temperatures in a relatable way
+intro: A playful infographic created for the *Weizmann Institute*, exploring the scenarios of cooking an egg on the surface of different stars. Inspired by Dr. Naama Hallakoun's discovery of a "Jupiter" hotter than the Sun, this piece visualizes extreme temperatures in a relatable way
 // the layout had eko's statement here — replace with this project's own line
 statement 1: The illustrations found prominent use on the company's blog, annual reports showcasing yearly figures, collaborative projects with partners, and more.
 
 ## cell-replacement-by-the-numbers-ron-milo
-title: Cell replacement by the Numbers | Ron Milo
+title: Cell replacement by the Numbers | *Weizmann Institue, Ron Milo's lab*
+columns: 3
+start column: 7
 
 ## a-sea-of-cows-ron-milo
-title: A sea of cows | Ron Milo
+title: A sea of cows | *Weizmann Institue, Ron Milo's lab*
+columns: 3
+start column: 4
 
 ## specialization-of-antigen-presenting-cells-ranit-kedmi
-title: Specialization of antigen-presenting cells | Ranit Kedmi
+title: Specialization of antigen-presenting cells | *Weizmann Institue, Ranit Kedmi*
+columns: 3
+start column: 1
 
 ## meet-your-digital-twin-eran-segal
-title: Meet your digital twin | Eran Segal
+title: Meet your digital twin | *Weizmann Institue, Eran Segal*
+columns: 3
+start column: 7
 
 ## cryptochrome-discovery-jonathan-gressel
-title: Cryptochrome Discovery | Jonathan Gressel
+title: Cryptochrome Discovery | *Weizmann Institue, Jonathan Gressel*
+columns: 3
+start column: 1
 
 ## balance-of-anthropomass-and-biomass
-title: Balance of anthropomass and Biomass
+title: Balance of anthropomass and Biomass | *Weizmann Institue, Ron Milo's lab*
+columns: 2
+start column: 4
 
 ## trem2-targeted-car-therapy-ido-amit
-title: TREM2-targeted CAR therapy | Ido Amit
+title: TREM2-targeted CAR therapy | *Weizmann Institue, Ido Amit*
+columns: 3
+start column: 6
 
 ## shift-in-mammel-biomass-lior-greenspoone
-title: Shift in mammel biomass | Lior Greenspoone
+title: Shift in mammel biomass | *Weizmann Institue, Lior Greenspoone*
+columns: 3
+start column: 1
 
 # animation
 name: Art direction for animation
 
 ## a-new-solution-to-streaming-technology-eko-explainer
-title: A new solution to streaming technology | eko explainer
-description: An explainer on how eko's streaming technology works, and what makes it different
+title: A new solution to streaming technology | *eko* explainer
+description: An explainer on how *eko*'s streaming technology works, and what makes it different
 
 ## the-problem-with-advertising-eko-explainer
-title: The problem with advertising | eko explainer
-description: A short intro for eko's pitch deck, framing the war for attention and why advertising is struggling to keep up.
+title: The problem with advertising | *eko* explainer
+description: A short intro for *eko*'s pitch deck, framing the war for attention and why advertising is struggling to keep up.
 
 ## the-art-of-storytelling-eko-explainer
-title: The art of storytelling | eko explainer
+title: The art of storytelling | *eko* explainer
 description: A set of short loops for an internal presentation, each capturing a core idea: storytelling, choice, balance, the human experience
 
 ## aleinu-submarines
-title: Every nation is a submarine | "Aleinu": Animated explainer
-description: Aleinu is a political movement rethinking civic values. The explainer uses the metaphor of nations as submarines, each finding its own way to happiness
+title: Every nation is a submarine | *Aleinu*: Animated explainer
+description: *Aleinu* is a political movement rethinking civic values. The explainer uses the metaphor of nations as submarines, each finding its own way to happiness
 
 ## the-problem-with-e-commerce-eko-explainer
-title: The problem with e-commerce | eko explainer
+title: The problem with e-commerce | *eko* explainer
 description: An explainer on how e-commerce became dominated by a single player, and what that means for everyone else
 
 ## on-the-revolutions
@@ -439,7 +552,7 @@ exhibition: *Medium is the Message*, Tel Aviv illustration week, 2017
 talks: Talks
 talk: *From Me to You*, Eretz Israel Museum, 2026 ([interview](https://www.eretzmuseum.org.il/post/%d7%9e%d7%9e%d7%a0%d7%99-%d7%90%d7%9c%d7%99%d7%9a-%d7%a9%d7%99%d7%97%d7%94-%d7%a2%d7%9d-%d7%94%d7%9e%d7%90%d7%99%d7%99%d7%a8-%d7%95%d7%94%d7%9e%d7%a2%d7%a6%d7%91-%d7%90%d7%99%d7%aa%d7%99-%d7%a8%d7%95/))
 talk: *Anthropomass*, ISVIS 2022, Israeli data visualization conference, Shenkar
-talk: *Proportions*, Shenkar Visual Communication, 2021, talk with Prof. Ron Milo on the Anthropomass research
+talk: *Proportions*, Shenkar Visual Communication, 2021, talk with Prof. *Ron Milo* on the *Anthropomass* research
 talk: *Water Affair panel*, Center for Digital Art Holon, 2021
 
 teachings: Teachings
