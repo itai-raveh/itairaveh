@@ -553,7 +553,7 @@ start column: 4
 
 ## trem2-targeted-car-therapy-ido-amit
 title: TREM2-targeted CAR therapy | *Weizmann Institue, Ido Amit*
-columns: 3
+columns: 4
 start column: 6
 
 ## shift-in-mammel-biomass-lior-greenspoone
