@@ -1651,7 +1651,7 @@ function openProjectLightbox(cat, item, startIdx){
   // reveal only once the incoming image has actually decoded, so a
   // not-yet-cached image never shows as a blank/grey frame mid-crossfade
   let goSeq = 0;
-  const go = n => {
+  const step = n => {
     idx = (n + images.length) % images.length;
     const seq = ++goSeq; // a slower, superseded image mustn't swap the layers when it finally loads
     const reveal = () => {
@@ -1667,13 +1667,13 @@ function openProjectLightbox(cat, item, startIdx){
   };
   lightbox.querySelector('.lb-project-close').addEventListener('click', e=>{ e.stopPropagation(); go(cat + '/'); });
   if(images.length > 1){
-    lightbox.querySelector('.prev').addEventListener('click', e=>{ e.stopPropagation(); go(idx - 1); });
-    lightbox.querySelector('.next').addEventListener('click', e=>{ e.stopPropagation(); go(idx + 1); });
+    lightbox.querySelector('.prev').addEventListener('click', e=>{ e.stopPropagation(); step(idx - 1); });
+    lightbox.querySelector('.next').addEventListener('click', e=>{ e.stopPropagation(); step(idx + 1); });
     // clicking the image itself (not just the small arrows) advances too
     lightbox.querySelector('.lb-project-media').addEventListener('click', e=>{
       if(e.target.closest('.lb-panel-nav')) return;
       e.stopPropagation();
-      go(idx + 1);
+      step(idx + 1);
     });
   }
 
@@ -1959,17 +1959,17 @@ function openImageLightbox(srcs, start){
     <img class="lb-full" alt="">
   `;
   const img = lightbox.querySelector('.lb-full');
-  const go = n => { idx = (n + srcs.length) % srcs.length; img.src = srcs[idx]; };
-  go(idx);
+  const step = n => { idx = (n + srcs.length) % srcs.length; img.src = srcs[idx]; };
+  step(idx);
   if(multi){
-    lightbox.querySelector('.prev').onclick = e=>{ e.stopPropagation(); go(idx - 1); };
-    lightbox.querySelector('.next').onclick = e=>{ e.stopPropagation(); go(idx + 1); };
+    lightbox.querySelector('.prev').onclick = e=>{ e.stopPropagation(); step(idx - 1); };
+    lightbox.querySelector('.next').onclick = e=>{ e.stopPropagation(); step(idx + 1); };
   }
   lightbox.onclick = closeLightbox;
   setLightboxKeys(e=>{
     if(e.key === 'Escape') closeLightbox();
-    if(multi && e.key === 'ArrowLeft') go(idx - 1);
-    if(multi && e.key === 'ArrowRight') go(idx + 1);
+    if(multi && e.key === 'ArrowLeft') step(idx - 1);
+    if(multi && e.key === 'ArrowRight') step(idx + 1);
   });
   lightbox.classList.add('show');
   document.body.style.overflow = 'hidden';
