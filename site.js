@@ -1515,66 +1515,79 @@ function renderGrid(cat){
 }
 
 /* ---------------------------------------------------------
-   CARD HOVER GALLERIES — a project with more than one image
-   auto-cycles through them while its card is hovered (a manual
-   arrow pair is also shown, for anyone who wants to linger on
-   one frame). Leaving stops on whatever frame is showing. This is
-   separate from the lightbox's own gallery, which is manual-only.
+   CARD GALLERIES — a card with more than one image plays through
+   them by itself in a slow crossfade (arrows on hover step by hand).
+   Cards start at different moments so they don't all change at
+   once, and a card only plays while it's on screen, its grid is the
+   page being shown and no preview is open over it.
 --------------------------------------------------------- */
-// cross-card registry of "stop cycling" fns for any gallery currently
-// hovered — route() clears all of them on every navigation, since a
-// click that opens a lightbox never fires mouseleave on the thumb it
-// clicked (see wireCardGalleries)
-const activeCardTimers = new Set();
-function stopAllCardGalleries(){
-  activeCardTimers.forEach(stop => stop());
-  activeCardTimers.clear();
-}
+const GALLERY_FADE = 1200;  // ms, the crossfade
+const GALLERY_HOLD = 2600;  // ms each image stays fully shown
+// kept so route() can call it; galleries now pause and resume by themselves
+function stopAllCardGalleries(){}
 
 function wireCardGalleries(cat){
   const data = CATS[cat];
   const all = data.items.concat(data.editorial || []);
+  let n = 0; // galleries so far, for the staggered starts
+  const io = typeof IntersectionObserver !== 'undefined'
+    ? new IntersectionObserver(es=> es.forEach(e=> e.target._inView = e.isIntersecting), {threshold:.25})
+    : null;
   gridPage.querySelectorAll('.card').forEach(card=>{
     const item = all[+card.dataset.i];
     if(!item || item.stack || !item.images || item.images.length < 2) return;
-    const thumbLink = card.querySelector('.card-thumb-link');
     const thumb = card.querySelector('.card-thumb');
-    const fillImg = thumb.querySelector('.fill-img');
-    if(!thumbLink || !fillImg) return;
+    const fillImg = thumb && thumb.querySelector('.fill-img');
+    if(!fillImg || fillImg.tagName !== 'IMG') return;
     const imgs = item.images.map(im => im.img);
-    // true two-layer crossfade: a second image sits stacked exactly on
-    // top of the first (.fill-img is already position:absolute/inset:0),
-    // and switching images fades one out while fading the other in AT
-    // THE SAME TIME, so there's always a fully- or partly-opaque image
-    // covering the thumb — never a gap where the grey background under
-    // it shows through, which is what caused the flash on cards like
-    // Herzl when the mouse left mid-cycle.
+    // two stacked images (.fill-img is position:absolute/inset:0): one fades
+    // out while the other fades in, so the thumb is never empty mid-change
     const fillImg2 = fillImg.cloneNode();
     fillImg2.style.opacity = '0';
+    fillImg2.loading = 'eager';
     fillImg.after(fillImg2);
+    [fillImg, fillImg2].forEach(el=> el.style.transition = `opacity ${GALLERY_FADE}ms ease-in-out`);
     let front = fillImg, back = fillImg2;
-    let idx = 0, timer = null;
-    // wait for the incoming image to actually be decoded before starting
-    // the crossfade — setting src + opacity:1 in the same tick fades in
-    // a still-blank <img> the instant it isn't already cached (every
-    // gallery beyond the first couple of views, e.g. Herzl's 16 images
-    // or Memento's 6), which is what showed as a white/grey flash
-    const show = n => {
-      idx = (n + imgs.length) % imgs.length;
-      const target = imgs[idx];
+    let idx = 0, timer = null, seq = 0;
+    // the crossfade starts only once the incoming image has loaded, so a
+    // not-yet-downloaded one never fades in blank
+    const show = (to, done) => {
+      idx = (to + imgs.length) % imgs.length;
+      const mine = ++seq; // a newer step (an arrow click) wins over a slower one
       const reveal = () => {
+        back.onload = back.onerror = null;
+        if(mine !== seq) return;
         if(thumb.classList.contains('contain')) paintBehind(back, thumb);
-        back.style.transition = 'opacity .35s ease';
-        front.style.transition = 'opacity .35s ease';
         back.style.opacity = '1';
         front.style.opacity = '0';
         [front, back] = [back, front];
+        if(done) done();
       };
-      back.onload = null;
-      setImg(back, target);
-      if(back.complete) reveal();
-      else back.onload = reveal;
+      back.onload = back.onerror = null;
+      setImg(back, imgs[idx]);
+      if(back.complete && back.naturalWidth) reveal();
+      else back.onload = back.onerror = reveal;
     };
+    const playing = () => card.isConnected && gridPage.classList.contains('show')
+      && !lightbox.classList.contains('show') && !document.hidden && (!io || card._inView);
+    const schedule = ms => { clearTimeout(timer); timer = setTimeout(tick, ms); };
+    // a little randomness on every wait, so cards drift apart instead of
+    // changing in step
+    const hold = ()=> GALLERY_FADE + GALLERY_HOLD + Math.random() * 1200;
+    let paused = false;
+    function tick(){
+      if(!card.isConnected) return; // the grid was replaced
+      if(!playing()){ paused = true; return schedule(700); }
+      // coming back on screen: wait a random moment first, so the cards
+      // that appear together don't all change together
+      if(paused){ paused = false; return schedule(600 + Math.random() * 3000); }
+      show(idx + 1, ()=> schedule(hold()));
+    }
+    // first change after the hold, then spread out: each card a little
+    // later than the one before, with some randomness
+    schedule(GALLERY_HOLD + (n++ * 1300) % 5200 + Math.random() * 900);
+    if(io) io.observe(card);
+
     const prevBtn = document.createElement('button');
     prevBtn.className = 'thumb-nav prev'; prevBtn.type = 'button';
     prevBtn.setAttribute('aria-label', 'Previous image'); prevBtn.textContent = '‹';
@@ -1582,27 +1595,10 @@ function wireCardGalleries(cat){
     nextBtn.className = 'thumb-nav next'; nextBtn.type = 'button';
     nextBtn.setAttribute('aria-label', 'Next image'); nextBtn.textContent = '›';
     thumb.append(prevBtn, nextBtn);
-    prevBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); show(idx - 1); });
-    nextBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); show(idx + 1); });
-    // leaving hover only stops the auto-advance — it does NOT jump back to
-    // the cover. Whatever image was on screen when the mouse left stays as
-    // the thumbnail, so the gallery reads as "settled here" rather than
-    // snapping back every time. Also called from route() on every
-    // navigation (see activeCardTimers below): a click that opens the
-    // lightbox never fires mouseleave on the thumb it clicked, so without
-    // this the interval would keep advancing images forever underneath
-    // the (98%-opaque) lightbox scrim, reading as a flicker bleeding
-    // through it.
-    const stop = () => { clearInterval(timer); timer = null; };
-    thumbLink.addEventListener('mouseenter', () => {
-      if(timer) return;
-      timer = setInterval(() => show(idx + 1), 1100);
-      activeCardTimers.add(stop);
-    });
-    thumbLink.addEventListener('mouseleave', () => {
-      activeCardTimers.delete(stop);
-      stop();
-    });
+    // stepping by hand restarts the wait, so the chosen image gets its full hold
+    const byHand = step => e => { e.preventDefault(); e.stopPropagation(); clearTimeout(timer); show(idx + step, ()=> schedule(hold() + GALLERY_HOLD)); };
+    prevBtn.addEventListener('click', byHand(-1));
+    nextBtn.addEventListener('click', byHand(1));
   });
 }
 
