@@ -210,6 +210,8 @@
     position:absolute; inset:0;
   }
   .card-thumb.contain .fill-img{object-fit:contain;}
+  .card-thumb.whole{background:#fff;}
+  .card-thumb.whole .fill-img{object-fit:contain;}
   .card-thumb .fill-img, .card-thumb .fill-block{
     filter:blur(18px); transform:scale(1.15); opacity:.9;
     transition:filter .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1), opacity .25s ease;
@@ -336,6 +338,12 @@
     width:auto; height:auto; object-fit:contain; border-radius:0;
   }
   .lb-project-media.has-multi .lb-media-layer{cursor:pointer;}
+  /* the preview's fixed frame (sized in openProjectLightbox): every image
+     centred and fitted inside it */
+  .lb-project-media.boxed{max-width:none; max-height:none; flex:none;}
+  .lb-project-media.boxed .lb-media-layer{display:flex; align-items:center; justify-content:center; width:100%; height:100%;}
+  .lb-project-media.boxed img, .lb-project-media.boxed .fill-block{width:100%; height:100%; max-height:none; object-fit:contain;}
+  .lb-project-media.boxed video{height:100%; object-fit:cover;}
   /* an animated cover (Anthropomass): the video is padded for its page top,
      so here it's cropped back to the card's proportions (--r) */
   .lb-media-layer{min-width:0;}
@@ -615,11 +623,18 @@
   .about-cols ul{list-style:none; margin:0; padding:0;}
   .about-cols li{margin:0 0 10px; color:#000;}
   .about-clients{
-    grid-column:2/span 5; grid-row:2; margin-top:64px; padding-top:20px;
+    grid-column:2/span 4; grid-row:2; margin-top:64px; padding-top:20px;
     border-top:1px solid var(--line);
   }
-  .about-logos{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); column-gap:14px; row-gap:28px; align-items:center; margin-top:8px;}
-  .about-logos img{display:block; height:auto; width:var(--w);}
+  /* the logos keep their sizes from the PDF (--pw, in its px, scaled with
+     the page) and wrap onto as many rows as fit, like text; each sits
+     centred in its column, the columns as wide as the widest logo (--maxw) */
+  .about-logos{
+    --u:.082vw;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(calc(var(--maxw) * var(--u)), 1fr));
+    column-gap:14px; row-gap:28px; align-items:center; justify-items:center; margin-top:8px;
+  }
+  .about-logos img{display:block; height:auto; width:calc(var(--pw) * var(--u)); max-width:100%;}
   @media (max-width:956px){
     .about{grid-template-columns:minmax(0,1fr); row-gap:40px;}
     .about-photo, .about-main, .about-clients{grid-column:1/-1; grid-row:auto;}
@@ -630,9 +645,10 @@
     .about-cols > :nth-child(2){order:2;}
     .about-cols > :nth-child(3){order:3;}
     .about-clients{margin-top:24px;}
+    .about-logos{--u:.85px;}
   }
   @media (max-width:576px){
-    .about-logos{grid-template-columns:repeat(3,minmax(0,1fr)); row-gap:22px;}
+    .about-logos{row-gap:22px;}
   }
   .nav-right a.dim{color:var(--sub);}
 

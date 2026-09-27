@@ -44,6 +44,7 @@
      tablet grid columns: 2      (a category) tablets show that grid in 2
                                  equal columns instead
      tablet columns: 3           card width on tablets, out of 6 columns
+     tablet start column: 4      where it starts on tablets (1-6)
                                  (normally 2 → 2, 3 → 3, 4 or more → 6)
      focus: 30% 20%              where a cropped card keeps its picture:
                                  30% across from the left, 20% down from
@@ -274,6 +275,11 @@ title: Valentine | *Kuli Alma Club*
 columns: 2
 start column: 1
 
+## summer-garden
+title: Summer garden
+columns: 2
+start column: auto
+
 // editorial and publications
 
 ## future-of-medicine-calcalist
@@ -354,11 +360,36 @@ start column: 3
 title: Geula Cohen | *True Legends* book
 columns: 2
 start column: 6
+tablet columns: 2
+tablet start column: 1
 
 ## einayim-magazine-huzpa
 title: Chuzpa! | *Einayim Magazine*
 columns: 2
 start column: 1
+tablet columns: 2
+tablet start column: 3
+
+## the-ai-vortex-calcalist
+title: The AI vortex | *Calcalist*
+columns: 2
+start column: 1
+tablet columns: 2
+tablet start column: 5
+
+## sun-riddle-einayim-magazine
+title: Sun riddle | *Einayim Magazine*
+columns: 2
+start column: 8
+tablet columns: 3
+tablet start column: 1
+
+## lonely-scientists-einayim-magazine
+title: Lonely scientists | *Einayim Magazine*
+columns: 3
+start column: 3
+tablet columns: 3
+tablet start column: 4
 
 # brand
 name: Branded illustration language

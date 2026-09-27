@@ -211,6 +211,8 @@ const CATS = {
       {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌', col:0,
         img:'images/illustration-projects/kuli-alma-club-valentine/kuli-alma-club-valentine-cover.webp',
         images: galleryRange('images/illustration-projects/kuli-alma-club-valentine', 'kuli-alma-club-valentine', 'webp', 2)},
+      {t:'Summer garden', type:'simple', c:'#2f7a3d', g:'', slug:'summer-garden',
+        img:'images/illustration-projects/summer-garden/summer-garden-cover.webp'},
     ],
     editorialTracks:11, // the editorial layout is an 11-track grid
     // order and span/col follow the Editorial layout
@@ -219,7 +221,7 @@ const CATS = {
         img:'images/illustration-editorial/calcalist-future-of-medicine/calcalist-future-of-medicine-cover.webp'},
       {t:'Our digital mirror | Calcalist', type:'simple', c:'#dcdcdc', g:'🪞', span:2, col:3,
         img:'images/illustration-editorial/calcalist-our-digital-mirror/calcalist-our-digital-mirror-cover.webp'},
-      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺', span:4, col:7, cardRatio:1, // square, cropped
+      {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺', span:4, col:7, cardRatio:1, crop:true, // square, cropped
         img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp',
         images: galleryRange('images/illustration-editorial/adam-tsair-magazine-nordic-myths', 'adam-tsair-magazine-nordic-myths', 'webp', 7)},
       {t:'Work in post COVID times | Globes', type:'simple', c:'#565656', g:'', span:2, col:5,
@@ -229,7 +231,7 @@ const CATS = {
         images:[
           {img:'images/illustration-editorial/sex/gallery/1.webp'},
           {img:'images/illustration-editorial/sex/gallery/2.webp'},
-          {img:'images/illustration-editorial/sex/gallery/3.webp'},
+          {img:'images/illustration-editorial/sex/sex-2.webp'},
           {img:'images/illustration-editorial/sex/gallery/4.webp'},
           {img:'images/illustration-editorial/sex/gallery/5.webp'},
           {img:'images/illustration-editorial/sex/gallery/6.webp'},
@@ -284,6 +286,13 @@ const CATS = {
       {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️', span:3, col:7,
         img:'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.webp',
         images: galleryRange('images/illustration-editorial/einayim-magazine-election-for-children', 'einayim-magazine-election-for-children', 'webp', 3)},
+      {t:'The AI vortex | Calcalist', type:'simple', c:'#5aa9d6', g:'', span:3, slug:'the-ai-vortex-calcalist',
+        img:'images/illustration-editorial/calcalist-the-ai-vortex/calcalist-the-ai-vortex-cover.webp'},
+      {t:'Sun riddle | Einayim Magazine', type:'simple', c:'#f3e9a8', g:'', span:3, slug:'sun-riddle-einayim-magazine',
+        img:'images/illustration-editorial/einayim-magazine-sun-riddle/einayim-magazine-sun-riddle-cover.webp'},
+      {t:'Lonely scientists | Einayim Magazine', type:'simple', c:'#b9a6cf', g:'', span:3, slug:'lonely-scientists-einayim-magazine', cardRatio:1, // square, cropped
+        img:'images/illustration-editorial/einayim-magazine-lonely-scientists/einayim-magazine-lonely-scientists-cover.webp',
+        images: galleryRange('images/illustration-editorial/einayim-magazine-lonely-scientists', 'einayim-magazine-lonely-scientists', 'webp', 5)},
     ]
   },
   brand: {
@@ -354,17 +363,19 @@ const CATS = {
         caseStudy:{
           hero:{video:'images/brand/island/video/hero', bg:'#fdfdfd', ratio:2.35},
           sections:[
+            // more white between the pieces than the other pages (top = space above)
             {type:'media', cols:1, span:8, items:[{id:'user-selection', video:'images/brand/island/video/user-selection', bg:'#fbf9f7', ratio:2.13}]},
-            {type:'media', cols:1, span:8, top:40, items:[{id:'login', video:'images/brand/island/video/login', bg:'#0f472f', ratio:1.889}]},
+            {type:'media', cols:1, span:8, top:120, items:[{id:'login', video:'images/brand/island/video/login', bg:'#0f472f', ratio:1.889}]},
             {type:'statement'},
             {type:'media', cols:1, span:8, items:[{id:'screen-frozen', video:'images/brand/island/video/screen-frozen', bg:'#fbf9f7', ratio:1.99}]},
             {type:'statement'},
-            {type:'media', span:7, ratio:1.2, items:[4,5,6,7,8,9].map(n=>({img:`images/brand/island/${n}.webp`}))},
-            {type:'media', cols:1, span:8, top:60, items:[{id:'user-disconnected', video:'images/brand/island/video/user-disconnected', bg:'#0f472f', ratio:2.19}]},
-            {type:'media', cols:1, span:8, top:110, items:[{img:'images/brand/island/10.webp'}]},
-            {type:'media', cols:3, span:9, top:100, items:[11,12,13].map(n=>({img:`images/brand/island/${n}.webp`}))},
+            // the scattered objects, across the whole grid
+            {type:'media', cols:3, span:9, ratio:1.2, gap:'80px 40px', items:[4,5,6,7,8,9].map(n=>({img:`images/brand/island/${n}.webp`}))},
+            {type:'media', cols:1, span:8, top:160, items:[{id:'user-disconnected', video:'images/brand/island/video/user-disconnected', bg:'#0f472f', ratio:2.19}]},
+            {type:'media', cols:1, span:8, top:160, items:[{img:'images/brand/island/10.webp'}]},
+            {type:'media', cols:3, span:9, top:160, gap:'40px 40px', items:[11,12,13].map(n=>({img:`images/brand/island/${n}.webp`}))},
             {type:'statement'},
-            {type:'media', span:9, items:[{img:'images/brand/island/14.webp'}, {img:'images/brand/island/15.webp'}]},
+            {type:'media', span:9, gap:'40px 40px', items:[{img:'images/brand/island/14.webp'}, {img:'images/brand/island/15.webp'}]},
             {type:'band', bg:'#f2ede8', sections:[
               {type:'media', cols:1, span:5, items:[{img:'images/brand/island/16.webp'}]},
             ]},
@@ -429,8 +440,10 @@ const CATS = {
               ['4.webp', 204, 407, 403], ['5.webp', 799, 504, 461],
             ]),
             {type:'statement'},
-            collage('images/brand/moshal', '#323e81', [1762, 1200], [
-              ['7.webp', 1158, 55, 653], ['8.webp', 455, 336, 653], ['6.webp', 16, 520, 483], ['10.webp', 953, 650, 653],
+            // the scholars: 9 (waving, with books) top left, as in the PDF, and
+            // blue room under the lowest figures
+            collage('images/brand/moshal', '#323e81', [1762, 1400], [
+              ['9.webp', -60, 10, 640], ['7.webp', 1158, 55, 653], ['8.webp', 455, 336, 653], ['6.webp', 16, 560, 483], ['10.webp', 953, 650, 653],
             ]),
             {type:'statement'},
             {type:'band', bg:'#313e87', sections:[
@@ -445,8 +458,8 @@ const CATS = {
           ]
         }},
       {t:'Help One Billion', type:'case', slug:'help-one-billion', c:'#f19ad7', g:'🐶',
-        img:'images/brand/help-one-billion/gallery/1.webp', cardRatio:1.365, fit:'contain',
-        images:[{img:'images/brand/help-one-billion/gallery/1.webp'}, {img:'images/brand/help-one-billion/gallery/2.webp'}, {img:'images/brand/help-one-billion/gallery/3.webp'}, {img:'images/brand/help-one-billion/gallery/4.webp'}, {img:'images/brand/help-one-billion/gallery/5.webp'}, {img:'images/brand/help-one-billion/gallery/6.webp'}],
+        img:'images/brand/help-one-billion/5.webp', cardRatio:1.365, fit:'contain',
+        images:[{img:'images/brand/help-one-billion/5.webp'}, {img:'images/brand/help-one-billion/gallery/2.webp'}, {img:'images/brand/help-one-billion/gallery/3.webp'}, {img:'images/brand/help-one-billion/6.webp'}, {img:'images/brand/help-one-billion/gallery/5.webp'}, {img:'images/brand/help-one-billion/gallery/6.webp'}],
         caseStudy:{
           hero:'images/brand/help-one-billion/header.webp', heroRatio:2.73, heroAlign:'center bottom',
           sections:[
@@ -793,6 +806,7 @@ function applySiteText(src){
     // column it starts in (1 = leftmost; blank or "auto" = wherever fits)
     else if(k === 'columns'){ if(+val > 0) item.span = +val; }
     else if(k === 'tablet columns'){ if(+val > 0) item.tspan = +val; }
+    else if(k === 'tablet start column'){ if(+val > 0) item.tcol = +val - 1; }
     // where a cropped card keeps its picture: "30% 20%" = 30% across, 20% down
     else if(k === 'focus'){ if(/^[\w\s%.-]+$/.test(val)) item.focus = val; }
     else if(k === 'mobile crop') item.mobileCrop = val.toLowerCase();
@@ -1343,6 +1357,10 @@ function cardHTML(cat, item, i, defaultSpan, tracks, ttracks){
   const load = i < 4 ? `loading="eager"${i < 2 ? ' fetchpriority="high"' : ''}` : 'loading="lazy"';
   const focus = item.focus ? ` style="object-position:${item.focus}"` : '';
   const alt = altText(cat, item);
+  // a gallery, or a card of its own set shape, shows each image whole inside
+  // the card, on white, rather than cropped to the card's shape (unless the
+  // project asks for the crop, like Nordic Myths)
+  const whole = !item.crop && !item.video && ((item.images && item.images.length > 1) || item.cardRatio);
   // a stacked card (springs of Ein Qiniyye) has no single hover-cycle
   // thumb — each of its images is its own link, opening the lightbox at
   // that specific image, instead of all three funneling into the same
@@ -1354,7 +1372,7 @@ function cardHTML(cat, item, i, defaultSpan, tracks, ttracks){
         `<a ${cardLinkAttr(cat, item, cardTarget + '&i=' + imgIdx)}><img ${imgSrc(im.img, sizes)} alt="${alt}" ${load} decoding="async" style="aspect-ratio:${IMG_RATIO[im.img] || 1.3}"></a>`
       ).join('')}</div>`
     : `<a class="card-thumb-link" ${cardLinkAttr(cat, item, cardTarget)}>
-        <div class="card-thumb${item.fit === 'contain' ? ' contain' : ''}" style="aspect-ratio:${ratio}; --mr:${mRatio}">
+        <div class="card-thumb${item.fit === 'contain' ? ' contain' : whole ? ' whole' : ''}" style="aspect-ratio:${ratio}; --mr:${mRatio}">
           ${item.video
             ? loopVideoHTML(item.video, 'fill-img')
             : hasImg
@@ -1364,7 +1382,7 @@ function cardHTML(cat, item, i, defaultSpan, tracks, ttracks){
       </a>`;
   const mobilePriority = item.mobilePriority !== undefined ? item.mobilePriority : i;
   const colAttr = item.col !== undefined ? ` data-col="${item.col}"` : '';
-  const tspanAttr = item.tspan ? ` data-tspan="${item.tspan}"` : '';
+  const tspanAttr = (item.tspan ? ` data-tspan="${item.tspan}"` : '') + (item.tcol !== undefined ? ` data-tcol="${item.tcol}"` : '');
   return `
     <div class="card" data-i="${i}" data-span="${span}" data-mp="${mobilePriority}"${colAttr}${tspanAttr}>
       ${thumbHTML}
@@ -1444,7 +1462,8 @@ function layoutMasonry(gridEl){
   const colHeights = new Array(trackCount).fill(0);
   orderedCards.forEach(card=>{
     const span = spanOf(card);
-    const explicitCol = trackCount === full && full > 2 && card.dataset.col !== undefined ? +card.dataset.col : null;
+    const explicitCol = trackCount === full && full > 2 && card.dataset.col !== undefined ? +card.dataset.col
+      : trackCount === 6 && card.dataset.tcol !== undefined ? +card.dataset.tcol : null;
     let bestCol = 0, bestTop = Infinity;
     if(explicitCol !== null){
       bestCol = Math.min(explicitCol, trackCount - span); // never past the right edge
@@ -1643,6 +1662,29 @@ function openProjectLightbox(cat, item, startIdx){
   `;
   let front = lightbox.querySelector('.lb-media-a');
   let back = lightbox.querySelector('.lb-media-b');
+  // one frame for the whole gallery, big enough for its largest image, so
+  // stepping through images of different shapes doesn't make the preview
+  // (and the text beside it) jump; each image is centred inside it, and a
+  // small one is enlarged to fill it (at most 2×)
+  const media = lightbox.querySelector('.lb-project-media');
+  const fitFrame = ()=>{
+    const vw = window.innerWidth, vh = window.innerHeight;
+    if(vw < 700){ media.classList.remove('boxed'); media.style.width = media.style.height = ''; return; }
+    const maxW = Math.min(vw * .74, vw * .95 - 280 - 32), maxH = vh * .94;
+    let W = 0, H = 0;
+    images.forEach(im=>{
+      const s = im.img && IMG_SIZES[im.img];
+      const r = im.video ? (item.cardRatio || 1.5) : s ? s[0] / s[1] : 1;
+      let w = Math.min(maxW, maxH * r);
+      if(s) w = Math.min(w, s[0] * 2);
+      W = Math.max(W, w); H = Math.max(H, w / r);
+    });
+    media.classList.add('boxed');
+    media.style.width = Math.round(W) + 'px';
+    media.style.height = Math.round(H) + 'px';
+  };
+  fitFrame();
+  lightbox._fit = fitFrame;
   // same load-gating as the grid thumb's crossfade (see wireCardGalleries):
   // reveal only once the incoming image has actually decoded, so a
   // not-yet-cached image never shows as a blank/grey frame mid-crossfade
@@ -1791,7 +1833,7 @@ function mediaGridHTML(sec, alt){
   const span = sec.span || (cols === 1 ? 7 : 9);
   const cls = ['case-media-grid', sec.row && 'row', sec.center && 'center', sec.large && 'large', sec.bleed && 'bleed'].filter(Boolean).join(' ');
   return `
-    <div class="${cls}" style="--cols:${cols}; --span:${span}${sec.top ? `; margin-top:${sec.top}px` : ''}">
+    <div class="${cls}" style="--cols:${cols}; --span:${span}${sec.top ? `; margin-top:${sec.top}px` : ''}${sec.gap ? `; gap:${sec.gap}` : ''}">
       ${sec.items.map(m=>`
         <figure${sec.row ? ` style="--r:${m.ratio}"` : ''}>
           ${mediaItemHTML(m, sec, alt)}
@@ -1914,9 +1956,8 @@ function renderAbout(){
       </div>
       <div class="about-clients">
         <h2>${T.clients}</h2>
-        <div class="about-logos">${(()=>{
-          const widest = Math.max(...ABOUT.clients.map(([, w])=> w));
-          return ABOUT.clients.map(([f, w, name])=>`<img src="${encodeImgPath('images/about/clients/' + f)}" alt="${name}" loading="lazy" style="--w:${(w / widest * 100).toFixed(1)}%">`).join('');
+        <div class="about-logos" style="--maxw:${Math.max(...ABOUT.clients.map(([, w])=> w))}">${(()=>{
+          return ABOUT.clients.map(([f, w, name])=>`<img src="${encodeImgPath('images/about/clients/' + f)}" alt="${name}" loading="lazy" style="--pw:${w}">`).join('');
         })()}</div>
       </div>
     </div>
@@ -2028,7 +2069,10 @@ function setLightboxKeys(fn){
   if(fn) document.addEventListener('keydown', fn);
 }
 
+window.addEventListener('resize', ()=>{ if(lightbox.classList.contains('show') && lightbox._fit) lightbox._fit(); });
+
 function closeLightbox(){
+  lightbox._fit = null;
   lightbox.classList.remove('show');
   setLightboxKeys(null);
   document.body.style.overflow = '';
