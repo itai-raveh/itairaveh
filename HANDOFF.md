@@ -1,5 +1,9 @@
 # itairaveh.com — handoff to Claude Code
 
+> Outdated in places: the site is now split into index.html / site.js /
+> site.css / site-text.js, uses real addresses instead of #/ routes, and
+> has generated pages and optimized images. README.md is current.
+
 Everything below reflects the repo as it actually stands, not the original
 plan. If this doc and the code ever disagree later, trust the code, it's
 the source of truth, this doc is a snapshot to get oriented fast.

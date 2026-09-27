@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://itai-raveh.github.io/itairaveh/sitemap.xml

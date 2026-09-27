@@ -1,0 +1,644 @@
+  :root{
+    --illustration:#3b6df0;
+    --brand:#ef5da8;
+    --science:#1fae70;
+    --animation:#f2822f;
+    --ink:#000;
+    --sub:#8c8c8c;
+    --bg:#ffffff;
+    --line:#ececec;
+    /* type system — three sizes, two weights, two line heights; every
+       text on the site uses one of these (the logo is the only exception) */
+    --fs-text:12px;      /* everything: nav, captions, descriptions, intros, bio */
+    --fs-title:19.6px;   /* a project's name on its page / in the lightbox */
+    --fs-display:3.5695vw; /* homepage headline and every statement line */
+    --lh-text:1.4;
+    --lh-display:1.2857;
+  }
+  @media (max-width:1024px){ :root{--fs-display:5.844vw;} } /* 52.8px on the 768 frame, at 85% */
+  @media (max-width:600px){ :root{--fs-display:7.707vw; --fs-text:13px;} }  /* 28.9px on the 375 frame; text a touch larger on phones */
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Plus Jakarta Sans","Helvetica Neue",Arial;
+    font-weight:400; font-size:var(--fs-text); line-height:var(--lh-text);
+    color:var(--ink);
+    background:var(--bg);
+    overflow-x:hidden;
+  }
+  a{color:inherit;}
+  button{font-family:inherit; line-height:inherit; color:inherit;}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:fixed; top:0; left:0; right:0;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 28px;
+    z-index:50;
+  }
+  .nav-left{display:flex; align-items:center; gap:22px; min-width:0;}
+  .logo{font-weight:700; font-size:16px; cursor:pointer; white-space:nowrap;}
+  .nav-links{display:flex; gap:18px; list-style:none; margin:0; padding:0;}
+  .nav-links li{font-size:var(--fs-text); font-weight:700; color:var(--ink); cursor:pointer; transition:color .2s;}
+  .nav-links li.dim{color:var(--sub);}
+  .nav-links a, a.logo{color:inherit; text-decoration:none;}
+  .nav-right{display:flex; gap:18px; font-size:var(--fs-text); font-weight:700;}
+  .nav-right a{text-decoration:none;}
+  /* 27px wide, three 1px lines 10px apart — per the tablet/mobile frames */
+  .nav-burger{
+    display:none; flex-direction:column; justify-content:space-between;
+    width:27px; height:21px; flex:none;
+    background:none; border:none; cursor:pointer; padding:0; z-index:210;
+  }
+  .nav-burger span{display:block; width:100%; height:1px; background:#000; transition:transform .25s ease, opacity .2s ease;}
+
+  /* tablet + mobile (the "new homepage 3" frames): bigger logo, burger
+     instead of inline links; the links and Instagram/Bio open as one
+     full-screen menu. Burger ends at x=715 on the 768 tablet frame and
+     346 on the 375 mobile frame, top line at y=47 (the frames' insets);
+     the logo sits on the page's 28px side margin. */
+  @media (max-width:1024px){
+    .nav{padding:47px 53px 0 28px; align-items:flex-start;}
+    .logo{font-size:28px; letter-spacing:0; line-height:1; margin-top:1px;}
+    .nav-burger{display:flex;}
+    .nav-links, .nav-right{
+      display:none;
+      position:fixed; inset:0; z-index:200;
+      background:#fff;
+      flex-direction:column; align-items:center; justify-content:center;
+      gap:26px; list-style:none; margin:0; padding:0;
+    }
+    .nav-links li{font-size:var(--fs-title);}
+    .nav-right{flex-direction:row; gap:24px; inset:auto 0 48px 0;}
+    .nav.menu-open .nav-links, .nav.menu-open .nav-right{display:flex;}
+    .nav.menu-open .nav-burger span:nth-child(1){transform:translateY(10px) rotate(45deg);}
+    .nav.menu-open .nav-burger span:nth-child(2){opacity:0;}
+    .nav.menu-open .nav-burger span:nth-child(3){transform:translateY(-10px) rotate(-45deg);}
+  }
+  @media (max-width:600px){
+    .nav{padding:47px 29px 0 28px;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    height:100vh;
+    overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    padding:0 8vw;
+  }
+  /* two scatter layers, behind and in front of the headline — each
+     HERO_LAYOUTS slot says which one its image goes in */
+  .scatter{position:absolute; inset:0; pointer-events:none;}
+  .scatter.back{z-index:1;}
+  .scatter.front{z-index:3;}
+  /* a plain fade, no movement */
+  .swatch{
+    position:absolute; opacity:0;
+    transition:opacity .5s ease;
+    background:no-repeat center / contain;
+  }
+  .swatch.active{opacity:1;}
+
+  /* Headline. Sizes, line breaks and icon placement are the Figma frames'
+     ("new homepage 4/desktop.svg" at 1920, "new homepage 3" tablet at 768
+     and mobile at 375), expressed in vw/em so each breakpoint keeps its
+     frame's proportions at any width — on a big iMac the block just scales
+     up, it never re-wraps. Breaks come from <br class="d|s"> in the markup,
+     nowrap stops anything else from breaking. */
+  .lead{
+    position:relative; z-index:2;
+    font-weight:400; font-size:var(--fs-display); line-height:var(--lh-display);
+    white-space:nowrap; margin:0;
+  }
+  .lead br.s{display:none;}
+  .baseline-probe{display:inline-block; width:0; height:0;}
+  .lead .cat{
+    text-decoration:underline dotted #000 1px;
+    text-underline-offset:.15em;
+    pointer-events:auto;
+    cursor:pointer; transition:color .25s ease;
+  }
+  .lead .cat.on-illustration{color:var(--illustration); text-decoration-color:var(--illustration);}
+  .lead .cat.on-brand{color:var(--brand); text-decoration-color:var(--brand);}
+  .lead .cat.on-science{color:var(--science); text-decoration-color:var(--science);}
+  .lead .cat.on-animation{color:var(--animation); text-decoration-color:var(--animation);}
+  /* icon size, drop below the baseline, and the gap to the text/comma on
+     either side (negative where the PNG's own transparent padding already
+     makes the gap) — all measured off desktop.svg, in em */
+  .lead .cat-icon{display:inline-block; object-fit:contain;}
+  .lead .cat[data-cat="illustration"] .cat-icon{width:1.557em; height:1.571em; vertical-align:-.392em; margin:0 .086em 0 -.113em;}
+  .lead .cat[data-cat="brand"] .cat-icon{width:1.486em; height:1.486em; vertical-align:-.492em; margin:0 -.09em 0 -.036em;}
+  .lead .cat[data-cat="science"] .cat-icon{width:1.257em; height:1.257em; vertical-align:-.221em; margin:0 -.088em 0 -.32em;}
+  .lead .cat[data-cat="animation"] .cat-icon{width:1.486em; height:1.486em; vertical-align:-.42em; margin:0 -.27em 0 .145em;}
+
+  @media (max-width:1024px){
+    .lead{text-align:center;}
+    .lead br.s{display:inline;}
+    .lead br.d{display:none;}
+    .lead .cat .cat-icon{width:1.364em; height:1.364em; vertical-align:-.32em; margin:0;}
+    .lead .cat[data-cat="illustration"] .cat-icon{width:1.686em; height:1.709em;}
+    .lead .cat[data-cat="science"] .cat-icon{width:1.345em; height:1.345em;}
+  }
+  @media (max-width:600px){
+    .lead .cat .cat-icon{width:1.425em; height:1.425em;}
+    .lead .cat[data-cat="illustration"] .cat-icon{width:1.5em; height:1.537em;}
+    .lead .cat[data-cat="science"] .cat-icon{width:1.237em; height:1.237em;}
+    .lead .cat[data-cat="animation"] .cat-icon{width:1.5em; height:1.5em;}
+  }
+
+  /* looping icon motion: bird turns around, head nods, water tower
+     breathes in and out with a pause at each end, plane does a quick
+     wobble every few seconds */
+  .lead .cat[data-cat="illustration"] .cat-icon{animation:icon-flip 4s infinite;}
+  .lead .cat[data-cat="brand"] .cat-icon{transform-origin:50% 85%; animation:icon-nod 3.2s ease-in-out infinite;}
+  .lead .cat[data-cat="science"] .cat-icon{transform-origin:50% 100%; animation:icon-breathe 4.4s ease-in-out infinite;}
+  .lead .cat[data-cat="animation"] .cat-icon{animation:icon-tilt 3.6s ease-in-out infinite;}
+  @keyframes icon-flip{
+    0%, 42%{transform:scaleX(1);} 50%, 92%{transform:scaleX(-1);} 100%{transform:scaleX(1);}
+  }
+  @keyframes icon-nod{
+    0%, 50%, 100%{transform:rotate(0);} 60%{transform:rotate(-12deg);} 70%{transform:rotate(3deg);}
+    80%{transform:rotate(-12deg);} 90%{transform:rotate(0);}
+  }
+  @keyframes icon-breathe{
+    0%, 15%{transform:scale(1);} 45%, 60%{transform:scale(.84);} 90%, 100%{transform:scale(1);}
+  }
+  @keyframes icon-tilt{
+    0%, 76%, 100%{transform:rotate(0);} 81%{transform:rotate(-14deg);} 87%{transform:rotate(12deg);}
+    93%{transform:rotate(-5deg);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .lead .cat .cat-icon{animation:none;}
+  }
+
+  /* ---------- GRID PAGE ---------- */
+  /* side padding matches .nav's own 28px exactly, so the grid's edges
+     line up with "Itai Raveh" and "Bio" instead of sitting inset from
+     them */
+  .grid-page{display:none; padding:100px 28px 80px;}
+  .grid-page.show{display:block;}
+  .breadcrumb{
+    font-size:var(--fs-text); color:var(--sub);
+    padding-bottom:14px; margin-bottom:34px;
+    border-bottom:1px solid var(--line);
+  }
+  /* true masonry, computed in JS (layoutMasonry). The track math is
+     measured off the Figma export (1440w light-fix.svg), not guessed:
+     every rect in that file resolves to a 9-track grid at that width,
+     track ≈126px, gap 14px — a normal card spans 2 tracks (≈265px), a
+     featured one spans 3 (≈405px) or 4 (≈544px). Each rectangle is then
+     sized to its own image's real aspect ratio (via IMG_RATIO) and
+     packed into whichever column is shortest, so images fill their box
+     edge-to-edge instead of being forced into a uniform grid cell. CSS
+     Grid can't produce this — its rows share one height across every
+     track in the row, which is what caused the uneven layout before. */
+  .grid{position:relative;}
+  .card{position:absolute; top:0; left:0;}
+
+  .card-thumb-link{display:block; text-decoration:none;}
+  .card-thumb{
+    position:relative;
+    border-radius:0; overflow:hidden; background:#f1f1f1;
+    transition:transform .9s cubic-bezier(.16,1,.3,1);
+  }
+  .card-thumb-link:hover .card-thumb{transform:scale(1.01);}
+  .card-thumb .fill-img{
+    display:block; position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  }
+  .card-thumb .fill-block{
+    position:absolute; inset:0;
+  }
+  .card-thumb.contain .fill-img{object-fit:contain;}
+  .card-thumb .fill-img, .card-thumb .fill-block{
+    filter:blur(18px); transform:scale(1.15); opacity:.9;
+    transition:filter .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1), opacity .25s ease;
+  }
+  .card-thumb.loaded .fill-img, .card-thumb.loaded .fill-block{filter:blur(0); transform:scale(1); opacity:1;}
+  /* "show all three illustrations one after another" (springs of Ein
+     Qiniyye) — a plain vertical stack of full images instead of the
+     usual single-frame hover-cycle thumb */
+  .card-thumb-stack{display:flex; flex-direction:column; gap:14px; background:none;}
+  .card-thumb-stack a{display:block; text-decoration:none; overflow:hidden;}
+  .card-thumb-stack img{
+    display:block; width:100%; border-radius:0;
+    transition:transform .9s cubic-bezier(.16,1,.3,1);
+  }
+  /* each of the stacked images (springs of Ein Qiniyye) has its own link
+     and reacts to hover on its own — not the whole stack, and not the
+     .card-thumb-link:hover rule above, which only applies to the
+     single-image thumb layout this card doesn't use */
+  .card-thumb-stack a:hover img{transform:scale(1.01);}
+  /* phone: one column; each card keeps its image's proportions within 4:5
+     to 4:3 (--mr, set per card in cardHTML) and crops only past that. The
+     stacked Ein Qiniyye card keeps its images whole. */
+  @media (max-width:520px){
+    .card-thumb:not(.card-thumb-stack){aspect-ratio:var(--mr) !important;}
+  }
+  .card-thumb .glyph{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:34px; opacity:0;
+    transition:opacity .5s ease .1s;
+  }
+  .card-thumb.loaded .glyph{opacity:1;}
+
+  /* multi-image projects: on hover the thumbnail auto-cycles through the
+     gallery, and these arrows appear for manual control too */
+  .thumb-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:26px; height:26px; border-radius:50%; border:none;
+    background:rgba(255,255,255,.85); color:var(--ink);
+    font-size:15px; line-height:1; cursor:pointer;
+    opacity:0; transition:opacity .2s ease, background .2s ease;
+    display:flex; align-items:center; justify-content:center;
+    z-index:2; padding:0;
+  }
+  .card-thumb-link:hover .thumb-nav{opacity:1;}
+  .thumb-nav:hover{background:#fff;}
+  .thumb-nav.prev{left:8px;}
+  .thumb-nav.next{right:8px;}
+
+  /* title sits below the image, description below the title. "Read more"
+     lives only in the lightbox now (.lb-project-link) — the grid caption
+     used to duplicate it, so there's no .readmore rule here any more. */
+  .card-caption{margin-top:6px;}
+  .card-title{font-size:var(--fs-text); font-weight:400; color:#000; line-height:var(--lh-text);}
+  .card-title strong{font-weight:700;}
+  .card-title a{text-decoration:none;}
+  .card-desc{
+    font-size:var(--fs-text); font-weight:400; color:#000; line-height:var(--lh-text);
+    margin:2px 0 0;
+  }
+
+  /* a looping film (Vimeo background mode) — the button over it opens it
+     with sound in the lightbox */
+  .vid-box{position:relative; overflow:hidden; background:#f1f1f1;}
+  .vid-box iframe{position:absolute; inset:0; width:100%; height:100%; border:0; pointer-events:none;}
+  .vid-open{position:absolute; inset:0; width:100%; height:100%; background:none; border:0; padding:0; cursor:pointer;}
+  .vid-open span{
+    position:absolute; right:12px; bottom:12px; width:22px; height:22px;
+    border:1px solid #fff; border-radius:3px; opacity:0; transition:opacity .2s;
+  }
+  .vid-open span::before{
+    content:""; position:absolute; left:8px; top:5px;
+    border-left:7px solid #fff; border-top:5px solid transparent; border-bottom:5px solid transparent;
+  }
+  .vid-open:hover span, .vid-open:focus-visible span{opacity:.9;}
+  .card-thumb.loaded-now{background:none;}
+  .lb-video{width:min(92vw, calc(88vh * var(--r))); aspect-ratio:var(--r);}
+  .lb-video iframe{width:100%; height:100%; border:0; display:block;}
+
+  /* Animation list: one centred column; a set of loops as a small grid.
+     Caption description sits as a block on the right. */
+  .anim-list{display:flex; flex-direction:column; align-items:center; gap:48px;}
+  .anim-item{width:var(--w);}
+  .anim-set{display:grid; grid-template-columns:repeat(var(--cols),minmax(0,1fr)); gap:10px;}
+  @media (max-width:956px){ .anim-item{width:100% !important;} }
+  @media (max-width:520px){
+    .anim-set{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+
+  /* ---------- MODAL (the popup Readymag couldn't do) ---------- */
+  /* project preview: no card, no box — image and text float directly on
+     the light scrim (see .lightbox), exactly like the symbol lightbox
+     below. Measured off the updated Figma export ("1440w lightbox
+     new.svg"): the white "frame" is the backdrop itself, not a panel
+     around the content. Content eases in with a gentle rise + fade
+     rather than appearing instantly. Click-outside, Escape, or the
+     viewport-corner "close" all dismiss it. */
+  .lb-panel{
+    display:flex; align-items:center; gap:32px;
+    max-width:95vw; max-height:94vh;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .4s cubic-bezier(.16,1,.3,1), transform .4s cubic-bezier(.16,1,.3,1);
+    pointer-events:none; /* a flex row's own box is a rectangle spanning
+      its tallest child even where a shorter child (e.g. short text next
+      to a tall image) leaves visually-empty space — without this, that
+      empty-looking space still belongs to .lb-panel and swallows clicks
+      that should count as "click the background to close". Re-enabled
+      on the actual content below, so only real content blocks clicks. */
+  }
+  .lightbox.show .lb-panel{opacity:1; transform:none;}
+  .lb-project-media{
+    position:relative; display:grid; flex:0 1 auto; min-width:0;
+    max-width:74vw; max-height:94vh;
+    pointer-events:auto;
+  }
+  /* two stacked layers (same grid cell) for a real crossfade between
+     gallery images — swapping innerHTML on the hidden one and fading
+     opacity on both at once, so one is always fully visible instead of
+     a hard cut (or, worse, a moment where neither is, which is what
+     caused the grey flash on cards with several images) */
+  .lb-media-layer{grid-area:1/1; transition:opacity .35s ease;}
+  .lb-project-media img, .lb-project-media .fill-block{
+    display:block; max-width:100%; max-height:94vh;
+    width:auto; height:auto; object-fit:contain; border-radius:0;
+  }
+  .lb-project-media.has-multi .lb-media-layer{cursor:pointer;}
+  /* an animated cover (Anthropomass): the video is padded for its page top,
+     so here it's cropped back to the card's proportions (--r) */
+  .lb-media-layer{min-width:0;}
+  .lb-project-media video{
+    display:block; width:100%; max-height:94vh; aspect-ratio:var(--r); object-fit:cover;
+  }
+  .lb-project-text{
+    flex:0 1 auto; max-width:280px;
+    display:flex; flex-direction:column;
+    pointer-events:auto;
+    /* stretched to the image's own full height (.lb-panel otherwise
+       vertically centers its two children as a unit) so "close" can sit
+       at the image's top edge while .lb-project-body below centers the
+       rest of the text within the remaining height — two independent
+       alignments inside one column, not one alignment for the whole
+       block */
+    align-self:stretch;
+    /* a padded safe zone around the text, cancelled visually by the
+     matching negative margin — so selecting/copying text (a click-drag
+     whose mouseup can easily land just outside the tight glyph box,
+     e.g. below the last line) doesn't fall through to the backdrop and
+     close the lightbox mid-selection */
+    padding:16px 8px;
+    margin:-16px -8px;
+  }
+  /* fills the remaining height under "close" (.lb-project-text is a flex
+     column stretched to the image's height) and centers title/desc/note/
+     link vertically within that space — independent of where "close"
+     itself sits */
+  .lb-project-body{flex:1; display:flex; flex-direction:column; justify-content:center; min-height:0;}
+  .lb-project-title{font-size:var(--fs-title); font-weight:700; margin:0 0 8px; line-height:var(--lh-text); color:#000;}
+  .lb-project-desc{font-size:var(--fs-text); color:#000; line-height:var(--lh-text); margin:0 0 10px;}
+  .lb-project-note{font-size:var(--fs-text); font-style:italic; color:#000; line-height:var(--lh-text); margin:0 0 14px;}
+  .lb-project-link{
+    font-size:var(--fs-text); font-weight:400; color:#000; text-decoration:underline;
+    text-decoration-style:dotted; text-underline-offset:3px;
+  }
+  /* "close" is content-anchored (left-aligned with the text column) rather
+     than pinned to the viewport corner. It's the first child of the
+     stretched .lb-project-text column (not part of .lb-project-body's
+     centered group), so it naturally sits at the image's own top edge
+     regardless of how tall the centered text below it is. align-self
+     keeps it shrink-wrapped to its own text width — a flex column's
+     default align-items:stretch would otherwise stretch this <button>
+     to the full column width, and buttons center their text by default,
+     pulling "close" away from the left edge the rest of the text aligns to. */
+  .lb-project-close{
+    display:block; flex:none; align-self:flex-start; background:none; border:none; cursor:pointer;
+    font-size:var(--fs-text); font-weight:400; color:#000; opacity:.7;
+    text-decoration:underline; text-underline-offset:3px;
+    margin:0 0 14px; padding:0; transition:opacity .2s;
+  }
+  .lb-project-close:hover{opacity:1;}
+  .lb-panel-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:26px; height:26px; border-radius:50%; border:none;
+    background:rgba(255,255,255,.85); color:var(--ink);
+    font-size:15px; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding:0;
+    transition:background .2s ease;
+  }
+  .lb-panel-nav:hover{background:#fff;}
+  .lb-panel-nav.prev{left:20px;}
+  .lb-panel-nav.next{right:20px;}
+
+  /* ---------- CASE STUDY: SERIES LAYOUT ---------- */
+  .case-top{max-width:1180px; margin:0 auto; padding:110px 28px 20px; position:relative;}
+  .case-h1{
+    font-size:var(--fs-title); font-weight:700;
+    line-height:var(--lh-text);
+    max-width:14ch; margin:0 0 30px;
+  }
+  .case-intro-cols{
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:26px; max-width:760px;
+  }
+  @media (max-width:720px){ .case-intro-cols{grid-template-columns:1fr;} }
+  .case-intro-cols p{font-size:var(--fs-text); line-height:var(--lh-text); margin:0; color:#000;}
+  .case-note{font-style:italic;}
+
+  .series{padding:90px 28px 20px; max-width:1500px; margin:0 auto;}
+  .series-statement{
+    font-size:var(--fs-display); font-weight:400; line-height:var(--lh-display);
+    text-align:center; max-width:22ch; margin:0 auto 70px;
+    opacity:0; transform:translateY(14px);
+    transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .series-statement.in{opacity:1; transform:translateY(0);}
+
+  .series-grid{
+    display:grid; grid-template-columns:repeat(5,1fr);
+    gap:52px 30px;
+  }
+  @media (max-width:1000px){ .series-grid{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:600px){ .series-grid{grid-template-columns:repeat(2,1fr);} }
+
+  .sym{
+    text-decoration:none; display:block; text-align:center;
+    opacity:0; transform:translateY(16px);
+    transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+  }
+  .sym.in{opacity:1; transform:translateY(0);}
+  .sym-img{
+    aspect-ratio:1/1;
+    background-size:contain; background-repeat:no-repeat; background-position:center;
+    transition:transform .45s cubic-bezier(.16,1.2,.3,1);
+  }
+  .sym:hover .sym-img{transform:scale(1.07);}
+  .sym-name{
+    margin-top:10px; font-size:var(--fs-text); line-height:var(--lh-text);
+    color:#000;
+  }
+
+  /* ---------- LIGHTBOX (single symbol, deep-linked) ---------- */
+  /* white scrim, not a blackout — the "frame" is this light wash itself,
+     with no card/panel behind the content (see .lb-panel). The grid
+     stays faintly visible underneath, dimmed toward white instead of
+     black. */
+  .lightbox{
+    position:fixed; inset:0; z-index:260;
+    background:rgba(255,255,255,.98);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; visibility:hidden;
+    transition:opacity .3s cubic-bezier(.16,1,.3,1);
+  }
+  .lightbox.show{opacity:1; visibility:visible;}
+  .lb-figure{
+    margin:0; text-align:center; max-width:min(560px,80vw);
+    transform:scale(.95); transition:transform .45s cubic-bezier(.16,1.25,.3,1);
+  }
+  .lightbox.show .lb-figure{transform:scale(1);}
+  .lb-figure img{width:100%; height:auto; display:block;}
+  .lb-figure figcaption{
+    margin-top:22px; font-size:var(--fs-text); color:var(--ink);
+    display:flex; gap:10px; justify-content:center; align-items:baseline;
+  }
+  .lb-figure figcaption span{font-weight:700;}
+  .lb-close, .lb-nav{
+    position:absolute; background:none; border:none; cursor:pointer;
+  }
+  .lb-nav{line-height:1;}
+  .lb-close{
+    top:14px; right:18px; font-size:var(--fs-text); font-weight:400;
+    color:var(--ink); text-decoration:underline;
+    text-underline-offset:3px; opacity:.85; transition:opacity .2s;
+    padding:14px 16px; /* bigger hit target than the text alone */
+  }
+  .lb-close:hover{opacity:1;}
+  .lb-nav{top:50%; transform:translateY(-50%); font-size:36px; padding:10px 18px; color:rgba(0,0,0,.4);}
+  .lb-nav:hover{color:var(--ink);}
+  .lb-nav.prev{left:12px;}
+  .lb-nav.next{right:12px;}
+
+  /* ---------- INNER PAGE (project page template) ---------- */
+  /* Decoded from the project PDFs onto the site's own grid: the same 28px
+     side margins and 9 tracks / 14px gutter as the category masonry,
+     card-caption type for captions (12px), homepage headline size for
+     statements. A media section is centred on --span of the 9 tracks
+     (the side padding below is exactly that many tracks narrower). */
+  .case-page{display:none; padding-bottom:80px;}
+  .case-page.show{display:block;}
+  .case-hero-img img{width:100%; max-height:100vh; object-fit:cover; display:block;}
+  /* a hero with its own proportions (caseStudy.heroRatio): the image keeps
+     its shape inside, the rest is filled with its edge colour */
+  .case-hero-img.fixed{box-sizing:content-box; aspect-ratio:var(--ratio);}
+  .case-hero-img.fixed img{height:100%; max-height:none; object-fit:contain; object-position:var(--align);}
+  /* tablet/mobile nav is taller than the image's own top margin, so the
+     hero gets extra height above the image, filled with the image's own
+     edge colour (sampled in JS), to keep the illustration clear of it */
+  @media (max-width:1024px){ .case-hero-img{padding-top:68px;} }
+  @media (max-width:600px){ .case-hero-img{padding-top:80px;} }
+
+  .case-back{
+    display:inline-block; font-size:var(--fs-text); font-weight:400; color:#000;
+    cursor:pointer; text-decoration:none;
+  }
+  .case-intro{
+    display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); column-gap:14px;
+    align-items:baseline; padding:60px 28px 100px;
+  }
+  .case-page > .case-intro:first-child{padding-top:100px;}
+  .case-foot{padding:46px 28px 0;}
+  .case-intro h1{grid-column:3/span 2; font-size:var(--fs-title); font-weight:700; line-height:var(--lh-text); color:#000; margin:0;}
+  .case-intro-text{grid-column:5/span 3;}
+  .case-intro-text p{font-size:var(--fs-text); line-height:var(--lh-text); color:#000; margin:0;}
+  .case-intro-text p + p{margin-top:1em;}
+  .rich-link{color:inherit; text-decoration:underline dotted; text-underline-offset:3px;}
+  .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+
+  .case-statement{
+    display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); column-gap:14px;
+    padding:82px 28px 100px;
+  }
+  .case-statement p{
+    grid-column:2/span 7; text-align:center; margin:0;
+    font-size:var(--fs-display); font-weight:400; line-height:var(--lh-display);
+  }
+  .case-statement.italic p{font-style:italic;}
+
+  .case-media-grid{
+    --cols:2; --span:9;
+    display:grid; grid-template-columns:repeat(var(--cols),minmax(0,1fr)); gap:18px 14px;
+    padding:0 calc(28px + (100% - 42px) * (9 - var(--span)) / 18); margin-bottom:18px;
+  }
+  .case-media-grid figure{margin:0; min-width:0;}
+  .case-media-grid img{width:100%; height:auto; display:block; cursor:zoom-in;}
+  .case-media-grid figcaption{margin-top:6px; font-size:var(--fs-text); line-height:var(--lh-text); color:#000;}
+  .case-media-grid.center figcaption{text-align:center;}
+  .case-media-grid.large figcaption{margin-top:14px;}
+  /* one row of images at a shared height: each figure grows in proportion
+     to its own aspect ratio (--r) */
+  .case-media-grid.row{display:flex; gap:14px; align-items:flex-start;}
+  .case-media-grid.row figure{flex:var(--r) 1 0;}
+  /* a box of a given ratio: the image fits inside it, or fills and crops */
+  .m-box{position:relative; aspect-ratio:var(--r); overflow:hidden;}
+  .m-box img, .m-box video{position:absolute; inset:0; width:100%; height:100%; object-fit:contain;}
+  .m-box.crop img{object-fit:cover; object-position:var(--pos, center);}
+  /* videos are encoded at their box's exact shape, padded in their own
+     colour, so they cover it edge to edge — the box's CSS colour only shows
+     while the video loads (a CSS colour next to video pixels never quite
+     matches: browsers render video colour through a separate pipeline) */
+  .m-box.video video{object-fit:cover;}
+  .m-box.placeholder{display:flex; align-items:center; justify-content:center;}
+  .m-box.placeholder span{font-size:var(--fs-text); color:var(--sub);}
+
+  /* full-bleed coloured band holding its own sections */
+  .case-band{padding:70px 0; margin:64px 0 32px;}
+  .case-band.flush{padding-bottom:0;}
+  .case-band > :last-child{margin-bottom:0;}
+  .case-band .case-statement{padding:0 28px 56px;}
+  /* cut-out figures placed on a coloured band, positions as fractions of
+     the band (measured off the PDF) so the arrangement scales as one */
+  .case-collage{position:relative; overflow:hidden; aspect-ratio:var(--ratio);}
+  .case-collage img{position:absolute; display:block; height:auto;}
+  .case-collage.v-tab, .case-collage.v-mob{display:none;}
+  @media (max-width:1024px){ .case-collage.v-desk{display:none;} .case-collage.v-tab{display:block;} }
+  @media (max-width:600px){ .case-collage.v-tab{display:none;} .case-collage.v-mob{display:block;} }
+  .case-media-grid.bleed{padding:0;}
+  .case-hero-img.fixed.crop img{object-fit:cover;}
+  .m-box.embed iframe, .case-media-grid .vid-box{display:block;}
+  .m-box.embed iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+
+  /* same breakpoint the masonry drops from 9 tracks to 2 (901px of grid) */
+  @media (max-width:956px){
+    .case-intro, .case-statement{grid-template-columns:minmax(0,1fr);}
+    .case-intro{row-gap:14px; padding-top:40px; padding-bottom:64px;}
+    .case-intro h1, .case-intro-text, .case-statement p{grid-column:1/-1;}
+    .case-intro-text{max-width:520px;}
+    .case-statement{padding-top:46px; padding-bottom:64px;}
+    .case-media-grid{padding:0 28px;}
+    .case-band{padding:48px 0; margin:40px 0 24px;}
+    .case-band .case-statement{padding-bottom:40px;}
+  }
+  @media (max-width:576px){
+    .case-media-grid{grid-template-columns:minmax(0,1fr);}
+    .case-media-grid.row{flex-direction:column;}
+    .case-media-grid.row figure{flex:none; width:100%;}
+  }
+
+  /* ---------- ABOUT (#/about) ---------- */
+  /* on the site's 9-track grid: text on tracks 2-5, an empty track as the
+     gap, portrait on 7-9. The clients sit below, from the text's left edge
+     to where the portrait begins (tracks 2-6), under a hairline — one logo
+     per track, each sized relative to the widest (their widths in the PDF) */
+  .about{
+    display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); column-gap:14px;
+    align-items:start; padding:112px 28px 0;
+  }
+  .about-photo{grid-column:7/span 3; grid-row:1;}
+  .about-photo img, .about-photo .m-box{width:100%; display:block;}
+  .about-main{grid-column:2/span 4; grid-row:1;}
+  .about-main > p{margin:0 0 12px; color:#000;}
+  .about-main > p.about-lead{font-weight:700;}
+  .about-cols{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:32px 14px; margin-top:40px;}
+  .about-cols h2, .about-clients h2{font-size:var(--fs-text); font-weight:700; line-height:var(--lh-text); margin:0 0 12px; color:#000;}
+  .about-cols h2 + ul + h2{margin-top:32px;}
+  .about-cols ul{list-style:none; margin:0; padding:0;}
+  .about-cols li{margin:0 0 10px; color:#000;}
+  .about-clients{
+    grid-column:2/span 5; grid-row:2; margin-top:64px; padding-top:20px;
+    border-top:1px solid var(--line);
+  }
+  .about-logos{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); column-gap:14px; row-gap:28px; align-items:center; margin-top:8px;}
+  .about-logos img{display:block; height:auto; width:var(--w);}
+  @media (max-width:956px){
+    .about{grid-template-columns:minmax(0,1fr); row-gap:40px;}
+    .about-photo, .about-main, .about-clients{grid-column:1/-1; grid-row:auto;}
+    .about-photo{max-width:420px;}
+    .about-cols{grid-template-columns:repeat(2,minmax(0,1fr));}
+    /* two columns: Services beside Contact, then Exhibitions beside Talks */
+    .about-cols > :nth-child(4){order:1;}
+    .about-cols > :nth-child(2){order:2;}
+    .about-cols > :nth-child(3){order:3;}
+    .about-clients{margin-top:24px;}
+  }
+  @media (max-width:576px){
+    .about-logos{grid-template-columns:repeat(3,minmax(0,1fr)); row-gap:22px;}
+  }
+  .nav-right a.dim{color:var(--sub);}
+
+  /* full-screen image view: just the image on the site's white scrim,
+     with room left at the sides for the ‹ › arrows */
+  .lb-full{
+    display:block; max-width:calc(100vw - 144px); max-height:calc(100vh - 56px);
+    width:auto; height:auto; object-fit:contain; cursor:zoom-out;
+  }

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="../../">
+<!-- page title, description and share info: written by tools/build.py -->
+<!--seo-->
+<title>Our digital mirror, Calcalist — Itai Raveh</title>
+<meta name="description" content="Our digital mirror, Calcalist, illustration by Itai Raveh.">
+<link rel="canonical" href="https://itai-raveh.github.io/itairaveh/illustration/our-digital-mirror-calcalist/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Itai Raveh">
+<meta property="og:title" content="Our digital mirror, Calcalist — Itai Raveh">
+<meta property="og:description" content="Our digital mirror, Calcalist, illustration by Itai Raveh.">
+<meta property="og:url" content="https://itai-raveh.github.io/itairaveh/illustration/our-digital-mirror-calcalist/">
+<meta property="og:image" content="https://itai-raveh.github.io/itairaveh/images/share/illustration-editorial-calcalist-our-digital-mirror-calcalist-our-digital-mirror-cover.jpg">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Person", "@id": "https://itai-raveh.github.io/itairaveh/#itai", "name": "Itai Raveh", "alternateName": "איתי רווה", "url": "https://itai-raveh.github.io/itairaveh/", "jobTitle": ["Illustrator", "Graphic designer", "Art director"], "address": {"@type": "PostalAddress", "addressLocality": "Tel Aviv", "addressCountry": "IL"}, "knowsLanguage": ["en", "he"], "sameAs": ["https://www.instagram.com/itairaveh/"], "image": "https://itai-raveh.github.io/itairaveh/images/about/portrait.webp"}, {"@type": "CreativeWork", "name": "Our digital mirror, Calcalist", "description": "Our digital mirror, Calcalist, illustration by Itai Raveh.", "url": "https://itai-raveh.github.io/itairaveh/illustration/our-digital-mirror-calcalist/", "image": "https://itai-raveh.github.io/itairaveh/images/share/illustration-editorial-calcalist-our-digital-mirror-calcalist-our-digital-mirror-cover.jpg", "creator": {"@id": "https://itai-raveh.github.io/itairaveh/#itai"}, "genre": "Illustration projects"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Itai Raveh", "item": "https://itai-raveh.github.io/itairaveh/"}, {"@type": "ListItem", "position": 2, "name": "Illustration projects", "item": "https://itai-raveh.github.io/itairaveh/illustration/"}, {"@type": "ListItem", "position": 3, "name": "Our digital mirror, Calcalist", "item": "https://itai-raveh.github.io/itairaveh/illustration/our-digital-mirror-calcalist/"}]}]}</script>
+<!--/seo-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="nav-left">
+      <a class="logo" href="./" data-home>Itai Raveh</a>
+      <ul class="nav-links" id="navLinks">
+        <li data-cat="illustration"><a href="illustration/">Illustration</a></li>
+        <li data-cat="brand"><a href="brand/">Brands</a></li>
+        <li data-cat="science"><a href="science/">Science</a></li>
+        <li data-cat="animation"><a href="animation/">Animation</a></li>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <a href="https://www.instagram.com/itairaveh/" target="_blank" rel="noopener">Instagram</a>
+      <a href="about/" id="bioLink">Bio</a>
+    </div>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <section class="hero" id="hero" style="display:none">
+    <div class="scatter back" id="scatterBack"></div>
+    <div class="scatter front" id="scatterFront"></div>
+    <!-- line breaks are fixed per the frames: br.d on desktop (4 lines),
+         br.s on tablet/mobile (7 lines); .lead is nowrap so nothing else breaks -->
+    <p class="lead"><span class="baseline-probe"></span>Creating smart, detailed<br class="s">
+      <span class="cat" data-cat="illustration">illustrations projects <img class="cat-icon" src="images/homepage/icons/illustration.webp" alt=""></span>,<br>
+      building
+      <span class="cat" data-cat="brand">brand illustration<br class="s"> languages <img class="cat-icon" src="images/homepage/icons/brand.webp" alt=""></span>,<br class="d">
+      visualizing<br class="s">
+      <span class="cat" data-cat="science">science communication<br class="s"> <img class="cat-icon" src="images/homepage/icons/science.webp" alt=""></span>,
+      and<br class="d"> providing
+      <span class="cat" data-cat="animation">art<br class="s"> direction for animation <img class="cat-icon" src="images/homepage/icons/animation.webp" alt=""></span>.
+    </p>
+  </section>
+
+  <section class="grid-page" id="gridPage"></section>
+
+  <section class="case-page" id="casePage"><h1>Our digital mirror, Calcalist</h1><p><a href="illustration/">Illustration projects</a></p></section>
+
+  <div class="lightbox" id="lightbox"></div>
+
+<script src="site-text.js"></script>
+<script src="images/sizes.js"></script>
+<script src="site.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+<script>
+  if (window.Lenis) {
+    const lenis = new Lenis({
+      duration: 1.05,             // higher = more drift/weight, lower = snappier
+      easing: t => 1 - Math.pow(1 - t, 3),
+      smoothWheel: true,
+    });
+    function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+
+    // pause inertia while the lightbox is open so background scroll doesn't fight it
+    const scrimObserver = new MutationObserver(()=>{
+      if(document.getElementById('lightbox').classList.contains('show')) lenis.stop();
+      else lenis.start();
+    });
+    scrimObserver.observe(document.getElementById('lightbox'), {attributes:true, attributeFilter:['class']});
+  }
+</script>
+</body>
+</html>

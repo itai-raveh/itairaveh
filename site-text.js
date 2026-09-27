@@ -40,6 +40,25 @@
      caption <image file>: …     the caption under that image (a missing
                                  image has a name instead, e.g. caption talk)
 
+   Phones and tablets (optional, per project)
+     tablet grid columns: 2      (a category) tablets show that grid in 2
+                                 equal columns instead
+     tablet columns: 3           card width on tablets, out of 6 columns
+                                 (normally 2 → 2, 3 → 3, 4 or more → 6)
+     focus: 30% 20%              where a cropped card keeps its picture:
+                                 30% across from the left, 20% down from
+                                 the top (also: top, bottom, left, right)
+     mobile crop: none           show the whole image on phones (normally
+                                 cropped only past 4:5 tall or 4:3 wide)
+
+   Search engines and shared links
+     # general: browser tab title, site description, hebrew name,
+     hebrew description, site address (where the site lives, ending
+     in /), share image (the picture shown when the homepage is shared)
+     each category: description / hebrew description (for search results)
+     each project: hebrew title: …  its name in Hebrew, for Hebrew search
+     After changing these, run  python3 tools/build.py  (see README).
+
    Anywhere in paragraphs and captions
      [words](https://…)  a link      [words]()  underlined, no link yet
      *words*             italic      **words**  bold
@@ -65,7 +84,12 @@ bio: Bio
 headline: Creating smart, detailed{s} [illustrations projects],{b} building [brand illustration{s} languages],{d} visualizing{s} [science communication{s}], and{d} providing [art{s} direction for animation].
 
 # general
-browser tab title: Itai Raveh — recreation
+browser tab title: Itai Raveh | איתי רווה — Illustrator and designer
+site description: Itai Raveh is an illustrator and graphic designer based in Tel Aviv, creating illustration projects, brand illustration languages, science communication and art direction for animation.
+hebrew name: איתי רווה
+hebrew description: איתי רווה, מאייר ומעצב גרפי מתל אביב: איור, שפות איור למותגים, איור ותקשורת מדע, ובימוי אמנותי לאנימציה.
+site address: https://itai-raveh.github.io/itairaveh/
+share image: images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.webp
 projects heading: Projects
 editorial heading: Editorial and publications
 read more link: Read more about this project
@@ -74,8 +98,13 @@ close button: close
 
 # illustration
 name: Illustration projects
+description: Illustration projects by Itai Raveh: editorial illustration for Calcalist, Globes, Einayim and Adam Tsair magazines, books, posters, exhibitions and personal projects.
+hebrew description: פרויקטי איור של איתי רווה: איור עיתונות לכלכליסט, גלובס ומגזין עיניים, ספרים, כרזות, תערוכות ופרויקטים אישיים.
 grid columns: 9
 editorial grid columns: 9
+// on tablets the projects grid is 2 columns, every card half the width
+// (Editorial keeps sizes that follow the desktop ones)
+tablet grid columns: 2
 
 ## gibberish
 title: Gibberish
@@ -256,6 +285,8 @@ start column: 1
 title: Our digital mirror | *Calcalist*
 columns: 3
 start column: 4
+// the right side is empty white: crop that away first
+focus: left
 
 ## nordic-myths-adam-tsair-magazine
 title: Nordic Myths | *Adam Tsair Magazine*
@@ -331,6 +362,8 @@ start column: 1
 
 # brand
 name: Branded illustration language
+description: Brand illustration languages by Itai Raveh for eko, Island, Kaltura, Benny Goren, the Moshal Scholarship Program and Help One Billion.
+hebrew description: שפות איור למותגים מאת איתי רווה, עבור eko, Island, Kaltura, Benny Goren, Moshal ו-Help One Billion.
 
 ## eko
 title: eko engineering
@@ -400,30 +433,34 @@ title: Help One Billion
 description: Product illustrations for a job searching website for the post covid era
 intro: Bring your dog to work, adoption assistance, medical packages and other perks: a series of spot illustrations for *HelpOneBillion*: a job searching website for the post covid era, with new perspectives on what people are looking for when searching for a job.
 intro: Brand design by Tami Oz Sinai
-caption 1.jpg: Bring you dog to work
-caption 2.jpg: Remote working
+caption 1.webp: Bring you dog to work
+caption 2.webp: Remote working
 statement 1: Each illustration is meant to convey the essence of the job perk in a fresh approach. The project never launched, but the illustration language was already fully realized.
-caption 3.jpg: Job offers that allows adoption aid
-caption 4.jpg: Flexible schedule
-caption 5.jpg: Fun working environment
+caption 3.webp: Job offers that allows adoption aid
+caption 4.webp: Flexible schedule
+caption 5.webp: Fun working environment
 statement 2: The illustration language utilizes brand colors to create tension between spots and lines
-caption 6.jpg: Medical packages
-caption 7.png: Some initial sketches
+caption 6.webp: Medical packages
+caption 7.webp: Some initial sketches
 
 # science
 name: Science communication
+description: Science communication by Itai Raveh: illustration, infographics and visual essays for scientists at the Weizmann Institute of Science and other research institutes, including Anthropomass with Prof. Ron Milo.
+hebrew description: תקשורת מדע של איתי רווה: איור, אינפוגרפיקה ומאמרים חזותיים עבור מדענים במכון ויצמן למדע ובמוסדות מחקר נוספים, בהם Anthropomass עם פרופ׳ רון מילוא.
 grid columns: 9
 
 ## watertowers-of-israel
 title: Watertowers of israel
 columns: 4
 start column: 1
+tablet columns: 3
 
 ## anthropomass
 title: Anthropomass.org
 card title: Anthropomass
 columns: 5
 start column: 5
+tablet columns: 3
 description: Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has suppressed the amount of all living things.
 intro: An web based graphic essay accompanying the publication of the groundbreaking paper "Global human-made mass exceeds all living biomass" by *Ron Milo*’s lab of the Department of Plant and Environmental Sciences in the *Weizmann Institue of Science*.
 intro: The paper, published december 2020 in *Nature* journal, proves that the amount of man-made stuff on earth has suppressed the amount of all living things.
@@ -433,7 +470,7 @@ caption 2.webp: Human made mass: The Anthropomass. A yellow-gray palette symboli
 caption talk: A talk I gave on the project @ISVIS22 data visualization conference
 caption 3.webp: Figures were inspired by the ISOTYPE graphic language developed by Otto Neurath and Gerd Arntz, a pictogram system designed to represent entire groups
 caption 4.webp: Textures scanned from different materials were incorporated to enhance the organic feel of each group. Natural texture for the biomass, industrial for the anthropomass
-caption 5.gif: The project's core concept: two masses compared side by side, tracing how their balance shifted over time.
+caption 5: The project's core concept: two masses compared side by side, tracing how their balance shifted over time.
 statement 1: The mission was to translate a complex scientific concept into clear, concise, and engaging communication.
 statement 2: Arranging the different materials into categories based on their shapes and colors allowed for visual comparisons to be made.
 statement 3: The visual language has been inspired by Otto Neurath and Gerd Arntz's ISOTYPE infographic language
@@ -495,6 +532,8 @@ start column: 1
 
 # animation
 name: Art direction for animation
+description: Art direction for animation by Itai Raveh: animated explainers and short films for eko, Aleinu and others.
+hebrew description: בימוי אמנותי לאנימציה של איתי רווה: סרטוני הסבר מונפשים וסרטים קצרים עבור eko, עלינו ואחרים.
 
 ## a-new-solution-to-streaming-technology-eko-explainer
 title: A new solution to streaming technology | *eko* explainer
