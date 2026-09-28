@@ -340,8 +340,9 @@
   .lb-project-media.has-multi .lb-media-layer{cursor:pointer;}
   /* the preview's fixed frame (sized in openProjectLightbox): every image
      centred and fitted inside it */
-  .lb-project-media.boxed{max-width:none; max-height:none; flex:none;}
-  .lb-project-media.boxed .lb-media-layer{display:flex; align-items:center; justify-content:center; width:100%; height:100%;}
+  .lb-project-media.boxed{max-width:none; max-height:none; flex:none; display:block;}
+  /* the layers are pinned to the frame, so a tall image can't stretch it */
+  .lb-project-media.boxed .lb-media-layer{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;}
   .lb-project-media.boxed img, .lb-project-media.boxed .fill-block{width:100%; height:100%; max-height:none; object-fit:contain;}
   .lb-project-media.boxed video{height:100%; object-fit:cover;}
   /* an animated cover (Anthropomass): the video is padded for its page top,
@@ -626,15 +627,17 @@
     grid-column:2/span 4; grid-row:2; margin-top:64px; padding-top:20px;
     border-top:1px solid var(--line);
   }
-  /* the logos keep their sizes from the PDF (--pw, in its px, scaled with
-     the page) and wrap onto as many rows as fit, like text; each sits
-     centred in its column, the columns as wide as the widest logo (--maxw) */
+  /* the logos as laid out in the Bio design (1440 frame, --u = one of its
+     px): cells of one height, 13.3 apart, rows 25.4 apart, the rows ending
+     where the design ends them (.logo-break); narrower screens wrap them */
   .about-logos{
-    --u:.082vw;
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(calc(var(--maxw) * var(--u)), 1fr));
-    column-gap:14px; row-gap:28px; align-items:center; justify-items:center; margin-top:8px;
+    --u:calc(100vw / 1440);
+    display:flex; flex-wrap:wrap; align-items:center; width:max-content;
+    column-gap:calc(13.27 * var(--u)); row-gap:0; margin-top:calc(11.1 * var(--u));
   }
-  .about-logos img{display:block; height:auto; width:calc(var(--pw) * var(--u)); max-width:100%;}
+  .about-logos img{display:block; height:calc(44.25 * var(--u)); width:calc(var(--pw) * var(--u));}
+  /* a row break is itself a row: the space between the logo rows */
+  .logo-break{flex-basis:100%; height:calc(25.44 * var(--u));}
   @media (max-width:956px){
     .about{grid-template-columns:minmax(0,1fr); row-gap:40px;}
     .about-photo, .about-main, .about-clients{grid-column:1/-1; grid-row:auto;}
@@ -645,10 +648,10 @@
     .about-cols > :nth-child(2){order:2;}
     .about-cols > :nth-child(3){order:3;}
     .about-clients{margin-top:24px;}
-    .about-logos{--u:.85px;}
+    .about-logos{--u:.85px; width:auto; row-gap:calc(25.44 * var(--u));}
+    .logo-break{display:none;}
   }
   @media (max-width:576px){
-    .about-logos{row-gap:22px;}
   }
   .nav-right a.dim{color:var(--sub);}
 

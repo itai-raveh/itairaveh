@@ -36,8 +36,9 @@ def has_alpha(im):
     return False
 
 def prepared(path):
-    im = Image.open(path)
-    im = ImageOps.exif_transpose(im)
+    return prepared_image(ImageOps.exif_transpose(Image.open(path)))
+
+def prepared_image(im):
     im = im.convert('RGBA' if has_alpha(im) else 'RGB')
     if im.width > MAX_W:
         im = im.resize((MAX_W, round(im.height * MAX_W / im.width)), Image.LANCZOS)
@@ -66,6 +67,32 @@ def is_lossless(path):
         i += 8 + size + (size & 1)
     return False
 
+def write_sizes():
+    """.md copies + images/sizes.js (tools/build.py also runs this, after it
+    makes the brand cards' padded copies)"""
+    sizes = {}
+    for dirpath, _, files in os.walk(IMAGES):
+        if SKIP(dirpath): continue
+        for f in sorted(files):
+            stem, ext = os.path.splitext(f)
+            if ext.lower() not in ('.webp', '.gif') or stem.endswith('.md'): continue
+            p = os.path.join(dirpath, f)
+            im = Image.open(p)
+            w, h = im.size
+            md = 0
+            if ext.lower() == '.webp' and w > MD_FROM and not getattr(im, 'is_animated', False):
+                mdp = os.path.join(dirpath, stem + '.md.webp')
+                if True:  # cheap enough to redo every run, and never stale
+                    # the copy is stored the way its image is (exact artwork stays exact)
+                    save_webp(prepared(p).resize((MD_W, round(h * MD_W / w)), Image.LANCZOS), mdp, lossless=is_lossless(p))
+                # not worth a second download choice unless it's clearly lighter
+                if os.path.getsize(mdp) > .7 * os.path.getsize(p): os.remove(mdp)
+                else: md = MD_W
+            sizes[os.path.relpath(p, ROOT)] = [w, h, md]
+    with open(os.path.join(IMAGES, 'sizes.js'), 'w') as fh:
+        fh.write('// written by tools/optimize_images.py: [width, height, width of its .md.webp copy or 0]\n')
+        fh.write('window.IMG_SIZES = {\n' + ',\n'.join(json.dumps(k, ensure_ascii=False) + ':' + json.dumps(v) for k, v in sizes.items()) + '\n};\n')
+
 def main():
     renamed = {}  # old file name -> new, per folder-relative path
     before = after = 0
@@ -91,29 +118,7 @@ def main():
                     save_webp(prepared(p), tmp, lossless=is_lossless(p))
                     before += b; after += os.path.getsize(tmp); os.replace(tmp, p)
 
-    # .md copies + the size list
-    sizes = {}
-    for dirpath, _, files in os.walk(IMAGES):
-        if SKIP(dirpath): continue
-        for f in sorted(files):
-            stem, ext = os.path.splitext(f)
-            if ext.lower() not in ('.webp', '.gif') or stem.endswith('.md'): continue
-            p = os.path.join(dirpath, f)
-            im = Image.open(p)
-            w, h = im.size
-            md = 0
-            if ext.lower() == '.webp' and w > MD_FROM and not getattr(im, 'is_animated', False):
-                mdp = os.path.join(dirpath, stem + '.md.webp')
-                if True:  # cheap enough to redo every run, and never stale
-                    # the copy is stored the way its image is (exact artwork stays exact)
-                    save_webp(prepared(p).resize((MD_W, round(h * MD_W / w)), Image.LANCZOS), mdp, lossless=is_lossless(p))
-                # not worth a second download choice unless it's clearly lighter
-                if os.path.getsize(mdp) > .7 * os.path.getsize(p): os.remove(mdp)
-                else: md = MD_W
-            sizes[os.path.relpath(p, ROOT)] = [w, h, md]
-    with open(os.path.join(IMAGES, 'sizes.js'), 'w') as fh:
-        fh.write('// written by tools/optimize_images.py: [width, height, width of its .md.webp copy or 0]\n')
-        fh.write('window.IMG_SIZES = {\n' + ',\n'.join(json.dumps(k, ensure_ascii=False) + ':' + json.dumps(v) for k, v in sizes.items()) + '\n};\n')
+    write_sizes()
 
     # switch references to the converted files. Names are matched by their
     # last path part only where that is unambiguous in its folder, which also

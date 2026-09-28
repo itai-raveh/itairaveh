@@ -8,6 +8,7 @@ The site itself still runs from site.js; each page written here is index.html
 with that page's own title, description, share picture and a plain copy of
 its words and images (what a search engine reads before any script runs).
 It writes:
+  eko/ hob/ star/ …  the old Readymag site's addresses, forwarding to the new pages
   illustration/ brand/ science/ animation/ about/  one folder per page, each
       with an index.html (these folders are rebuilt from scratch every run —
       don't keep anything else in them)
@@ -26,6 +27,14 @@ from urllib.parse import quote
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MARK = "/* === end of the site's data: tools/build.py reads site.js up to here === */"
 PAGE_DIRS = ['illustration', 'brand', 'science', 'animation', 'about']
+# the old Readymag site's project addresses (from its sitemap) → the page that
+# replaces each, so links and search results pointing at them keep working
+OLD_URLS = {
+    'city-symbol': 'illustration/city-symbol/', 'sex': 'illustration/sex/',
+    'eko': 'brand/eko/', 'island': 'brand/island/', 'kaltura': 'brand/kaltura/',
+    'bennygoren': 'brand/benny-goren/', 'hob': 'brand/help-one-billion/', 'moshal': 'brand/moshal/',
+    'anthropomass': 'science/anthropomass/', 'star': 'science/space-omelette/',
+}
 
 def read(p): return open(os.path.join(ROOT, p), encoding='utf-8').read()
 
@@ -84,7 +93,15 @@ DUMP = r'''
       }));
     });
   });
-  return JSON.stringify({site: SITE, pages});
+  // cards that show their image whole inside a set shape (Brands): the
+  // build pads a copy of each image to that shape (see pad_cards)
+  const cards = [];
+  HEADLINE_CATS.forEach(cat=> CATS[cat].items.concat(CATS[cat].editorial || []).forEach(it=>{
+    if(it.fit !== 'contain' || !it.cardRatio) return;
+    const imgs = [it.img].concat((it.images || []).map(i=> i.img)).filter((p, i, a)=> p && a.indexOf(p) === i);
+    cards.push({ratio: it.cardRatio, imgs});
+  }));
+  return JSON.stringify({site: SITE, pages, cards});
 })()
 '''
 
@@ -123,6 +140,64 @@ def share_jpg(path):
         if im.width > 1200: im = im.resize((1200, round(im.height * 1200 / im.width)), Image.LANCZOS)
         im.save(out, 'JPEG', quality=82, optimize=True, progressive=True)
     return 'images/share/' + name
+
+# ---------- 2b. padded card images ------------------------------------------
+def pad_cards(cards):
+    """<name>.card.webp: the image padded out to its card's shape in its own
+    edge colours, so the card shows one seamless picture (no line where a
+    painted background meets the image) and fades as a whole. Thin edge lines
+    some exports carry (a white or blended row) are trimmed first."""
+    try:
+        from PIL import Image
+    except ImportError:
+        print('Pillow missing: brand cards not padded'); return
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import optimize_images as O
+    from collections import Counter
+    def band_colour(im, side, depth=(8, 20)):
+        w, h = im.size
+        a, b = depth
+        box = {'l': (a, 0, b, h), 'r': (w - b, 0, w - a, h), 't': (0, a, w, b), 'b': (0, h - b, w, h - a)}[side]
+        px = list(im.crop(box).resize((64, 64) if side in 'tb' else (64, 64)).getdata())
+        return Counter(px).most_common(1)[0][0]
+    def trim(im):
+        w, h = im.size
+        near = lambda p, c: sum(abs(x - y) for x, y in zip(p, c)) < 24
+        cut = {}
+        for side in 'lrtb':
+            c = band_colour(im, side); n = 0
+            while n < 8:
+                line = {'l': (n, 0, n + 1, h), 'r': (w - n - 1, 0, w - n, h), 't': (0, n, w, n + 1), 'b': (0, h - n - 1, w, h - n)}[side]
+                px = list(im.crop(line).resize((32, 1) if side in 'tb' else (1, 32)).getdata())
+                if sum(near(p, c) for p in px) >= 24: break
+                n += 1
+            cut[side] = n
+        return im.crop((cut['l'], cut['t'], w - cut['r'], h - cut['b']))
+    made = 0
+    for card in cards:
+        r = card['ratio']
+        for p in card['imgs']:
+            src = os.path.join(ROOT, p)
+            out = src[:-5] + '.card.webp'
+            if not os.path.exists(src) or (os.path.exists(out) and os.path.getmtime(out) >= os.path.getmtime(src)): continue
+            im = Image.open(src).convert('RGBA')
+            bg = Image.new('RGBA', im.size, (255, 255, 255, 255)); bg.alpha_composite(im); im = trim(bg.convert('RGB'))
+            w, h = im.size
+            if abs(w / h - r) < .005: canvas = im
+            elif w / h > r:   # wider than the card: add top and bottom
+                H = round(w / r); canvas = Image.new('RGB', (w, H), band_colour(im, 't'))
+                top = (H - h) // 2
+                canvas.paste(Image.new('RGB', (w, H - top - h), band_colour(im, 'b')), (0, top + h))
+                canvas.paste(im, (0, top))
+            else:             # taller: add left and right
+                W = round(h * r); canvas = Image.new('RGB', (W, h), band_colour(im, 'l'))
+                left = (W - w) // 2
+                canvas.paste(Image.new('RGB', (W - left - w, h), band_colour(im, 'r')), (left + w, 0))
+                canvas.paste(im, (left, 0))
+            O.save_webp(O.prepared_image(canvas), out, lossless=O.is_lossless(src))
+            made += 1
+    if made: print(f'{made} padded card images')
+    O.write_sizes()
 
 # ---------- 3. the pages ---------------------------------------------------
 e = lambda s: html.escape(str(s or ''), quote=True)
@@ -203,11 +278,12 @@ def fill(shell, page, site, share, base):
 def main():
     data = site_data()
     site, pages = data['site'], data['pages']
+    pad_cards(data.get('cards', []))
     if not site.get('url'): sys.exit('site-text.js: set "site address:" under # general')
     shell = read('index.html')
     if '<!--seo-->' not in shell: sys.exit('index.html: <!--seo--> markers missing')
     # the folders are all generated: start clean
-    for d in PAGE_DIRS:
+    for d in PAGE_DIRS + list(OLD_URLS):
         shutil.rmtree(os.path.join(ROOT, d), ignore_errors=True)
     urls = []
     for page in pages:
@@ -222,6 +298,17 @@ def main():
             open(os.path.join(d, 'index.html'), 'w', encoding='utf-8').write(out)
         urls.append((url_of(site['url'], page['path']), [url_of(site['url'], p) for p, _ in page.get('images', [])]
                      or ([url_of(site['url'], page['image'])] if page.get('image') else [])))
+    # old addresses: a tiny page that forwards at once (search engines read the
+    # canonical + instant refresh as a permanent move)
+    for old, new in OLD_URLS.items():
+        target = url_of(site['url'], new)
+        os.makedirs(os.path.join(ROOT, old), exist_ok=True)
+        open(os.path.join(ROOT, old, 'index.html'), 'w', encoding='utf-8').write(
+            f'<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Moved</title>'
+            f'<link rel="canonical" href="{e(target)}">'
+            f'<meta http-equiv="refresh" content="0; url={e(target)}">'
+            f'<script>location.replace({json.dumps(target)} + location.search + location.hash)</script>'
+            f'</head><body><a href="{e(target)}">{e(target)}</a></body></html>\n')
     # 404: the site, rooted absolutely (the address can be any depth), not indexed
     root_path = re.sub(r'^https?://[^/]+', '', site['url'])
     nf = fill(shell, {'kind': '404', 'path': '', 'title': site['title'], 'description': site['description']}, site, '', root_path)

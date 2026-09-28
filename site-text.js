@@ -82,7 +82,7 @@ instagram: Instagram
 bio: Bio
 
 # homepage
-headline: Creating smart, detailed{s} [illustrations projects],{b} building [brand illustration{s} languages],{d} visualizing{s} [science communication{s}], and{d} providing [art{s} direction for animation].
+headline: Creating smart, detailed{s} [illustration projects],{b} building [brand illustration{s} languages],{d} visualizing{s} [science communication{s}], and{d} providing [art{s} direction for animation].
 
 # general
 browser tab title: Itai Raveh | איתי רווה — Illustrator and designer
@@ -177,7 +177,7 @@ sym-3-14: Masada
 sym-3-15: Shfech HaKishon
 
 ## weizmann-institute-2026-calendar
-title: Weizmann institute 2026 calendar
+title: Weizmann Institute 2026 calendar
 columns: 2
 start column: 8
 
@@ -203,7 +203,7 @@ columns: 2
 start column: 6
 
 ## welcome-to-tivon
-title: Welcome to tivon
+title: Welcome to Tivon
 columns: 2
 start column: 8
 
@@ -347,7 +347,7 @@ columns: 3
 start column: 4
 
 ## where-does-salt-comes-from-einayim-magazine
-title: Where does salt comes from? | *Einayim Magazine*
+title: Where does salt come from? | *Einayim Magazine*
 columns: 3
 start column: 1
 
@@ -430,8 +430,8 @@ statement 3: At the conclusion of the project, the brand team received a compreh
 
 ## benny-goren
 title: Benny Goren
-description: Illustrations for *Benny Goren*’s, a leading math textbook publishing house
-intro: Illustrations for *Benny Goren*’s new website, a leading (in almost mythic proportions) math textbook publishing. The illustration language is aiming to show the brand’s audience: young and sophisticated teachers, riding bikes and using iPads for teaching.
+description: Illustrations for *Benny Goren*, a leading math textbook publishing house
+intro: Illustrations for *Benny Goren*’s new website, a leading (in almost mythic proportions) math textbook publishing house. The illustration language is aiming to show the brand’s audience: young and sophisticated teachers, riding bikes and using iPads for teaching.
 intro: Brand design: [Three bears studio]()
 caption 1.webp: Miniature worlds
 caption 2.webp: Accessible teachers
@@ -443,7 +443,7 @@ statement 1: The illustration language enables the student to encounter the alre
 
 ## kaltura
 title: Kaltura
-description: Illustration system of 100+ elements for *Kaltura*, a global leader in enterprise video technology, Built as a modular framework
+description: Illustration system of 100+ elements for *Kaltura*, a global leader in enterprise video technology, built as a modular framework
 statement 1: The illustration system is composed of 100+ illustrations, created around a unified logic and separated into different scenes.
 statement 2: Addressing different color palettes and utilizing a distinctive character styling, the illustration system provides a seamless representation of *Kaltura*’s brand values.
 statement 3: The graphic logic is based on a composition of shapes derived from the *Kaltura* logo, which have been rearranged to create an entire world
@@ -464,10 +464,10 @@ title: Help One Billion
 description: Product illustrations for a job searching website for the post covid era
 intro: Bring your dog to work, adoption assistance, medical packages and other perks: a series of spot illustrations for *HelpOneBillion*: a job searching website for the post covid era, with new perspectives on what people are looking for when searching for a job.
 intro: Brand design by Tami Oz Sinai
-caption 1.webp: Bring you dog to work
+caption 1.webp: Bring your dog to work
 caption 2.webp: Remote working
 statement 1: Each illustration is meant to convey the essence of the job perk in a fresh approach. The project never launched, but the illustration language was already fully realized.
-caption 3.webp: Job offers that allows adoption aid
+caption 3.webp: Job offers that allow adoption aid
 caption 4.webp: Flexible schedule
 caption 5.webp: Fun working environment
 statement 2: The illustration language utilizes brand colors to create tension between spots and lines
@@ -481,7 +481,7 @@ hebrew description: תקשורת מדע של איתי רווה: איור, אינ
 grid columns: 9
 
 ## watertowers-of-israel
-title: Watertowers of israel
+title: Watertowers of Israel
 columns: 4
 start column: 1
 tablet columns: 3
@@ -492,9 +492,9 @@ card title: Anthropomass
 columns: 5
 start column: 5
 tablet columns: 3
-description: Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has suppressed the amount of all living things.
-intro: An web based graphic essay accompanying the publication of the groundbreaking paper "Global human-made mass exceeds all living biomass" by *Ron Milo*’s lab of the Department of Plant and Environmental Sciences in the *Weizmann Institue of Science*.
-intro: The paper, published december 2020 in *Nature* journal, proves that the amount of man-made stuff on earth has suppressed the amount of all living things.
+description: Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has surpassed the amount of all living things.
+intro: A web-based graphic essay accompanying the publication of the groundbreaking paper "Global human-made mass exceeds all living biomass" by *Ron Milo*’s lab of the Department of Plant and Environmental Sciences in the *Weizmann Institute of Science*.
+intro: The paper, published December 2020 in *Nature* journal, proves that the amount of man-made stuff on earth has surpassed the amount of all living things.
 intro: Full project: [anthropomass.org](https://anthropomass.org)
 caption 1.webp: Natural material mass: the Biomass. Warm, organic colors evoking a sense of familiarity and connection to the living world.
 caption 2.webp: Human made mass: The Anthropomass. A yellow-gray palette symbolizing industry, alienation, and the built environment.
@@ -507,7 +507,7 @@ statement 2: Arranging the different materials into categories based on their sh
 statement 3: The visual language has been inspired by Otto Neurath and Gerd Arntz's ISOTYPE infographic language
 
 ## biomass-of-mammals-ron-milo
-title: Biomass of mammals | *Weizmann Institue, Ron Milo's lab*
+title: Biomass of mammals | *Weizmann Institute, Ron Milo's lab*
 columns: 4
 start column: 1
 
@@ -522,42 +522,42 @@ intro: A playful infographic created for the *Weizmann Institute*, exploring the
 statement 1: The illustrations found prominent use on the company's blog, annual reports showcasing yearly figures, collaborative projects with partners, and more.
 
 ## cell-replacement-by-the-numbers-ron-milo
-title: Cell replacement by the Numbers | *Weizmann Institue, Ron Milo's lab*
+title: Cell replacement by the Numbers | *Weizmann Institute, Ron Milo's lab*
 columns: 3
 start column: 7
 
 ## a-sea-of-cows-ron-milo
-title: A sea of cows | *Weizmann Institue, Ron Milo's lab*
+title: A sea of cows | *Weizmann Institute, Ron Milo's lab*
 columns: 3
 start column: 4
 
 ## specialization-of-antigen-presenting-cells-ranit-kedmi
-title: Specialization of antigen-presenting cells | *Weizmann Institue, Ranit Kedmi*
+title: Specialization of antigen-presenting cells | *Weizmann Institute, Ranit Kedmi*
 columns: 3
 start column: 1
 
 ## meet-your-digital-twin-eran-segal
-title: Meet your digital twin | *Weizmann Institue, Eran Segal*
+title: Meet your digital twin | *Weizmann Institute, Eran Segal*
 columns: 3
 start column: 7
 
 ## cryptochrome-discovery-jonathan-gressel
-title: Cryptochrome Discovery | *Weizmann Institue, Jonathan Gressel*
+title: Cryptochrome Discovery | *Weizmann Institute, Jonathan Gressel*
 columns: 3
 start column: 1
 
 ## balance-of-anthropomass-and-biomass
-title: Balance of anthropomass and Biomass | *Weizmann Institue, Ron Milo's lab*
+title: Balance of anthropomass and Biomass | *Weizmann Institute, Ron Milo's lab*
 columns: 2
 start column: 4
 
 ## trem2-targeted-car-therapy-ido-amit
-title: TREM2-targeted CAR therapy | *Weizmann Institue, Ido Amit*
+title: TREM2-targeted CAR therapy | *Weizmann Institute, Ido Amit*
 columns: 4
 start column: 6
 
-## shift-in-mammel-biomass-lior-greenspoone
-title: Shift in mammel biomass | *Weizmann Institue, Lior Greenspoone*
+## shift-in-mammal-biomass-lior-greenspoon
+title: Shift in mammal biomass | *Weizmann Institute, Lior Greenspoon*
 columns: 3
 start column: 1
 
@@ -631,6 +631,7 @@ teaching: *Illustration for digital screens, senior studio course*, Shenkar, Vis
 contact: Contact
 // email: add your address as a line like this (remove the // to show it)
 // contact line: [name@mail.com](mailto:name@mail.com)
+contact line: [itai.raveh@gmail.com](mailto:itai.raveh@gmail.com)
 contact line: [Instagram](https://www.instagram.com/itairaveh/)
 contact line: [LinkedIn](https://www.linkedin.com/in/itai-raveh-28935045/)
 

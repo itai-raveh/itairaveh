@@ -512,7 +512,7 @@ const CATS = {
         img:'images/science/watertowers-of-israel/watertowers-of-israel-cover.webp', images:[{img:'images/science/watertowers-of-israel/watertowers-of-israel-cover.webp'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-2.webp'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-3.webp'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-4.webp'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-5.webp'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-6.webp'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-7.webp'}, {img:'images/science/watertowers-of-israel/watertowers-of-israel-8.webp'}]},
       // intro, statements and captions live only in site-text.js
       {t:'Anthropomass', type:'case', slug:'anthropomass', c:'#ead5ba', g:'🌍', span:5, col:4,
-        d:'Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has suppressed the amount of all living things.',
+        d:'Web essay accompanying the publication of the groundbreaking paper proving that the amount of man-made stuff on earth has surpassed the amount of all living things.',
         // the animated cover: a video (padded to the page top's 2.42 in its
         // own colour — a card crops the padding away), img = its poster
         img:'images/science/anthropomass/video/header.webp', video:'images/science/anthropomass/video/header', cardRatio:1.522,
@@ -574,7 +574,7 @@ const CATS = {
         img:'images/science/balance-of-anthropomass-and-biomass/balance-of-anthropomass-and-biomass-cover.webp'},
       {t:'TREM2-targeted CAR therapy | Ido Amit', type:'simple', c:'#ffffff', g:'', span:3, col:5,
         img:'images/science/trem2-car-therapy/trem2-car-therapy-cover.webp'},
-      {t:'Shift in mammel biomass | Lior Greenspoone', type:'simple', c:'#ffffff', g:'', span:3, col:0,
+      {t:'Shift in mammal biomass | Lior Greenspoon', slug:'shift-in-mammal-biomass-lior-greenspoon', type:'simple', c:'#ffffff', g:'', span:3, col:0,
         img:'images/science/shift-in-mammal-biomass/shift-in-mammal-biomass-cover.webp'},
     ]
   },
@@ -682,10 +682,26 @@ function findSymbol(item, subSlug){
 /* the Bio page's portrait and client logos (its words are in site-text.js) */
 const ABOUT = {
   photo: 'images/about/portrait.webp',
-  // in order, with each logo's width in the PDF (keeps their relative sizes) and its name
+  // from the Bio design (Figma, 1440 frame): each logo is an SVG cut to its
+  // cell — all cells the same height, the logo placed inside as designed —
+  // with the cell's width in that frame, its name, and 'break' where the
+  // desktop row ends (tablets and phones just wrap)
   clients: [
-    ['logo-weizmann.webp', 114, 'Weizmann Institute of Science'], ['logo-tau.webp', 59, 'Tel Aviv University'], ['logo-huji.webp', 117, 'The Hebrew University of Jerusalem'], ['logo-caltech.webp', 60, 'Caltech'], ['logo-nif.webp', 68, 'New Israel Fund'], ['logo-nil.webp', 83, 'The National Library of Israel'], ['logo-muza.webp', 42, 'MUZA Eretz Israel Museum'],
-    ['logo-monday.webp', 111, 'monday.com'], ['logo-kaltura.webp', 85, 'Kaltura'], ['logo-island.webp', 68, 'Island'], ['logo-eko.webp', 37, 'eko'], ['logo-calcalist-eng.webp', 72, 'Calcalist'], ['logo-haaretz.webp', 75, 'Haaretz'], ['logo-globes.webp', 52, 'Globes'],
+    ['logo-weizmann.svg', 132.7, 'Weizmann Institute of Science'],
+    ['logo-tau.svg', 77.4, 'Tel Aviv University'],
+    ['logo-huji.svg', 119.5, 'The Hebrew University of Jerusalem'],
+    ['logo-caltech.svg', 110.6, 'Caltech'],
+    ['logo-nif.svg', 75.2, 'New Israel Fund', 'break'],
+    ['logo-nli.svg', 132.7, 'The National Library of Israel'],
+    ['logo-muza.svg', 65.3, 'MUZA Eretz Israel Museum'],
+    ['logo-monday.svg', 132.7, 'monday.com'],
+    ['logo-kaltura.svg', 132.7, 'Kaltura'],
+    ['logo-design-museum-holon.svg', 132.7, 'Design Museum Holon', 'break', 3.4], // a little more room before it, as in the design
+    ['logo-island.svg', 113.9, 'Island'],
+    ['logo-eko.svg', 70.8, 'eko'],
+    ['logo-calcalist.svg', 132.7, 'Calcalist'],
+    ['logo-haaretz.svg', 111.7, 'Haaretz'],
+    ['logo-globes.svg', 111.7, 'Globes'],
   ],
 };
 
@@ -1305,11 +1321,12 @@ function titleHTML(t){
 }
 
 // Vimeo in background mode: autoplays muted and looped, no controls. The
-// button over it opens the full player (sound, controls) in the lightbox.
+// button over it opens the full player (controls; starts muted, sound on
+// from its own volume control) in the lightbox.
 function vimeoLoopHTML(id, ratio){
   return `<div class="vid-box" style="aspect-ratio:${ratio}">
     <iframe src="https://player.vimeo.com/video/${id}?background=1&dnt=1" loading="lazy" allow="autoplay; fullscreen" title="video"></iframe>
-    <button class="vid-open" type="button" data-vimeo="${id}" data-ratio="${ratio}" aria-label="Play with sound"><span></span></button>
+    <button class="vid-open" type="button" data-vimeo="${id}" data-ratio="${ratio}" aria-label="Play"><span></span></button>
   </div>`;
 }
 
@@ -1330,6 +1347,15 @@ function captionHTML(cat, item, target){
      phone   — one column; the card keeps its image's proportions within
                4:5 (tall) to 4:3 (wide), cropping only past those, around
                the image's "focus" point; "mobile crop: none" shows it whole */
+// a card that shows its image whole inside a set shape (Brands) uses the
+// copy tools/build.py padded to that shape in the image's own colours
+// (<name>.card.webp), so it fills the card seamlessly
+function cardImg(item, path){
+  if(item.fit !== 'contain' || !path) return path;
+  const c = path.replace(/\.webp$/, '.card.webp');
+  return IMG_SIZES[c] ? c : path;
+}
+
 function tabletSpan(span){ return span >= 4 ? 6 : Math.max(2, span); }
 const MOBILE_RATIO = [4/5, 4/3];
 
@@ -1361,6 +1387,8 @@ function cardHTML(cat, item, i, defaultSpan, tracks, ttracks){
   // the card, on white, rather than cropped to the card's shape (unless the
   // project asks for the crop, like Nordic Myths)
   const whole = !item.crop && !item.video && ((item.images && item.images.length > 1) || item.cardRatio);
+  // Brands: its padded copies already have the card's shape, so they fill it
+  const padded = item.fit === 'contain' && cardImg(item, item.img) !== item.img;
   // a stacked card (springs of Ein Qiniyye) has no single hover-cycle
   // thumb — each of its images is its own link, opening the lightbox at
   // that specific image, instead of all three funneling into the same
@@ -1372,11 +1400,11 @@ function cardHTML(cat, item, i, defaultSpan, tracks, ttracks){
         `<a ${cardLinkAttr(cat, item, cardTarget + '&i=' + imgIdx)}><img ${imgSrc(im.img, sizes)} alt="${alt}" ${load} decoding="async" style="aspect-ratio:${IMG_RATIO[im.img] || 1.3}"></a>`
       ).join('')}</div>`
     : `<a class="card-thumb-link" ${cardLinkAttr(cat, item, cardTarget)}>
-        <div class="card-thumb${item.fit === 'contain' ? ' contain' : whole ? ' whole' : ''}" style="aspect-ratio:${ratio}; --mr:${mRatio}">
+        <div class="card-thumb${padded ? '' : item.fit === 'contain' ? ' contain' : whole ? ' whole' : ''}" style="aspect-ratio:${ratio}; --mr:${mRatio}">
           ${item.video
             ? loopVideoHTML(item.video, 'fill-img')
             : hasImg
-            ? `<img class="fill-img" ${imgSrc(item.img, sizes)} alt="${alt}" ${load} decoding="async"${focus}>`
+            ? `<img class="fill-img" ${imgSrc(cardImg(item, item.img), sizes)} alt="${alt}" ${load} decoding="async"${focus}>`
             : `<div class="fill-block" style="${bg(item)}"></div><div class="glyph">${glyphHTML(item)}</div>`}
         </div>
       </a>`;
@@ -1542,6 +1570,7 @@ function renderGrid(cat){
 --------------------------------------------------------- */
 const GALLERY_FADE = 1200;  // ms, the crossfade
 const GALLERY_HOLD = 2600;  // ms each image stays fully shown
+const REDUCED_MOTION = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 // kept so route() can call it; galleries now pause and resume by themselves
 function stopAllCardGalleries(){}
 
@@ -1558,7 +1587,7 @@ function wireCardGalleries(cat){
     const thumb = card.querySelector('.card-thumb');
     const fillImg = thumb && thumb.querySelector('.fill-img');
     if(!fillImg || fillImg.tagName !== 'IMG') return;
-    const imgs = item.images.map(im => im.img);
+    const imgs = item.images.map(im => cardImg(item, im.img));
     // two stacked images (.fill-img is position:absolute/inset:0): one fades
     // out while the other fades in, so the thumb is never empty mid-change
     const fillImg2 = fillImg.cloneNode();
@@ -1603,8 +1632,9 @@ function wireCardGalleries(cat){
       show(idx + 1, ()=> schedule(hold()));
     }
     // first change after the hold, then spread out: each card a little
-    // later than the one before, with some randomness
-    schedule(GALLERY_HOLD + (n++ * 1300) % 5200 + Math.random() * 900);
+    // later than the one before, with some randomness. Not at all for
+    // visitors whose device asks for reduced motion (the arrows still work)
+    if(!REDUCED_MOTION) schedule(GALLERY_HOLD + (n++ * 1300) % 5200 + Math.random() * 900);
     if(io) io.observe(card);
 
     const prevBtn = document.createElement('button');
@@ -1662,21 +1692,26 @@ function openProjectLightbox(cat, item, startIdx){
   `;
   let front = lightbox.querySelector('.lb-media-a');
   let back = lightbox.querySelector('.lb-media-b');
-  // one frame for the whole gallery, big enough for its largest image, so
-  // stepping through images of different shapes doesn't make the preview
-  // (and the text beside it) jump; each image is centred inside it, and a
-  // small one is enlarged to fill it (at most 2×)
+  // one frame for the whole gallery, so stepping through images of
+  // different shapes doesn't make the preview (and the text beside it)
+  // jump; each image is centred inside it, and a small one is enlarged to
+  // fill it (at most 2×)
   const media = lightbox.querySelector('.lb-project-media');
   const fitFrame = ()=>{
     const vw = window.innerWidth, vh = window.innerHeight;
     if(vw < 700){ media.classList.remove('boxed'); media.style.width = media.style.height = ''; return; }
     const maxW = Math.min(vw * .74, vw * .95 - 280 - 32), maxH = vh * .94;
-    let W = 0, H = 0;
-    images.forEach(im=>{
+    // the frame follows the gallery's landscape and square images; a tall
+    // image is shrunk to fit inside it rather than making it taller
+    const shapes = images.map(im=>{
       const s = im.img && IMG_SIZES[im.img];
-      const r = im.video ? (item.cardRatio || 1.5) : s ? s[0] / s[1] : 1;
+      return {r: im.video ? (item.cardRatio || 1.5) : s ? s[0] / s[1] : 1, nat: s && s[0]};
+    });
+    const wide = shapes.filter(x=> x.r >= 1);
+    let W = 0, H = 0;
+    (wide.length ? wide : shapes).forEach(({r, nat})=>{
       let w = Math.min(maxW, maxH * r);
-      if(s) w = Math.min(w, s[0] * 2);
+      if(nat) w = Math.min(w, nat * 2);
       W = Math.max(W, w); H = Math.max(H, w / r);
     });
     media.classList.add('boxed');
@@ -1956,8 +1991,8 @@ function renderAbout(){
       </div>
       <div class="about-clients">
         <h2>${T.clients}</h2>
-        <div class="about-logos" style="--maxw:${Math.max(...ABOUT.clients.map(([, w])=> w))}">${(()=>{
-          return ABOUT.clients.map(([f, w, name])=>`<img src="${encodeImgPath('images/about/clients/' + f)}" alt="${name}" loading="lazy" style="--pw:${w}">`).join('');
+        <div class="about-logos">${(()=>{
+          return ABOUT.clients.map(([f, w, name, brk, extra])=>`<img src="${encodeImgPath('images/about/clients/' + f)}" alt="${name}" loading="lazy" style="--pw:${w}${extra ? `; margin-left:calc(${extra} * var(--u))` : ''}">${brk ? '<span class="logo-break"></span>' : ''}`).join('');
         })()}</div>
       </div>
     </div>
@@ -1970,7 +2005,7 @@ function openVideoLightbox(id, ratio){
   lightbox.innerHTML = `
     <button class="lb-close" aria-label="Close">${UI_TEXT.close}</button>
     <div class="lb-video" style="--r:${ratio}">
-      <iframe src="https://player.vimeo.com/video/${id}?autoplay=1&dnt=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="video"></iframe>
+      <iframe src="https://player.vimeo.com/video/${id}?autoplay=1&muted=1&dnt=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="video"></iframe>
     </div>`;
   lightbox.onclick = e=>{ if(!e.target.closest('iframe')) closeVideo(); };
   const closeVideo = ()=>{ lightbox.innerHTML = ''; closeLightbox(); };
