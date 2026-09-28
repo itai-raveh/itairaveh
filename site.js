@@ -312,6 +312,7 @@ const CATS = {
     // two columns, images whole inside their card, wider gaps, no heading — from the Brands layout
     tracks:2, defaultSpan:1, heading:false, gaps:[20, 44],
     readMore:true, // each card gets a link to its project page
+    rows:true, // cards in true rows (each pair starts level), all the same shape (cardRatio 1.5)
     // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
     hero: [
       'images/homepage/brand/brand-16.webp',
@@ -383,7 +384,7 @@ const CATS = {
           ]
         }},
       {t:'Benny Goren', type:'case', slug:'benny-goren', c:'#f7e2e1', g:'📐',
-        img:'images/brand/benny-goren/gallery/1.webp', cardRatio:1.47, fit:'contain',
+        img:'images/brand/benny-goren/gallery/1.webp', cardRatio:1.5, fit:'contain',
         images:[{img:'images/brand/benny-goren/gallery/1.webp'}, {img:'images/brand/benny-goren/gallery/2.webp'}, {img:'images/brand/benny-goren/gallery/3.webp'}, {img:'images/brand/benny-goren/gallery/4.webp'}, {img:'images/brand/benny-goren/gallery/5.webp'}, {img:'images/brand/benny-goren/gallery/6.webp'}],
         caseStudy:{
           hero:'images/brand/benny-goren/header.webp', heroRatio:2.3, heroAlign:'center bottom',
@@ -405,7 +406,7 @@ const CATS = {
         }},
       // text for the four below (description, intro, statements, captions) lives only in site-text.js
       {t:'Kaltura', type:'case', slug:'kaltura', c:'#0370fa', g:'▶️',
-        img:'images/brand/kaltura/gallery/1.webp', cardRatio:1.47, fit:'contain',
+        img:'images/brand/kaltura/gallery/1.webp', cardRatio:1.5, fit:'contain',
         images:[{img:'images/brand/kaltura/gallery/1.webp'}, {img:'images/brand/kaltura/gallery/2.webp'}, {img:'images/brand/kaltura/gallery/3.webp'}, {img:'images/brand/kaltura/gallery/4.webp'}, {img:'images/brand/kaltura/gallery/5.webp'}, {img:'images/brand/kaltura/gallery/6.webp'}, {img:'images/brand/kaltura/gallery/7.webp'}],
         caseStudy:{
           hero:'images/brand/kaltura/header.webp', heroRatio:1.654, noIntro:true,
@@ -423,16 +424,18 @@ const CATS = {
           ]
         }},
       {t:'Moshal Scholarship Program Branding', type:'case', slug:'moshal', c:'#313e87', g:'🎓',
-        img:'images/brand/moshal/11.webp', cardRatio:1.365, fit:'contain',
+        img:'images/brand/moshal/11.webp', cardRatio:1.5, fit:'contain',
         images:[{img:'images/brand/moshal/11.webp'}, ...[{img:'images/brand/moshal/gallery/1.webp'}, {img:'images/brand/moshal/gallery/2.webp'}, {img:'images/brand/moshal/gallery/3.webp'}, {img:'images/brand/moshal/gallery/4.webp'}, {img:'images/brand/moshal/gallery/5.webp'}]],
         caseStudy:{
-          // four figures as in the PDF; tablet keeps 1-3, mobile 1 and 3
+          // four figures as in the PDF, the group centred (by their drawn
+          // extents, not the images' transparent margins); tablet keeps 1-3,
+          // mobile 1 and 3
           hero: collage('images/brand/moshal', '#323e81', [1762, 715], [
-            ['header-1.webp', 95, 104, 502], ['header-2.webp', 486, 120, 556],
-            ['header-3.webp', 908, 119, 409], ['header-4.webp', 1291, 132, 467],
+            ['header-1.webp', 65, 104, 502], ['header-2.webp', 456, 120, 556],
+            ['header-3.webp', 878, 119, 409], ['header-4.webp', 1261, 132, 467],
           ], {
-            tablet:{size:[1450, 715], items:[['header-1.webp', 75, 104, 502], ['header-2.webp', 555, 120, 556], ['header-3.webp', 1035, 119, 409]]},
-            mobile:{size:[1000, 700], items:[['header-1.webp', 70, 60, 502], ['header-3.webp', 570, 75, 409]]},
+            tablet:{size:[1450, 715], items:[['header-1.webp', 77, 104, 502], ['header-2.webp', 557, 120, 556], ['header-3.webp', 1037, 119, 409]]},
+            mobile:{size:[1000, 700], items:[['header-1.webp', 82, 60, 502], ['header-3.webp', 582, 75, 409]]},
           }),
           sections:[
             // the PDF's arrangement at 85%, with more room below
@@ -443,8 +446,8 @@ const CATS = {
             {type:'statement'},
             // the scholars: 9 (waving, with books) top left, as in the PDF, with
             // blue room above the highest figures and under the lowest
-            collage('images/brand/moshal', '#323e81', [1762, 1520], [
-              ['9.webp', -60, 130, 640], ['7.webp', 1158, 175, 653], ['8.webp', 455, 456, 653], ['6.webp', 16, 680, 483], ['10.webp', 953, 770, 653],
+            collage('images/brand/moshal', '#323e81', [1762, 1400], [
+              ['9.webp', 33, 110, 640], ['7.webp', 1067, 150, 653], ['8.webp', 470, 397, 653], ['6.webp', 110, 594, 483], ['10.webp', 893, 673, 653],
             ]),
             {type:'statement'},
             {type:'band', bg:'#313e87', sections:[
@@ -459,7 +462,7 @@ const CATS = {
           ]
         }},
       {t:'Help One Billion', type:'case', slug:'help-one-billion', c:'#f19ad7', g:'🐶',
-        img:'images/brand/help-one-billion/5.webp', cardRatio:1.365, fit:'contain',
+        img:'images/brand/help-one-billion/5.webp', cardRatio:1.5, fit:'contain',
         images:[{img:'images/brand/help-one-billion/5.webp'}, {img:'images/brand/help-one-billion/gallery/2.webp'}, {img:'images/brand/help-one-billion/gallery/3.webp'}, {img:'images/brand/help-one-billion/6.webp'}, {img:'images/brand/help-one-billion/gallery/5.webp'}, {img:'images/brand/help-one-billion/gallery/6.webp'}],
         caseStudy:{
           hero:'images/brand/help-one-billion/header.webp', heroRatio:2.73, heroAlign:'center bottom',
@@ -1429,7 +1432,7 @@ function cardHTML(cat, item, i, defaultSpan, tracks, ttracks){
 // own layout); items can carry span/col in those tracks
 function gridHTML(cat, items, indexOffset, tracks, defaultSpan, gaps, tabletTracks){
   const [colGap, rowGap] = gaps || [14, GRID_ROW_GAP];
-  return `<div class="grid" data-tracks="${tracks || 9}"${tabletTracks ? ` data-ttracks="${tabletTracks}"` : ''} data-colgap="${colGap}" data-rowgap="${rowGap}">${items.map((it,i)=>cardHTML(cat,it,indexOffset+i,defaultSpan,tracks,tabletTracks)).join('')}</div>`;
+  return `<div class="grid" data-tracks="${tracks || 9}"${tabletTracks ? ` data-ttracks="${tabletTracks}"` : ''}${CATS[cat].rows ? ' data-rows="1"' : ''} data-colgap="${colGap}" data-rowgap="${rowGap}">${items.map((it,i)=>cardHTML(cat,it,indexOffset+i,defaultSpan,tracks,tabletTracks)).join('')}</div>`;
 }
 
 // an image shown whole inside a card of another shape: the space around
@@ -1492,6 +1495,22 @@ function layoutMasonry(gridEl){
   const orderedCards = trackCount === 1
     ? [...cards].sort((a, b) => parseFloat(a.dataset.mp) - parseFloat(b.dataset.mp))
     : cards;
+
+  // a grid in rows (Brands): cards fill each row left to right and the next
+  // row starts below the tallest card of the one before
+  if(gridEl.dataset.rows && trackCount > 1){
+    let top = 0, rowH = 0, col = 0;
+    orderedCards.forEach(card=>{
+      const span = spanOf(card);
+      if(col + span > trackCount){ top += rowH + rowGap; rowH = 0; col = 0; }
+      card.style.left = (col * (trackW + colGap)) + 'px';
+      card.style.top = top + 'px';
+      rowH = Math.max(rowH, card.offsetHeight);
+      col += span;
+    });
+    gridEl.style.height = (top + rowH) + 'px';
+    return;
+  }
 
   const colHeights = new Array(trackCount).fill(0);
   orderedCards.forEach(card=>{
@@ -2014,7 +2033,12 @@ function openVideoLightbox(id, ratio){
       <iframe src="https://player.vimeo.com/video/${id}?autoplay=1&muted=1&dnt=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="video"></iframe>
     </div>`;
   lightbox.onclick = e=>{ if(!e.target.closest('iframe')) closeVideo(); };
-  const closeVideo = ()=>{ lightbox.innerHTML = ''; closeLightbox(); };
+  // the player is emptied once the fade-out is done (stops the sound at once)
+  const closeVideo = ()=>{
+    const f = lightbox.querySelector('iframe'); if(f) f.src = 'about:blank';
+    closeLightbox();
+    setTimeout(()=>{ if(!lightbox.classList.contains('show')) lightbox.innerHTML = ''; }, 400);
+  };
   setLightboxKeys(e=>{ if(e.key === 'Escape') closeVideo(); });
   lightbox.classList.add('show');
   document.body.style.overflow = 'hidden';
