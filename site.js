@@ -1149,6 +1149,7 @@ function route(nav){
 
 function showRoute(){
   const {cat, slug, sub, preview, previewImg} = parseLocation();
+  document.body.classList.toggle('at-home', !cat);
   stopAllCardGalleries();
   // any navigation closes the tablet/mobile menu — links (Bio) go through
   // the link router, which stops the click before the menu's own handler

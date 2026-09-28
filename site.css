@@ -12,6 +12,7 @@
     --fs-text:12px;      /* everything: nav, captions, descriptions, intros, bio */
     --fs-title:19.6px;   /* a project's name on its page / in the lightbox */
     --fs-display:3.5695vw; /* homepage headline and every statement line */
+    --page-max:1800px;     /* pages stop widening here (margins on bigger screens); the homepage keeps filling the screen */
     --lh-text:1.4;
     --lh-display:1.2857;
   }
@@ -428,7 +429,7 @@
 
   .series{padding:90px 28px 20px; max-width:1500px; margin:0 auto;}
   .series-statement{
-    font-size:var(--fs-display); font-weight:400; line-height:var(--lh-display);
+    font-size:min(var(--fs-display), calc(var(--page-max) * .035695)); font-weight:400; line-height:var(--lh-display);
     text-align:center; max-width:22ch; margin:0 auto 70px;
     opacity:0; transform:translateY(14px);
     transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
@@ -541,14 +542,14 @@
   }
   .case-statement p{
     grid-column:2/span 7; text-align:center; margin:0;
-    font-size:var(--fs-display); font-weight:400; line-height:var(--lh-display);
+    font-size:min(var(--fs-display), calc(var(--page-max) * .035695)); font-weight:400; line-height:var(--lh-display);
   }
   .case-statement.italic p{font-style:italic;}
 
   .case-media-grid{
     --cols:2; --span:9;
     display:grid; grid-template-columns:repeat(var(--cols),minmax(0,1fr)); gap:18px 14px;
-    padding:0 calc(28px + (100% - 42px) * (9 - var(--span)) / 18); margin-bottom:18px;
+    padding:0 calc(28px + (min(100%, var(--page-max)) - 42px) * (9 - var(--span)) / 18); margin-bottom:18px;
   }
   .case-media-grid figure{margin:0; min-width:0;}
   .case-media-grid img{width:100%; height:auto; display:block; cursor:zoom-in;}
@@ -632,11 +633,11 @@
      px): cells of one height, 13.3 apart, rows 25.4 apart, the rows ending
      where the design ends them (.logo-break); narrower screens wrap them */
   .about-logos{
-    /* the design's sizes at 90%; like the text around them they don't grow
-       past their 1440 size on bigger screens, only shrink on smaller ones */
-    --u:calc(min(100vw / 1440, 1px) * .9);
+    /* the design's sizes at 90%, scaling with the page (which stops
+       widening at --page-max) */
+    --u:calc(min(100vw, var(--page-max)) / 1440 * .9);
     display:flex; flex-wrap:wrap; align-items:center;
-    column-gap:calc(13.27 * var(--u)); row-gap:0; margin-top:calc(11.1 * min(100vw / 1440, 1px));
+    column-gap:calc(13.27 * var(--u)); row-gap:0; margin-top:calc(11.1 * min(100vw, var(--page-max)) / 1440);
   }
   .about-logos img{display:block; height:calc(44.25 * var(--u)); width:calc(var(--pw) * var(--u));}
   /* a row break is itself a row: the space between the logo rows */
@@ -664,3 +665,16 @@
     display:block; max-width:calc(100vw - 144px); max-height:calc(100vh - 56px);
     width:auto; height:auto; object-fit:contain; cursor:zoom-out;
   }
+
+  /* ---------- very wide screens ----------
+     Pages stop widening at --page-max and sit centred, with white margins
+     either side (the 12px text doesn't grow, so wider columns only drifted
+     apart). Full-width colour bands, heroes and collages still run edge to
+     edge; the content inside them is what's capped. The nav lines up with
+     the content, except on the homepage, whose composition fills the screen. */
+  .grid-page, .about, .case-intro, .case-statement, .case-media-grid, .case-foot{
+    box-sizing:border-box; max-width:var(--page-max); margin-left:auto; margin-right:auto;
+  }
+  body:not(.at-home) .nav{padding-left:max(28px, calc((100vw - var(--page-max)) / 2 + 28px)); padding-right:max(28px, calc((100vw - var(--page-max)) / 2 + 28px));}
+
+  .case-media-grid.bleed{max-width:none;}
