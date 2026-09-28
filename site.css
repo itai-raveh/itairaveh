@@ -422,6 +422,7 @@
 
   /* ---------- CASE STUDY: SERIES LAYOUT ---------- */
   .case-top{max-width:1180px; margin:0 auto; padding:110px 28px 20px; position:relative;}
+  .case-top.under-hero{padding-top:60px;} /* the header image already clears the nav */
   .case-h1{
     font-size:var(--fs-title); font-weight:700;
     line-height:var(--lh-text);
@@ -458,13 +459,13 @@
   }
   .sym.in{opacity:1; transform:translateY(0);}
   .sym-img{
-    aspect-ratio:1/1;
+    aspect-ratio:1126/1500; /* the symbols' own shape */
     background-size:contain; background-repeat:no-repeat; background-position:center;
     transition:transform .45s cubic-bezier(.16,1.2,.3,1);
   }
   .sym:hover .sym-img{transform:scale(1.07);}
   .sym-name{
-    margin-top:10px; font-size:var(--fs-text); line-height:var(--lh-text);
+    margin-top:8px; font-size:10px; line-height:1.3;
     color:#000;
   }
 

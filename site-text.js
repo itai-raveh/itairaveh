@@ -126,55 +126,55 @@ intro: A series of 45 symbols, portraying the various mythologies embedded in th
 note: Undergraduate project in the visual communication department in Shenkar College of Engineering, Design and Art.
 series jerusalem: Jerusalem
 statement jerusalem: In Jerusalem, symbols are a reminder of the violence which holds this city together. The color red was used to emphasize this atmosphere.
-sym-1-01: YMCA
-sym-1-02: Mahane Yehuda
-sym-1-03: Museum of Natural History
-sym-1-04: Damascus Gate
-sym-1-05: Ussishkin Street
-sym-2-01: Jewish Quarter
-sym-2-02: Nachalat Shivaa
-sym-2-03: Kikar Hachatolot
-sym-2-04: Rechov Ussishkin
-sym-2-05: Moment Café
-sym-3-01: Agada
-sym-3-02: Machneyuda
-sym-3-03: Nachlaot
-sym-3-04: Keren Hayesod
-sym-3-05: Shtetl Bamidbar
+jerusalem-uganda-01: Uganda
+jerusalem-damascus-gate-02: Damascus Gate
+jerusalem-moment-cafe-03: Moment Café
+jerusalem-jaffa-gate-04: Jaffa Gate
+jerusalem-nachalat-shivaa-05: Nachalat Shivaa
+jerusalem-ussishkin-street-06: Ussishkin Street
+jerusalem-machneyuda-07: Machneyuda
+jerusalem-nachlaot-08: Nachlaot
+jerusalem-keren-hayesod-09: Keren Hayesod
+jerusalem-jaffa-road-10: Jaffa Road
+jerusalem-kikar-hachatolot-11: Kikar Hachatolot
+jerusalem-jewish-quarter-12: Jewish Quarter
+jerusalem-ymca-13: YMCA
+jerusalem-museum-of-natural-history-14: Museum of Natural History
+jerusalem-armon-hanatziv-15: Armon Hanatziv
 series tel-aviv: Tel Aviv
 statement tel-aviv: In Tel Aviv, symbols carry the city’s restless self-invention, secular, sunlit and always half-built.
-sym-1-06: Dizengoff
-sym-1-07: Bialik Street
-sym-1-08: New Central Station
-sym-1-09: Rothschild Boulevard
-sym-1-10: Hayarkon Park
-sym-2-06: Yafo
-sym-2-07: Kikar Rabin
-sym-2-08: Kerem HaTeimanim
-sym-2-09: Har Sinai
-sym-2-10: Salame
-sym-3-06: Montefiore
-sym-3-07: Neve Tzedek
-sym-3-08: Abu Kabir
-sym-3-09: Neue Jaffa
-sym-3-10: Gan Meir
+tel-aviv-dubnov-garden-16: Dubnov Garden
+tel-aviv-yafo-17: Yafo
+tel-aviv-kikar-malchei-yisrael-18: Kikar Malchei Yisrael
+tel-aviv-har-sinai-19: Har Sinai
+tel-aviv-bialik-street-20: Bialik Street
+tel-aviv-gan-meir-21: Gan Meir
+tel-aviv-new-central-station-22: New Central Station
+tel-aviv-salame-23: Salame
+tel-aviv-hayarkon-park-24: Hayarkon Park
+tel-aviv-the-tzadik-of-allenby-25: The Tzadik of Allenby
+tel-aviv-neve-tzedek-26: Neve Tzedek
+tel-aviv-dizengoff-27: Dizengoff
+tel-aviv-neue-jaffa-28: Neue Jaffa
+tel-aviv-rothschild-boulevard-29: Rothschild Boulevard
+tel-aviv-abu-kabir-30: Abu Kabir
 series haifa: Haifa
 statement haifa: In Haifa, symbols grow out of the mountain and the port, industrial, layered and green.
-sym-1-11: Haifa Port
-sym-1-12: Bat Galim
-sym-1-13: Herzl Street
-sym-1-14: Romema
-sym-1-15: Train Station
-sym-2-11: Haifa
-sym-2-12: Kababir
-sym-2-13: Beit Galim
-sym-2-14: Hadar Carmel
-sym-2-15: Merkaz
-sym-3-11: Wadi Nisnas
-sym-3-12: Stella Maris
-sym-3-13: Rechov HaNeviim
-sym-3-14: Masada
-sym-3-15: Shfech HaKishon
+haifa-hadar-carmel-31: Hadar Carmel
+haifa-bat-galim-32: Bat Galim
+haifa-carmel-beach-promenade-33: Carmel Beach Promenade
+haifa-haatzmaut-street-34: Ha'Atzmaut Street
+haifa-wadi-nisnas-35: Wadi Nisnas
+haifa-haneviim-street-36: HaNevi'im Street
+haifa-romema-37: Romema
+haifa-stella-maris-38: Stella Maris
+haifa-merkaz-hacarmel-39: Merkaz HaCarmel
+haifa-haifa-port-40: Haifa Port
+haifa-city-of-workers-41: City of Workers
+haifa-kishon-estuary-42: Kishon Estuary
+haifa-herzl-street-43: Herzl Street
+haifa-train-station-44: Train Station
+haifa-masada-45: Masada
 
 ## weizmann-institute-2026-calendar
 title: Weizmann Institute 2026 calendar

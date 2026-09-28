@@ -19,7 +19,8 @@ function symUrl(cat, projectSlug, file){
 }
 
 function slugify(s){
-  return s.toLowerCase().replace(/['"]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  // accented letters become plain ones (Café → cafe)
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/['"]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
 }
 
 /* uploaded filenames are arbitrary (spaces, parens, Hebrew) — encode each
@@ -80,9 +81,11 @@ const CATS = {
         img:'images/illustration-projects/sublet/sublet-cover.webp'},
       {t:'City Symbol: Street level Coat Of Arms', type:'case', span:3, col:4, mobilePriority:0.5,
         slug:'city-symbol',
-        img:'images/illustration-projects/city-symbol/city-symbol-1-cover.webp',
+        img:'images/illustration-projects/city-symbol/gallery/city-symbol-cover.webp',
+        images: galleryRange('images/illustration-projects/city-symbol/gallery', 'city-symbol', 'webp', 6),
         d:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.',
         caseStudy:{
+          hero:'images/illustration-projects/city-symbol/header.webp',
           intro:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape. The project contains 3 series containing 15 symbols for three different cities: Tel Aviv, Haifa and Jerusalem.',
           note:'Undergraduate project in the visual communication department in Shenkar College of Engineering, Design and Art.',
           series:[
@@ -90,63 +93,63 @@ const CATS = {
               key:'jerusalem', name:'Jerusalem', accent:'#e1233c',
               statement:'In Jerusalem, symbols are a reminder of the violence which holds this city together. The color red was used to emphasize this atmosphere.',
               symbols:[
-                {n:'YMCA', f:'sym-1-01'},
-                {n:'Mahane Yehuda', f:'sym-1-02'},
-                {n:'Museum of Natural History', f:'sym-1-03'},
-                {n:'Damascus Gate', f:'sym-1-04'},
-                {n:'Ussishkin Street', f:'sym-1-05'},
-                {n:'Jewish Quarter', f:'sym-2-01'},
-                {n:'Nachalat Shivaa', f:'sym-2-02'},
-                {n:'Kikar Hachatolot', f:'sym-2-03'},
-                {n:'Rechov Ussishkin', f:'sym-2-04'},
-                {n:'Moment Café', f:'sym-2-05'},
-                {n:'Agada', f:'sym-3-01'},
-                {n:'Machneyuda', f:'sym-3-02'},
-                {n:'Nachlaot', f:'sym-3-03'},
-                {n:'Keren Hayesod', f:'sym-3-04'},
-                {n:'Shtetl Bamidbar', f:'sym-3-05'}
+                {n:'Uganda', f:'jerusalem-uganda-01'},
+                {n:'Damascus Gate', f:'jerusalem-damascus-gate-02'},
+                {n:'Moment Café', f:'jerusalem-moment-cafe-03'},
+                {n:'Jaffa Gate', f:'jerusalem-jaffa-gate-04'},
+                {n:'Nachalat Shivaa', f:'jerusalem-nachalat-shivaa-05'},
+                {n:'Ussishkin Street', f:'jerusalem-ussishkin-street-06'},
+                {n:'Machneyuda', f:'jerusalem-machneyuda-07'},
+                {n:'Nachlaot', f:'jerusalem-nachlaot-08'},
+                {n:'Keren Hayesod', f:'jerusalem-keren-hayesod-09'},
+                {n:'Jaffa Road', f:'jerusalem-jaffa-road-10'},
+                {n:'Kikar Hachatolot', f:'jerusalem-kikar-hachatolot-11'},
+                {n:'Jewish Quarter', f:'jerusalem-jewish-quarter-12'},
+                {n:'YMCA', f:'jerusalem-ymca-13'},
+                {n:'Museum of Natural History', f:'jerusalem-museum-of-natural-history-14'},
+                {n:'Armon Hanatziv', f:'jerusalem-armon-hanatziv-15'}
               ]
             },
             {
               key:'tel-aviv', name:'Tel Aviv', accent:'#29a4e0',
               statement:'In Tel Aviv, symbols carry the city’s restless self-invention, secular, sunlit and always half-built.',
               symbols:[
-                {n:'Dizengoff', f:'sym-1-06'},
-                {n:'Bialik Street', f:'sym-1-07'},
-                {n:'New Central Station', f:'sym-1-08'},
-                {n:'Rothschild Boulevard', f:'sym-1-09'},
-                {n:'Hayarkon Park', f:'sym-1-10'},
-                {n:'Yafo', f:'sym-2-06'},
-                {n:'Kikar Rabin', f:'sym-2-07'},
-                {n:'Kerem HaTeimanim', f:'sym-2-08'},
-                {n:'Har Sinai', f:'sym-2-09'},
-                {n:'Salame', f:'sym-2-10'},
-                {n:'Montefiore', f:'sym-3-06'},
-                {n:'Neve Tzedek', f:'sym-3-07'},
-                {n:'Abu Kabir', f:'sym-3-08'},
-                {n:'Neue Jaffa', f:'sym-3-09'},
-                {n:'Gan Meir', f:'sym-3-10'}
+                {n:'Dubnov Garden', f:'tel-aviv-dubnov-garden-16'},
+                {n:'Yafo', f:'tel-aviv-yafo-17'},
+                {n:'Kikar Malchei Yisrael', f:'tel-aviv-kikar-malchei-yisrael-18'},
+                {n:'Har Sinai', f:'tel-aviv-har-sinai-19'},
+                {n:'Bialik Street', f:'tel-aviv-bialik-street-20'},
+                {n:'Gan Meir', f:'tel-aviv-gan-meir-21'},
+                {n:'New Central Station', f:'tel-aviv-new-central-station-22'},
+                {n:'Salame', f:'tel-aviv-salame-23'},
+                {n:'Hayarkon Park', f:'tel-aviv-hayarkon-park-24'},
+                {n:'The Tzadik of Allenby', f:'tel-aviv-the-tzadik-of-allenby-25'},
+                {n:'Neve Tzedek', f:'tel-aviv-neve-tzedek-26'},
+                {n:'Dizengoff', f:'tel-aviv-dizengoff-27'},
+                {n:'Neue Jaffa', f:'tel-aviv-neue-jaffa-28'},
+                {n:'Rothschild Boulevard', f:'tel-aviv-rothschild-boulevard-29'},
+                {n:'Abu Kabir', f:'tel-aviv-abu-kabir-30'}
               ]
             },
             {
               key:'haifa', name:'Haifa', accent:'#1fae70',
               statement:'In Haifa, symbols grow out of the mountain and the port, industrial, layered and green.',
               symbols:[
-                {n:'Haifa Port', f:'sym-1-11'},
-                {n:'Bat Galim', f:'sym-1-12'},
-                {n:'Herzl Street', f:'sym-1-13'},
-                {n:'Romema', f:'sym-1-14'},
-                {n:'Train Station', f:'sym-1-15'},
-                {n:'Haifa', f:'sym-2-11'},
-                {n:'Kababir', f:'sym-2-12'},
-                {n:'Beit Galim', f:'sym-2-13'},
-                {n:'Hadar Carmel', f:'sym-2-14'},
-                {n:'Merkaz', f:'sym-2-15'},
-                {n:'Wadi Nisnas', f:'sym-3-11'},
-                {n:'Stella Maris', f:'sym-3-12'},
-                {n:'Rechov HaNeviim', f:'sym-3-13'},
-                {n:'Masada', f:'sym-3-14'},
-                {n:'Shfech HaKishon', f:'sym-3-15'}
+                {n:'Hadar Carmel', f:'haifa-hadar-carmel-31'},
+                {n:'Bat Galim', f:'haifa-bat-galim-32'},
+                {n:'Carmel Beach Promenade', f:'haifa-carmel-beach-promenade-33'},
+                {n:'Ha\'Atzmaut Street', f:'haifa-haatzmaut-street-34'},
+                {n:'Wadi Nisnas', f:'haifa-wadi-nisnas-35'},
+                {n:'HaNevi\'im Street', f:'haifa-haneviim-street-36'},
+                {n:'Romema', f:'haifa-romema-37'},
+                {n:'Stella Maris', f:'haifa-stella-maris-38'},
+                {n:'Merkaz HaCarmel', f:'haifa-merkaz-hacarmel-39'},
+                {n:'Haifa Port', f:'haifa-haifa-port-40'},
+                {n:'City of Workers', f:'haifa-city-of-workers-41'},
+                {n:'Kishon Estuary', f:'haifa-kishon-estuary-42'},
+                {n:'Herzl Street', f:'haifa-herzl-street-43'},
+                {n:'Train Station', f:'haifa-train-station-44'},
+                {n:'Masada', f:'haifa-masada-45'}
               ]
             }
           ]
@@ -1927,7 +1930,8 @@ function renderCasePage(cat, item){
 
   if(cs && cs.series){
     casePage.innerHTML = `
-      <div class="case-top">
+      ${heroHTML(cs, altText(cat, item))}
+      <div class="case-top${cs.hero ? ' under-hero' : ''}">
         <h1 class="case-h1">${rich(item.t)}</h1>
         <div class="case-intro-cols">
           <p>${cs.intro}</p>
