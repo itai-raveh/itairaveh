@@ -675,6 +675,10 @@
     display:block; max-width:calc(100vw - 144px); max-height:calc(100vh - 56px);
     width:auto; height:auto; object-fit:contain; cursor:zoom-out;
   }
+  .lb-full-fig{margin:0; display:flex; flex-direction:column; align-items:center;}
+  .lb-full-fig.has-title .lb-full{max-height:calc(100vh - 56px - 34px);} /* room for the title */
+  .lb-full-title{margin-top:12px; font-size:12px; font-weight:500; line-height:1.4; color:#000; text-align:center; max-width:min(60ch, calc(100vw - 144px));}
+  .lb-full-fig:not(.has-title) .lb-full-title{display:none;}
 
   /* ---------- very wide screens ----------
      Pages stop widening at --page-max and sit centred, with white margins

@@ -1685,6 +1685,27 @@ function wireCardGalleries(cat){
    comment). "close" sits at the top of the text column; click-outside
    or Escape also dismiss it.
 --------------------------------------------------------- */
+/* one frame for a whole gallery (shapes = [{r: width/height, nat: width
+   in px}]), so stepping through images of different shapes doesn't make
+   the lightbox (and the text beside it) jump; each image is centred inside
+   it and a small one enlarged to fill it (at most 2×). The frame follows the
+   landscape and square images; a tall one is shrunk to fit inside it. */
+function fitLightboxFrame(media, shapes){
+  const vw = window.innerWidth, vh = window.innerHeight;
+  if(vw < 700){ media.classList.remove('boxed'); media.style.width = media.style.height = ''; return; }
+  const maxW = Math.min(vw * .74, vw * .95 - 280 - 32), maxH = vh * .94;
+  const wide = shapes.filter(x=> x.r >= 1);
+  let W = 0, H = 0;
+  (wide.length ? wide : shapes).forEach(({r, nat})=>{
+    let w = Math.min(maxW, maxH * r);
+    if(nat) w = Math.min(w, nat * 2);
+    W = Math.max(W, w); H = Math.max(H, w / r);
+  });
+  media.classList.add('boxed');
+  media.style.width = Math.round(W) + 'px';
+  media.style.height = Math.round(H) + 'px';
+}
+
 function openProjectLightbox(cat, item, startIdx){
   const images = item.images && item.images.length ? item.images : [{img:item.img, video:item.video, c:item.c, g:item.g}];
   let idx = (startIdx > 0 && startIdx < images.length) ? startIdx : 0;
@@ -1697,6 +1718,7 @@ function openProjectLightbox(cat, item, startIdx){
   // text doesn't change between images in the same gallery, so it isn't
   // touched, and nothing about the panel gets thrown away and rebuilt
   // just to change frames the way it used to
+  delete lightbox.dataset.symbols;
   lightbox.innerHTML = `
     <div class="lb-panel">
       <div class="lb-project-media${images.length > 1 ? ' has-multi' : ''}">
@@ -1725,27 +1747,10 @@ function openProjectLightbox(cat, item, startIdx){
   // jump; each image is centred inside it, and a small one is enlarged to
   // fill it (at most 2×)
   const media = lightbox.querySelector('.lb-project-media');
-  const fitFrame = ()=>{
-    const vw = window.innerWidth, vh = window.innerHeight;
-    if(vw < 700){ media.classList.remove('boxed'); media.style.width = media.style.height = ''; return; }
-    const maxW = Math.min(vw * .74, vw * .95 - 280 - 32), maxH = vh * .94;
-    // the frame follows the gallery's landscape and square images; a tall
-    // image is shrunk to fit inside it rather than making it taller
-    const shapes = images.map(im=>{
-      const s = im.img && IMG_SIZES[im.img];
-      return {r: im.video ? (item.cardRatio || 1.5) : s ? s[0] / s[1] : 1, nat: s && s[0]};
-    });
-    const wide = shapes.filter(x=> x.r >= 1);
-    let W = 0, H = 0;
-    (wide.length ? wide : shapes).forEach(({r, nat})=>{
-      let w = Math.min(maxW, maxH * r);
-      if(nat) w = Math.min(w, nat * 2);
-      W = Math.max(W, w); H = Math.max(H, w / r);
-    });
-    media.classList.add('boxed');
-    media.style.width = Math.round(W) + 'px';
-    media.style.height = Math.round(H) + 'px';
-  };
+  const fitFrame = ()=> fitLightboxFrame(media, images.map(im=>{
+    const s = im.img && IMG_SIZES[im.img];
+    return {r: im.video ? (item.cardRatio || 1.5) : s ? s[0] / s[1] : 1, nat: s && s[0]};
+  }));
   fitFrame();
   lightbox._fit = fitFrame;
   // same load-gating as the grid thumb's crossfade (see wireCardGalleries):
@@ -1931,11 +1936,11 @@ function renderCasePage(cat, item){
   if(cs && cs.series){
     casePage.innerHTML = `
       ${heroHTML(cs, altText(cat, item))}
-      <div class="case-top${cs.hero ? ' under-hero' : ''}">
-        <h1 class="case-h1">${rich(item.t)}</h1>
-        <div class="case-intro-cols">
-          <p>${cs.intro}</p>
-          ${cs.note ? `<p class="case-note">${cs.note}</p>` : ''}
+      <div class="case-intro">
+        <h1>${rich(item.t)}</h1>
+        <div class="case-intro-text">
+          ${[].concat(cs.intro || []).map(p=>`<p>${rich(p)}</p>`).join('')}
+          ${cs.note ? `<p class="case-note">${rich(cs.note)}</p>` : ''}
         </div>
       </div>
       ${cs.series.map(s=>`
@@ -2052,20 +2057,35 @@ document.addEventListener('click', e=>{
   if(b) openVideoLightbox(b.dataset.vimeo, b.dataset.ratio);
 });
 
-/* full-screen view of a project page's images: image only, arrows/keys
-   step through the page's images, a click anywhere or Escape closes.
-   Not in the URL — it's a zoom, the page itself stays the link. */
-function openImageLightbox(srcs, start){
-  let idx = start;
-  const multi = srcs.length > 1;
-  lightbox.innerHTML = `
+/* full-screen view of a project page's images: the image, its title under
+   it where it has one (a caption, a symbol's name), arrows/keys step through
+   them, a click anywhere or Escape closes. The project pages and City
+   Symbol both use it. Not in the URL (except a symbol, which has its own). */
+function fullImageShell(multi){
+  return `
     ${multi ? `
       <button class="lb-nav prev" aria-label="Previous image">‹</button>
       <button class="lb-nav next" aria-label="Next image">›</button>` : ''}
-    <img class="lb-full" alt="">
-  `;
-  const img = lightbox.querySelector('.lb-full');
-  const step = n => { idx = (n + srcs.length) % srcs.length; img.src = srcs[idx]; };
+    <figure class="lb-full-fig">
+      <img class="lb-full" alt="">
+      <figcaption class="lb-full-title"></figcaption>
+    </figure>`;
+}
+function showFullImage(src, title, alt){
+  const img = lightbox.querySelector('.lb-full'), cap = lightbox.querySelector('.lb-full-title');
+  img.src = src; img.alt = alt || title || '';
+  cap.textContent = title || '';
+  lightbox.querySelector('.lb-full-fig').classList.toggle('has-title', !!title);
+}
+
+// items: [{src, title?}] (plain src strings work too)
+function openImageLightbox(items, start){
+  items = items.map(it=> typeof it === 'string' ? {src: it} : it);
+  let idx = start;
+  const multi = items.length > 1;
+  delete lightbox.dataset.symbols;
+  lightbox.innerHTML = fullImageShell(multi);
+  const step = n => { idx = (n + items.length) % items.length; showFullImage(items[idx].src, items[idx].title); };
   step(idx);
   if(multi){
     lightbox.querySelector('.prev').onclick = e=>{ e.stopPropagation(); step(idx - 1); };
@@ -2100,28 +2120,21 @@ function openLightbox(cat, item, sym){
   const idx = all.findIndex(s=> slugify(s.n) === slugify(sym.n));
   const prev = all[(idx-1+all.length)%all.length];
   const next = all[(idx+1)%all.length];
-
-  lightbox.innerHTML = `
-    <button class="lb-close" aria-label="Close">${UI_TEXT.close}</button>
-    <button class="lb-nav prev" aria-label="Previous">‹</button>
-    <button class="lb-nav next" aria-label="Next">›</button>
-    <figure class="lb-figure">
-      <img src="${symUrl(cat, item.slug, sym.f)}" alt="${sym.n}, ${flatTitle(item.t)} by ${SITE.name}">
-      <figcaption>
-        <strong>${sym.n}</strong>
-        <span style="color:${sym.series.accent}">${sym.series.name}</span>
-      </figcaption>
-    </figure>
-  `;
+  const base = cat + '/' + item.slug + '/';
+  // the same full-screen view as a project page's images, the symbol's name
+  // under it; stepping to another symbol keeps the view open
+  if(!(lightbox.classList.contains('show') && lightbox.dataset.symbols === item.slug)){
+    lightbox.innerHTML = fullImageShell(true);
+    lightbox.dataset.symbols = item.slug;
+  }
+  showFullImage(symUrl(cat, item.slug, sym.f), sym.n, `${sym.n}, ${flatTitle(item.t)} by ${SITE.name}`);
   lightbox.classList.add('show');
   document.body.style.overflow = 'hidden';
 
-  const base = cat + '/' + item.slug + '/';
-  lightbox.querySelector('.lb-close').onclick = ()=> go(base);
-  lightbox.querySelector('.prev').onclick = ()=> go(base + slugify(prev.n) + '/');
-  lightbox.querySelector('.next').onclick = ()=> go(base + slugify(next.n) + '/');
-  lightbox.onclick = (e)=>{ if(e.target === lightbox) go(base); };
-
+  // each symbol keeps its own address, so stepping goes through the router
+  lightbox.querySelector('.prev').onclick = e=>{ e.stopPropagation(); go(base + slugify(prev.n) + '/'); };
+  lightbox.querySelector('.next').onclick = e=>{ e.stopPropagation(); go(base + slugify(next.n) + '/'); };
+  lightbox.onclick = ()=> go(base);
   setLightboxKeys(e=>{
     if(e.key === 'Escape') go(base);
     if(e.key === 'ArrowLeft') go(base + slugify(prev.n) + '/');
@@ -2142,6 +2155,7 @@ window.addEventListener('resize', ()=>{ if(lightbox.classList.contains('show') &
 
 function closeLightbox(){
   lightbox._fit = null;
+  delete lightbox.dataset.symbols;
   lightbox.classList.remove('show');
   setLightboxKeys(null);
   document.body.style.overflow = '';
