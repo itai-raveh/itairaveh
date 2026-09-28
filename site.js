@@ -311,6 +311,7 @@ const CATS = {
     heroFit:'area',
     // two columns, images whole inside their card, wider gaps, no heading — from the Brands layout
     tracks:2, defaultSpan:1, heading:false, gaps:[20, 44],
+    readMore:true, // each card gets a link to its project page
     // homepage hover images, in HERO_FILL order (see HERO_LAYOUTS)
     hero: [
       'images/homepage/brand/brand-16.webp',
@@ -440,10 +441,10 @@ const CATS = {
               ['4.webp', 204, 407, 403], ['5.webp', 799, 504, 461],
             ]),
             {type:'statement'},
-            // the scholars: 9 (waving, with books) top left, as in the PDF, and
-            // blue room under the lowest figures
-            collage('images/brand/moshal', '#323e81', [1762, 1400], [
-              ['9.webp', -60, 10, 640], ['7.webp', 1158, 55, 653], ['8.webp', 455, 336, 653], ['6.webp', 16, 560, 483], ['10.webp', 953, 650, 653],
+            // the scholars: 9 (waving, with books) top left, as in the PDF, with
+            // blue room above the highest figures and under the lowest
+            collage('images/brand/moshal', '#323e81', [1762, 1520], [
+              ['9.webp', -60, 130, 640], ['7.webp', 1158, 175, 653], ['8.webp', 455, 456, 653], ['6.webp', 16, 680, 483], ['10.webp', 953, 770, 653],
             ]),
             {type:'statement'},
             {type:'band', bg:'#313e87', sections:[
@@ -1332,10 +1333,14 @@ function vimeoLoopHTML(id, ratio){
 
 // title, then the description under it — the same on every grid
 function captionHTML(cat, item, target){
+  // Brands: a link to the project's page under the description
+  const more = CATS[cat].readMore && item.caseStudy && !FRAMED
+    ? `<a class="card-more" href="${cat}/${item.slug}/">${UI_TEXT.readMore}</a>` : '';
   return `
       <div class="card-caption">
         <div class="card-title">${target ? `<a ${target}>${titleHTML(item.cardT || item.t)}</a>` : titleHTML(item.cardT || item.t)}</div>
         ${item.d ? `<p class="card-desc">${rich(item.d)}</p>` : ''}
+        ${more}
       </div>`;
 }
 
