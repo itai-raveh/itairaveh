@@ -89,7 +89,7 @@ browser tab title: Itai Raveh | איתי רווה — Illustrator and designer
 site description: Itai Raveh is an illustrator and graphic designer based in Tel Aviv, creating illustration projects, brand illustration languages, science communication and art direction for animation.
 hebrew name: איתי רווה
 hebrew description: איתי רווה, מאייר ומעצב גרפי מתל אביב: איור, שפות איור למותגים, איור ותקשורת מדע, ובימוי אמנותי לאנימציה.
-site address: https://itai-raveh.github.io/itairaveh/
+site address: https://itairaveh.com/
 share image: images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.webp
 projects heading: Projects
 editorial heading: Editorial and publications
