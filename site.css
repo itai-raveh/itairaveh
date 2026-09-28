@@ -78,6 +78,9 @@
   }
   @media (max-width:600px){
     .nav{padding:47px 29px 0 28px;}
+    /* left-aligned, the headline fits between the nav's 28px margins
+       (a touch smaller than the 375 frame's centred 7.707vw) */
+    .hero .lead{font-size:6.8vw;}
   }
 
   /* ---------- HERO ---------- */
@@ -109,7 +112,7 @@
      nowrap stops anything else from breaking. */
   .lead{
     position:relative; z-index:2;
-    font-weight:400; font-size:var(--fs-display); line-height:var(--lh-display);
+    font-weight:400; font-size:var(--fs-display); line-height:1.36; /* a touch more than the statements' --lh-display */
     white-space:nowrap; margin:0;
   }
   .lead br.s{display:none;}
@@ -128,29 +131,34 @@
      either side (negative where the PNG's own transparent padding already
      makes the gap) — all measured off desktop.svg, in em */
   .lead .cat-icon{display:inline-block; object-fit:contain;}
-  .lead .cat[data-cat="illustration"] .cat-icon{width:1.557em; height:1.571em; vertical-align:-.392em; margin:0 .086em 0 -.113em;}
-  .lead .cat[data-cat="brand"] .cat-icon{width:1.486em; height:1.486em; vertical-align:-.492em; margin:0 -.09em 0 -.036em;}
-  .lead .cat[data-cat="science"] .cat-icon{width:1.257em; height:1.257em; vertical-align:-.221em; margin:0 -.088em 0 -.32em;}
-  .lead .cat[data-cat="animation"] .cat-icon{width:1.486em; height:1.486em; vertical-align:-.42em; margin:0 -.27em 0 .145em;}
+  .lead .cat[data-cat="illustration"] .cat-icon{width:1.557em; height:1.571em; --h:1.571em; --drop:0.392em; margin:0 .086em 0 -.113em;}
+  .lead .cat[data-cat="brand"] .cat-icon{width:1.486em; height:1.486em; --h:1.486em; --drop:0.492em; margin:0 -.09em 0 -.036em;}
+  .lead .cat[data-cat="science"] .cat-icon{width:1.257em; height:1.257em; --h:1.257em; --drop:0.221em; margin:0 -.088em 0 -.32em;}
+  .lead .cat[data-cat="animation"] .cat-icon{width:1.486em; height:1.486em; --h:1.486em; --drop:0.42em; margin:0 -.27em 0 .145em;}
 
   @media (max-width:1024px){
-    .lead{text-align:center;}
+    /* left-aligned like desktop (the block itself stays centred on the page) */
     .lead br.s{display:inline;}
     .lead br.d{display:none;}
-    .lead .cat .cat-icon{width:1.364em; height:1.364em; vertical-align:-.32em; margin:0;}
-    .lead .cat[data-cat="illustration"] .cat-icon{width:1.686em; height:1.709em;}
-    .lead .cat[data-cat="science"] .cat-icon{width:1.345em; height:1.345em;}
+    .lead .cat .cat-icon{width:1.364em; height:1.364em; --h:1.364em; --drop:0.32em; margin:0;}
+    .lead .cat[data-cat="illustration"] .cat-icon{width:1.686em; height:1.709em; --h:1.709em;}
+    .lead .cat[data-cat="science"] .cat-icon{width:1.345em; height:1.345em; --h:1.345em;}
   }
   @media (max-width:600px){
-    .lead .cat .cat-icon{width:1.425em; height:1.425em;}
-    .lead .cat[data-cat="illustration"] .cat-icon{width:1.5em; height:1.537em;}
-    .lead .cat[data-cat="science"] .cat-icon{width:1.237em; height:1.237em;}
-    .lead .cat[data-cat="animation"] .cat-icon{width:1.5em; height:1.5em;}
+    .lead .cat .cat-icon{width:1.425em; height:1.425em; --h:1.425em;}
+    .lead .cat[data-cat="illustration"] .cat-icon{width:1.5em; height:1.537em; --h:1.537em;}
+    .lead .cat[data-cat="science"] .cat-icon{width:1.237em; height:1.237em; --h:1.237em;}
+    .lead .cat[data-cat="animation"] .cat-icon{width:1.5em; height:1.5em; --h:1.5em;}
   }
 
   /* looping icon motion: bird turns around, head nods, water tower
      breathes in and out with a pause at each end, plane does a quick
      wobble every few seconds */
+  /* the icons don't change a line's height: each sits on the baseline taking
+     no height (its top margin cancels its own height, --h), then is dropped
+     into its drawn place (--drop) with a shift that doesn't affect layout —
+     so every line of the headline is the same height */
+  .lead .cat .cat-icon{vertical-align:baseline !important; margin-top:calc(-1 * var(--h)) !important; position:relative; top:var(--drop, 0);}
   .lead .cat[data-cat="illustration"] .cat-icon{animation:icon-flip 4s infinite;}
   .lead .cat[data-cat="brand"] .cat-icon{transform-origin:50% 85%; animation:icon-nod 3.2s ease-in-out infinite;}
   .lead .cat[data-cat="science"] .cat-icon{transform-origin:50% 100%; animation:icon-breathe 4.4s ease-in-out infinite;}
