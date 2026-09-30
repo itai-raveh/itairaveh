@@ -1165,8 +1165,26 @@ if(location.hash.startsWith('#/')){
 function route(nav){
   showRoute();
   setPageMeta();
-  if(nav) fadeSection(); else lastTopLevel = parseLocation().cat;
+  if(nav){ fadeSection(); countView(); } else lastTopLevel = parseLocation().cat;
 }
+
+/* visits: GoatCounter (no cookies, so no consent banner). Its script counts
+   the first page by itself; the site then changes pages without reloading,
+   so each later address (a project page, a preview, a symbol) is counted
+   here. It ignores localhost, so testing doesn't count. */
+let lastCounted = location.pathname + location.search;
+function countView(){
+  const p = location.pathname + location.search;
+  if(p === lastCounted || !(window.goatcounter && window.goatcounter.count)) return;
+  lastCounted = p;
+  window.goatcounter.count({path:p, title:document.title});
+}
+// clicks out (Instagram, LinkedIn, email, other sites) are counted as events
+document.addEventListener('click', e=>{
+  const a = e.target.closest('a[href^="http"], a[href^="mailto:"]');
+  if(!a || a.host === location.host || !(window.goatcounter && window.goatcounter.count)) return;
+  window.goatcounter.count({path: a.protocol === 'mailto:' ? 'email' : 'out: ' + a.hostname.replace(/^www\./, ''), title:a.textContent.trim(), event:true});
+});
 
 function showRoute(){
   const {cat, slug, sub, preview, previewImg} = parseLocation();
