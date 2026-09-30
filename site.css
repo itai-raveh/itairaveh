@@ -692,3 +692,15 @@
   body:not(.at-home) .nav{padding-left:max(28px, calc((100vw - var(--page-max)) / 2 + 28px)); padding-right:max(28px, calc((100vw - var(--page-max)) / 2 + 28px));}
 
   .case-media-grid.bleed{max-width:none;}
+
+  /* ---------- cursor ----------
+     the magnifier over an image that opens larger: a project page's
+     images, the symbols, and the images in both lightboxes (the grids'
+     cards keep the plain pointer: they open a preview, not the image).
+     Drawn at 48px (retina copy in assets/); 28 18 is the pointing spot,
+     the lens centre. Plain browsers fall back to the 1x file. */
+  .case-media-grid img, .sym, .sym *, .lb-project-media img, .lb-full{
+    cursor:url('assets/cursor-zoom@1x.png') 28 18, zoom-in;
+    cursor:-webkit-image-set(url('assets/cursor-zoom@1x.png') 1x, url('assets/cursor-zoom@2x.png') 2x) 28 18, zoom-in;
+    cursor:image-set(url('assets/cursor-zoom@1x.png') 1x, url('assets/cursor-zoom@2x.png') 2x) 28 18, zoom-in;
+  }

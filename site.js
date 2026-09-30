@@ -86,6 +86,19 @@ const CATS = {
         d:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.',
         caseStudy:{
           hero:'images/illustration-projects/city-symbol/header.webp',
+          // after the three cities: the process (layout from the process PNG)
+          sections:[
+            {type:'statement'},
+            {type:'media', cols:1, span:7, items:[{img:'images/illustration-projects/city-symbol/process/process-wall.webp'}]},
+            // Haifa and YMCA at one shared height, so their symbols read at
+            // the same scale (Haifa as wide as the wall, YMCA narrower, centred)
+            {type:'media', cols:1, span:7, top:36, items:[{img:'images/illustration-projects/city-symbol/process/process-haifa.webp'}]},
+            {type:'media', cols:1, span:4.08, top:36, items:[{img:'images/illustration-projects/city-symbol/process/process-ymca.webp'}]},
+            {type:'media', cols:3, span:7, top:36, items:[1,2,3].map(n=>({img:`images/illustration-projects/city-symbol/process/process-sketch-${n}.webp`}))},
+            {type:'media', cols:1, span:3, center:true, top:36, items:[{img:'images/illustration-projects/city-symbol/process/process-gevald.webp'}]},
+            {type:'statement'},
+            {type:'media', cols:1, span:5, center:true, items:[{id:'booklet', video:'images/illustration-projects/city-symbol/process/video/booklet', ratio:1200/676}]},
+          ],
           intro:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape. The project contains 3 series containing 15 symbols for three different cities: Tel Aviv, Haifa and Jerusalem.',
           note:'Undergraduate project in the visual communication department in Shenkar College of Engineering, Design and Art.',
           series:[
@@ -243,22 +256,24 @@ const CATS = {
         ],
         d:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
         // the card and its preview use the gallery; the page shows the full set
-        caseStudy:{intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
-          sections:[{type:'media', items:[
-          {img:'images/illustration-editorial/sex/sex-cover.webp'},
-          {img:'images/illustration-editorial/sex/sex-2.webp'},
-          {img:'images/illustration-editorial/sex/sex-3.webp'},
-          {img:'images/illustration-editorial/sex/sex-4.webp'},
-          {img:'images/illustration-editorial/sex/sex-5.webp'},
-          {img:'images/illustration-editorial/sex/sex-6.webp'},
-          {img:'images/illustration-editorial/sex/sex-7.webp'},
-          {img:'images/illustration-editorial/sex/sex-8.webp'},
-          {img:'images/illustration-editorial/sex/sex-9.webp'},
-          {img:'images/illustration-editorial/sex/sex-10.webp'},
-          {img:'images/illustration-editorial/sex/sex-11.webp'},
-          {img:'images/illustration-editorial/sex/sex-12.webp'},
-          {img:'images/illustration-editorial/sex/sex-13.webp'}
-          ]}]}},
+        // laid out after the Sexual instruction book layout: the standing figure
+        // on a pink band, six captioned spreads in a rigid grid (every cell the
+        // same 4:3 box, the drawing fitted inside), two single images between
+        // the statements, the pregnancy four, and the puzzle couple on pink.
+        // hero.webp / footer.webp are transparent, so the band's pink is exact.
+        caseStudy:{
+          hero: collage('images/illustration-editorial/sex', '#ffb6b6', [1762, 717], [['hero.webp', 356.7, 0, 1048.6]]),
+          intro:'Illustrations for "Love In The 21st Century", a sexual education book by sexologist Dr. Daniel Drai.',
+          sections:[
+            {type:'media', ratio:4/3, items:[2,3,4,5,6,7].map(n=>({img:`images/illustration-editorial/sex/sex-${n}.webp`}))},
+            {type:'media', cols:1, span:3, center:true, top:60, items:[{img:'images/illustration-editorial/sex/sex-cover.webp'}]},
+            {type:'statement'},
+            {type:'media', cols:1, span:3, center:true, items:[{img:'images/illustration-editorial/sex/sex-8.webp'}]},
+            {type:'statement'},
+            {type:'media', span:8, items:[9,10,11,12].map(n=>({img:`images/illustration-editorial/sex/sex-${n}.webp`}))},
+            collage('images/illustration-editorial/sex', '#ff999a', [1762, 900], [['footer.webp', 228.5, 62.5, 1305]]),
+          ]
+        }},
       {t:'The Estonian Sting | Calcalist', type:'simple', c:'#efefef', g:'', span:4, col:7,
         img:'images/illustration-editorial/calcalist-the-estonian-sting/calcalist-the-estonian-sting-cover.webp'},
       // image not in its folder yet
@@ -412,7 +427,7 @@ const CATS = {
         img:'images/brand/kaltura/gallery/1.webp', cardRatio:1.5, fit:'contain',
         images:[{img:'images/brand/kaltura/gallery/1.webp'}, {img:'images/brand/kaltura/gallery/2.webp'}, {img:'images/brand/kaltura/gallery/3.webp'}, {img:'images/brand/kaltura/gallery/4.webp'}, {img:'images/brand/kaltura/gallery/5.webp'}, {img:'images/brand/kaltura/gallery/6.webp'}, {img:'images/brand/kaltura/gallery/7.webp'}],
         caseStudy:{
-          hero:'images/brand/kaltura/header.webp', heroRatio:1.654, noIntro:true,
+          hero:'images/brand/kaltura/header.webp', heroRatio:1.654,
           sections:[
             {type:'statement'},
             {type:'media', span:8, items:[1,2,3,4,5,6].map(n=>({img:`images/brand/kaltura/${n}.webp`}))},
@@ -1956,7 +1971,11 @@ function renderCasePage(cat, item){
           </div>
         </section>
       `).join('')}
+      ${cs.sections ? sectionsHTML(cs.sections, altText(cat, item)) : ''}
     `;
+    // the process images open full-screen like any project page's
+    const procImgs = [...casePage.querySelectorAll('.case-media-grid img')];
+    procImgs.forEach((img, i)=> img.addEventListener('click', ()=> openImageLightbox(procImgs.map(im=> im.src), i)));
   } else {
     const gallery = (item.images && item.images.length) ? item.images : (item.img ? [{img:item.img}] : []);
     const sections = (cs && cs.sections) || (gallery.length ? [{type:'media', items:gallery}] : []);

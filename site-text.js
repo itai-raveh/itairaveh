@@ -176,6 +176,12 @@ haifa-herzl-street-43: Herzl Street
 haifa-train-station-44: Train Station
 haifa-masada-45: Masada
 
+// the process section at the end of the page
+statement 1: The process
+caption process-wall.webp: Sketches of the entirety of symbols hanged on the studio's wall
+caption process-sketch-1.webp: Different sketches
+statement 2: A research booklet accompanied the project and was used as a reference to the visual and conceptual world from which the symbols were created.
+
 ## weizmann-institute-2026-calendar
 title: Weizmann Institute 2026 calendar
 columns: 2
@@ -315,11 +321,19 @@ columns: 3
 start column: 1
 
 ## sex
-title: Sex education book
+title: Sexual instruction book
 columns: 3
 start column: 4
 description: Illustrations for *Love In The 21st Century*, a sexual education book by sexologist Dr. Daniel Drai.
 intro: Illustrations for *Love In The 21st Century*, a sexual education book by sexologist Dr. Daniel Drai.
+caption sex-2.webp: Understanding women's sexuality
+caption sex-3.webp: Gender roles and growing up
+caption sex-4.webp: Differences emerging upon entering the teenage years
+caption sex-5.webp: The man child
+caption sex-6.webp: A lover's fight
+caption sex-7.webp: Figuring it out
+statement 1: The illustrations are done with a pen brush, conveying a human and accessible touch to a very human, yet potentially embarrassing, subject
+statement 2: Every aspect of human sexuality is considered in the book, including less talked-about subjects such as sexuality during pregnancy
 
 ## archimedes-and-the-crown-einayim-magazine
 title: Archimedes and the crown | *Einayim Magazine*
@@ -442,8 +456,10 @@ caption 6.webp: Close up to the inner world of the teacher
 statement 1: The illustration language enables the student to encounter the already mythological brand in a new and fresh perspective
 
 ## kaltura
-title: Kaltura
+title: Kaltura illustration system
+card title: Kaltura
 description: Illustration system of 100+ elements for *Kaltura*, a global leader in enterprise video technology, built as a modular framework
+intro: A complete illustration system for *Kaltura*. The primary objective was to create a modular system that could be seamlessly applied to a wide range of illustrative products, including icons, marketing materials, advertising campaigns, and various other brand-related applications.
 statement 1: The illustration system is composed of 100+ illustrations, created around a unified logic and separated into different scenes.
 statement 2: Addressing different color palettes and utilizing a distinctive character styling, the illustration system provides a seamless representation of *Kaltura*’s brand values.
 statement 3: The graphic logic is based on a composition of shapes derived from the *Kaltura* logo, which have been rearranged to create an entire world
