@@ -110,6 +110,7 @@ def site_data():
     if MARK not in js: sys.exit('site.js: end-of-data marker missing')
     prog = ('var window = {}; var __el = {querySelector:function(){return null;}}; var document = {title:"", querySelector:function(){return __el;},'
             ' querySelectorAll:function(){return [__el, __el];}};\n'
+            + read('images/sizes.js') + '\n'  # galleries list their folder from it
             + read('site-text.js') + '\n' + js[:js.index(MARK)] + '\n' + DUMP)
     with tempfile.NamedTemporaryFile('w', suffix='.js', delete=False, encoding='utf-8') as f:
         f.write(prog); tmp = f.name

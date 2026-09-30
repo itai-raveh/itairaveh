@@ -29,12 +29,16 @@ function encodeImgPath(path){
   return path.split('/').map(encodeURIComponent).join('/');
 }
 
-/* builds a {cover, then -2, -3, ...} gallery array for a project folder
-   that follows the {slug}-cover.ext / {slug}-N.ext naming convention */
-function galleryRange(dir, slug, ext, count){
-  const arr = [{img:`${dir}/${slug}-cover.${ext}`}];
-  for(let i = 2; i <= count; i++) arr.push({img:`${dir}/${slug}-${i}.${ext}`});
-  return arr;
+/* a project's gallery: every image in its folder (not its subfolders),
+   whatever the names or how many — any with "cover" in the name first,
+   the rest in number order (2 before 10). The list comes from
+   images/sizes.js, which tools/optimize_images.py writes, so added,
+   removed or renamed files show up once that has run. */
+function galleryRange(dir){
+  const all = Object.keys(window.IMG_SIZES || {}).filter(p=> p.startsWith(dir + '/') && !p.slice(dir.length + 1).includes('/'));
+  const byName = (a, b)=> a.localeCompare(b, undefined, {numeric:true});
+  const isCover = p=> /cover/i.test(p.split('/').pop());
+  return [...all.filter(isCover).sort(byName), ...all.filter(p=> !isCover(p)).sort(byName)].map(img=> ({img}));
 }
 
 /* cut-out figures on a coloured band: size is the band in the reference
@@ -82,7 +86,7 @@ const CATS = {
       {t:'City Symbol: Street level Coat Of Arms', type:'case', span:3, col:4, mobilePriority:0.5,
         slug:'city-symbol',
         img:'images/illustration-projects/city-symbol/gallery/city-symbol-cover.webp',
-        images: galleryRange('images/illustration-projects/city-symbol/gallery', 'city-symbol', 'webp', 6),
+        images: galleryRange('images/illustration-projects/city-symbol/gallery'),
         d:'A series of 45 symbols, portraying the various mythologies embedded in the urban landscape.',
         caseStudy:{
           hero:'images/illustration-projects/city-symbol/header.webp',
@@ -90,10 +94,11 @@ const CATS = {
           sections:[
             {type:'statement'},
             {type:'media', cols:1, span:7, items:[{img:'images/illustration-projects/city-symbol/process/process-wall.webp'}]},
-            // Haifa and YMCA at one shared height, so their symbols read at
-            // the same scale (Haifa as wide as the wall, YMCA narrower, centred)
+            // Haifa and YMCA on one canvas (1850x484): the YMCA file is its four
+            // images rescaled to Haifa's symbol size and centred under Haifa's
+            // four columns (original in originals/city-symbol-process-2026-09-30)
             {type:'media', cols:1, span:7, top:36, items:[{img:'images/illustration-projects/city-symbol/process/process-haifa.webp'}]},
-            {type:'media', cols:1, span:4.08, top:36, items:[{img:'images/illustration-projects/city-symbol/process/process-ymca.webp'}]},
+            {type:'media', cols:1, span:7, top:36, items:[{img:'images/illustration-projects/city-symbol/process/process-ymca.webp'}]},
             {type:'media', cols:3, span:7, top:36, items:[1,2,3].map(n=>({img:`images/illustration-projects/city-symbol/process/process-sketch-${n}.webp`}))},
             {type:'media', cols:1, span:3, center:true, top:36, items:[{img:'images/illustration-projects/city-symbol/process/process-gevald.webp'}]},
             {type:'statement'},
@@ -175,7 +180,7 @@ const CATS = {
         img:'images/illustration-projects/the-calling/the-calling-cover.webp'},
       {t:'Herzl | Eretz Israel Museum', type:'simple', c:'#f2d9ad', g:'🎩', span:3, col:2,
         img:'images/illustration-projects/herzl-eretz-israel-museum/herzl-eretz-israel-museum-cover.webp',
-        images: galleryRange('images/illustration-projects/herzl-eretz-israel-museum', 'herzl-eretz-israel-museum', 'webp', 16),
+        images: galleryRange('images/illustration-projects/herzl-eretz-israel-museum'),
         d:'Part of an exhibition, a series of illustrations following the journey of a postcard from Palestine to Austria.'},
       {t:'In the garden', type:'simple', c:'#d6ff3d', g:'🫚', col:5,
         img:'images/illustration-projects/in-the-garden/in-the-garden-cover.webp'},
@@ -198,7 +203,7 @@ const CATS = {
         d:'Justice'},
       {t:'Memento Mori', type:'simple', c:'#1a1a1a', g:'💀', span:4, col:5,
         img:'images/illustration-projects/memento-mori/memento-mori-cover.webp',
-        images: galleryRange('images/illustration-projects/memento-mori', 'memento-mori', 'webp', 6),
+        images: galleryRange('images/illustration-projects/memento-mori'),
         d:'While the world is in turmoil, the random death of some leaders in history serves as a kind reminder on the strange moves of history.'},
       {t:'Poriah', type:'simple', c:'#1e5f6e', g:'🌊', span:3, col:2,
         img:'images/illustration-projects/poriah/poriah-cover.webp'},
@@ -223,10 +228,10 @@ const CATS = {
         img:'images/illustration-projects/runs-in-the-family/runs-in-the-family-cover.gif'},
       {t:'Jerusalem snow', type:'simple', c:'#eef2f5', g:'❄️', span:3, col:6,
         img:'images/illustration-projects/jerusalem-snow/jerusalem-snow-cover.webp',
-        images: galleryRange('images/illustration-projects/jerusalem-snow', 'jerusalem-snow', 'webp', 8)},
+        images: galleryRange('images/illustration-projects/jerusalem-snow')},
       {t:'Valentine | Kuli Alma Club', type:'simple', c:'#e2436b', g:'💌', col:0,
         img:'images/illustration-projects/kuli-alma-club-valentine/kuli-alma-club-valentine-cover.webp',
-        images: galleryRange('images/illustration-projects/kuli-alma-club-valentine', 'kuli-alma-club-valentine', 'webp', 2)},
+        images: galleryRange('images/illustration-projects/kuli-alma-club-valentine')},
       {t:'Summer garden', type:'simple', c:'#2f7a3d', g:'', slug:'summer-garden',
         img:'images/illustration-projects/summer-garden/summer-garden-cover.webp'},
     ],
@@ -239,7 +244,7 @@ const CATS = {
         img:'images/illustration-editorial/calcalist-our-digital-mirror/calcalist-our-digital-mirror-cover.webp'},
       {t:'Nordic Myths | Adam Tsair Magazine', type:'simple', c:'#3a4a6b', g:'🐺', span:4, col:7, cardRatio:1, crop:true, // square, cropped
         img:'images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp',
-        images: galleryRange('images/illustration-editorial/adam-tsair-magazine-nordic-myths', 'adam-tsair-magazine-nordic-myths', 'webp', 7)},
+        images: galleryRange('images/illustration-editorial/adam-tsair-magazine-nordic-myths')},
       {t:'Work in post COVID times | Globes', type:'simple', c:'#565656', g:'', span:2, col:5,
         img:'images/illustration-editorial/globes-work-in-post-covid-times/globes-work-in-post-covid-times-cover.webp'},
       {t:'Sex education book', type:'case', slug:'sex', c:'#8a2e5a', g:'📕', span:4, col:3,
@@ -281,13 +286,13 @@ const CATS = {
         img:'images/illustration-editorial/calcalist-remote-therapy/calcalist-remote-therapy-cover.webp'},
       {t:'The Beach | Adam Tsair Magazine', type:'simple', c:'#e8d9b0', g:'🏖️', span:4, col:3,
         img:'images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.webp',
-        images: galleryRange('images/illustration-editorial/adam-tsair-magazine-the-beach', 'adam-tsair-magazine-the-beach', 'webp', 11)},
+        images: galleryRange('images/illustration-editorial/adam-tsair-magazine-the-beach')},
       {t:'Archimedes and the crown | Einayim Magazine', type:'simple', c:'#d4af37', g:'👑', span:4, col:7,
         img:'images/illustration-editorial/einayim-magazine-archimedes-and-the-crown/einayim-magazine-archimedes-and-the-crown-cover.webp',
-        images: galleryRange('images/illustration-editorial/einayim-magazine-archimedes-and-the-crown', 'einayim-magazine-archimedes-and-the-crown', 'webp', 4)},
+        images: galleryRange('images/illustration-editorial/einayim-magazine-archimedes-and-the-crown')},
       {t:'The Tales of Rabbi Nachman of Breslev | Einayim Magazine', type:'simple', c:'#e6e6e6', g:'📖', span:3, col:0,
         img:'images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.webp',
-        images: galleryRange('images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'einayim-magazine-the-tales-of-rabbi-nachman-of-breslev', 'webp', 9)},
+        images: galleryRange('images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev')},
       {t:'Geula Cohen | True Legends book', type:'simple', c:'#2e5a3a', g:'📗', span:2, col:5,
         img:'images/illustration-editorial/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.webp'},
       {t:'Where does salt comes from? | Einayim Magazine', type:'simple', c:'#ffffff', g:'', span:4, col:0,
@@ -300,17 +305,17 @@ const CATS = {
         images:[{img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-cover.webp'}, {img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-2.webp'}, {img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-3.webp'}, {img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-4.webp'}, {img:'images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-5.webp'}]},
       {t:'What my father never told me', type:'simple', c:'#dcdcdc', g:'👨', span:4, col:7,
         img:'images/illustration-editorial/what-my-father-never-told-me/what-my-father-never-told-me-cover.webp',
-        images: galleryRange('images/illustration-editorial/what-my-father-never-told-me', 'what-my-father-never-told-me', 'webp', 4)},
+        images: galleryRange('images/illustration-editorial/what-my-father-never-told-me')},
       {t:'Election for children | Einayim Magazine', type:'simple', c:'#3a6b8a', g:'🗳️', span:3, col:7,
         img:'images/illustration-editorial/einayim-magazine-election-for-children/einayim-magazine-election-for-children-cover.webp',
-        images: galleryRange('images/illustration-editorial/einayim-magazine-election-for-children', 'einayim-magazine-election-for-children', 'webp', 3)},
+        images: galleryRange('images/illustration-editorial/einayim-magazine-election-for-children')},
       {t:'The AI vortex | Calcalist', type:'simple', c:'#5aa9d6', g:'', span:3, slug:'the-ai-vortex-calcalist',
         img:'images/illustration-editorial/calcalist-the-ai-vortex/calcalist-the-ai-vortex-cover.webp'},
       {t:'Sun riddle | Einayim Magazine', type:'simple', c:'#f3e9a8', g:'', span:3, slug:'sun-riddle-einayim-magazine',
         img:'images/illustration-editorial/einayim-magazine-sun-riddle/einayim-magazine-sun-riddle-cover.webp'},
       {t:'Lonely scientists | Einayim Magazine', type:'simple', c:'#b9a6cf', g:'', span:3, slug:'lonely-scientists-einayim-magazine', cardRatio:1, // square, cropped
         img:'images/illustration-editorial/einayim-magazine-lonely-scientists/einayim-magazine-lonely-scientists-cover.webp',
-        images: galleryRange('images/illustration-editorial/einayim-magazine-lonely-scientists', 'einayim-magazine-lonely-scientists', 'webp', 5)},
+        images: galleryRange('images/illustration-editorial/einayim-magazine-lonely-scientists')},
     ]
   },
   brand: {
@@ -885,6 +890,12 @@ function applySiteText(src){
   });
 }
 if(window.SITE_TEXT) applySiteText(window.SITE_TEXT);
+
+// a card whose named cover file is gone (renamed, or a .jpg now .webp)
+// shows its gallery's first image instead of a blank
+Object.values(CATS).forEach(c=> [...(c.items || []), ...(c.editorial || [])].forEach(it=>{
+  if(it.img && !(window.IMG_SIZES || {})[it.img] && it.images && it.images.length && (window.IMG_SIZES || {})[it.images[0].img]) it.img = it.images[0].img;
+}));
 
 /* === end of the site's data: tools/build.py reads site.js up to here === */
 
