@@ -293,12 +293,11 @@ title: Future of medicine | *Calcalist*
 columns: 3
 start column: 1
 
-## our-digital-mirror-calcalist
-title: Our digital mirror | *Calcalist*
+## the-ai-vortex-calcalist
+title: The AI vortex | *Calcalist*
+// in the top row, where Our digital mirror was
 columns: 3
 start column: 4
-// the right side is empty white: crop that away first
-focus: left
 
 ## nordic-myths-adam-tsair-magazine
 title: Nordic Myths | *Adam Tsair Magazine*
@@ -308,7 +307,7 @@ start column: 7
 ## work-in-post-covid-times-globes
 title: Work in post COVID times | *Globes*
 columns: 3
-start column: 4
+start column: 1
 
 ## the-estonian-sting-calcalist
 title: The Estonian Sting | *Calcalist*
@@ -318,12 +317,41 @@ start column: 7
 ## remote-therapy-calcalist
 title: Remote therapy | *Calcalist*
 columns: 3
+start column: 4
+
+## the-tales-of-rabbi-nachman-of-breslev-einayim-magazine
+title: The Tales of Rabbi Nachman of Breslev | *Einayim Magazine*
+columns: 3
 start column: 1
+
+## archimedes-and-the-crown-einayim-magazine
+title: Archimedes and the crown | *Einayim Magazine*
+columns: 3
+start column: 7
+
+## einayim-magazine-huzpa
+title: Chuzpa! | *Einayim Magazine*
+columns: 2
+start column: 3
+tablet columns: 2
+tablet start column: 3
+
+## the-beach-adam-tsair-magazine
+title: The Beach | *Adam Tsair Magazine*
+columns: 3
+start column: 7
+
+## geula-cohen-true-legends-book
+title: Geula Cohen | *True Legends* book
+columns: 2
+start column: 1
+tablet columns: 2
+tablet start column: 1
 
 ## sex
 title: Sexual instruction book
 columns: 3
-start column: 4
+start column: 1
 description: Illustrations for *Love In The 21st Century*, a sexual education book by sexologist Dr. Daniel Drai.
 intro: Illustrations for *Love In The 21st Century*, a sexual education book by sexologist Dr. Daniel Drai.
 caption sex-2.webp: Understanding women's sexuality
@@ -335,73 +363,37 @@ caption sex-7.webp: Figuring it out
 statement 1: The illustrations are done with a pen brush, conveying a human and accessible touch to a very human, yet potentially embarrassing, subject
 statement 2: Every aspect of human sexuality is considered in the book, including less talked-about subjects such as sexuality during pregnancy
 
-## archimedes-and-the-crown-einayim-magazine
-title: Archimedes and the crown | *Einayim Magazine*
+## what-my-father-never-told-me
+title: What my father never told me
 columns: 3
 start column: 7
 
-## the-tales-of-rabbi-nachman-of-breslev-einayim-magazine
-title: The Tales of Rabbi Nachman of Breslev | *Einayim Magazine*
+## where-does-salt-comes-from-einayim-magazine
+title: Where does salt come from? | *Einayim Magazine*
 columns: 3
-start column: 1
+start column: 7
+
+## sun-riddle-einayim-magazine
+title: Sun riddle | *Einayim Magazine*
+columns: 2
+start column: 5
+tablet columns: 3
+tablet start column: 1
 
 ## crypto-conservatives-calcalist
 title: Crypto conservatives | *Calcalist*
 columns: 3
 start column: 4
 
-## the-beach-adam-tsair-magazine
-title: The Beach | *Adam Tsair Magazine*
-columns: 3
-start column: 7
-
 ## election-for-children-einayim-magazine
 title: Election for children | *Einayim Magazine*
 columns: 3
-start column: 4
-
-## where-does-salt-comes-from-einayim-magazine
-title: Where does salt come from? | *Einayim Magazine*
-columns: 3
 start column: 1
-
-## what-my-father-never-told-me
-title: What my father never told me
-columns: 3
-start column: 3
-
-## geula-cohen-true-legends-book
-title: Geula Cohen | *True Legends* book
-columns: 2
-start column: 6
-tablet columns: 2
-tablet start column: 1
-
-## einayim-magazine-huzpa
-title: Chuzpa! | *Einayim Magazine*
-columns: 2
-start column: 1
-tablet columns: 2
-tablet start column: 3
-
-## the-ai-vortex-calcalist
-title: The AI vortex | *Calcalist*
-columns: 2
-start column: 1
-tablet columns: 2
-tablet start column: 5
-
-## sun-riddle-einayim-magazine
-title: Sun riddle | *Einayim Magazine*
-columns: 2
-start column: 8
-tablet columns: 3
-tablet start column: 1
 
 ## lonely-scientists-einayim-magazine
 title: Lonely scientists | *Einayim Magazine*
 columns: 3
-start column: 3
+start column: 4
 tablet columns: 3
 tablet start column: 4
 
