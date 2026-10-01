@@ -1260,6 +1260,7 @@ function showRoute(){
   if(currentCat !== cat){
     renderGrid(cat);
     currentCat = cat;
+    window.scrollTo(0,0); // a new section opens at its top, not where the last one was scrolled to
   }
   gridPage.classList.add('show');
   // .grid-page was display:none until the line above, so the masonry
