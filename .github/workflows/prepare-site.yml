@@ -1,0 +1,57 @@
+# After every push to main: convert any new PNG/JPG images to WebP (any
+# names, any number), rebuild the generated pages, commit the result back
+# and ask GitHub Pages to publish it. So images can be added in any format
+# straight from GitHub Desktop or the website.
+# macOS, because tools/build.py reads the site data with osascript.
+name: Prepare images and pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: prepare-site
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install pillow
+
+      # a fresh checkout gives every file the same "now" time; set them all
+      # to one fixed time so build.py doesn't remake every share picture
+      # (it only remakes ones older than their source image)
+      - run: find . -path ./.git -prune -o -type f -exec touch -t 202601010000 {} +
+
+      - name: Convert new images to WebP
+        run: python tools/optimize_images.py
+
+      - name: Rebuild the generated pages
+        run: python tools/build.py
+
+      - name: Commit and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "site-builder"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to convert or rebuild."
+            exit 0
+          fi
+          git commit -m "Converted images and rebuilt pages (automatic)"
+          git push
+          gh api -X POST "repos/${{ github.repository }}/pages/builds" || true

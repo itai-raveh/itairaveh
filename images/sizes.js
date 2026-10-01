@@ -368,7 +368,7 @@ window.IMG_SIZES = {
 "images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-5.webp":[1920, 1559, 1200],
 "images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-6.webp":[1920, 1171, 0],
 "images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-7.webp":[1920, 1154, 0],
-"images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp":[1920, 959, 1200],
+"images/illustration-editorial/adam-tsair-magazine-nordic-myths/adam-tsair-magazine-nordic-myths-cover.webp":[1500, 1454, 0],
 "images/illustration-editorial/geula-cohen-true-legends-book/geula-cohen-true-legends-book-cover.webp":[1131, 1600, 0],
 "images/illustration-editorial/einayim-magazine-sun-riddle/einayim-magazine-sun-riddle-cover.webp":[1500, 1498, 1200],
 "images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-10.webp":[1801, 1801, 1200],

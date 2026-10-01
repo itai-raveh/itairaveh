@@ -1828,7 +1828,12 @@ function openProjectLightbox(cat, item, startIdx){
   lightbox.classList.add('show');
   document.body.style.overflow = 'hidden';
   lightbox.onclick = (e)=>{ if(e.target === lightbox) go(cat + '/'); };
-  setLightboxKeys(e=>{ if(e.key === 'Escape') go(cat + '/'); });
+  // Escape closes; the arrow keys step through the project's images
+  setLightboxKeys(e=>{
+    if(e.key === 'Escape') go(cat + '/');
+    if(images.length > 1 && e.key === 'ArrowLeft') step(idx - 1);
+    if(images.length > 1 && e.key === 'ArrowRight') step(idx + 1);
+  });
 
   // FLIP: the clicked grid thumbnail's on-screen rect (captured by the
   // click handler before navigating) becomes the animation's start —
