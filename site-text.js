@@ -307,46 +307,17 @@ start column: 7
 ## work-in-post-covid-times-globes
 title: Work in post COVID times | *Globes*
 columns: 3
-start column: 1
+start column: 7
 
 ## the-estonian-sting-calcalist
 title: The Estonian Sting | *Calcalist*
 columns: 3
-start column: 7
-
-## remote-therapy-calcalist
-title: Remote therapy | *Calcalist*
-columns: 3
-start column: 4
-
-## the-tales-of-rabbi-nachman-of-breslev-einayim-magazine
-title: The Tales of Rabbi Nachman of Breslev | *Einayim Magazine*
-columns: 3
 start column: 1
 
-## archimedes-and-the-crown-einayim-magazine
-title: Archimedes and the crown | *Einayim Magazine*
+## crypto-conservatives-calcalist
+title: Crypto conservatives | *Calcalist*
 columns: 3
-start column: 7
-
-## einayim-magazine-huzpa
-title: Chuzpa! | *Einayim Magazine*
-columns: 2
-start column: 3
-tablet columns: 2
-tablet start column: 3
-
-## the-beach-adam-tsair-magazine
-title: The Beach | *Adam Tsair Magazine*
-columns: 3
-start column: 7
-
-## geula-cohen-true-legends-book
-title: Geula Cohen | *True Legends* book
-columns: 2
 start column: 1
-tablet columns: 2
-tablet start column: 1
 
 ## sex
 title: Sexual instruction book
@@ -363,30 +334,18 @@ caption sex-7.webp: Figuring it out
 statement 1: The illustrations are done with a pen brush, conveying a human and accessible touch to a very human, yet potentially embarrassing, subject
 statement 2: Every aspect of human sexuality is considered in the book, including less talked-about subjects such as sexuality during pregnancy
 
-## what-my-father-never-told-me
-title: What my father never told me
-columns: 3
-start column: 7
-
-## where-does-salt-comes-from-einayim-magazine
-title: Where does salt come from? | *Einayim Magazine*
-columns: 3
-start column: 7
-
-## sun-riddle-einayim-magazine
-title: Sun riddle | *Einayim Magazine*
-columns: 2
-start column: 5
-tablet columns: 3
-tablet start column: 1
-
-## crypto-conservatives-calcalist
-title: Crypto conservatives | *Calcalist*
+## archimedes-and-the-crown-einayim-magazine
+title: Archimedes and the crown | *Einayim Magazine*
 columns: 3
 start column: 4
 
-## election-for-children-einayim-magazine
-title: Election for children | *Einayim Magazine*
+## the-tales-of-rabbi-nachman-of-breslev-einayim-magazine
+title: The Tales of Rabbi Nachman of Breslev | *Einayim Magazine*
+columns: 3
+start column: 1
+
+## remote-therapy-calcalist
+title: Remote therapy | *Calcalist*
 columns: 3
 start column: 1
 
@@ -396,6 +355,47 @@ columns: 3
 start column: 4
 tablet columns: 3
 tablet start column: 4
+
+## what-my-father-never-told-me
+title: What my father never told me
+columns: 3
+start column: 4
+
+## geula-cohen-true-legends-book
+title: Geula Cohen | *True Legends* book
+columns: 2
+start column: 4
+tablet columns: 2
+tablet start column: 1
+
+## where-does-salt-comes-from-einayim-magazine
+title: Where does salt come from? | *Einayim Magazine*
+columns: 3
+start column: 7
+
+## the-beach-adam-tsair-magazine
+title: The Beach | *Adam Tsair Magazine*
+columns: 3
+start column: 7
+
+## election-for-children-einayim-magazine
+title: Election for children | *Einayim Magazine*
+columns: 3
+start column: 7
+
+## sun-riddle-einayim-magazine
+title: Sun riddle | *Einayim Magazine*
+columns: 2
+start column: 6
+tablet columns: 3
+tablet start column: 1
+
+## einayim-magazine-huzpa
+title: Chuzpa! | *Einayim Magazine*
+columns: 2
+start column: 8
+tablet columns: 2
+tablet start column: 3
 
 # brand
 name: Branded illustration language
