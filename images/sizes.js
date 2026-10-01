@@ -422,7 +422,15 @@ window.IMG_SIZES = {
 "images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-4.webp":[603, 810, 0],
 "images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-5.webp":[603, 810, 0],
 "images/illustration-editorial/einayim-magazine-huzpa/einayim-magazine-huzpa-cover.webp":[1600, 2000, 1200],
+"images/illustration-editorial/calcalist-the-estonian-sting/18ec2472994423.5bfb1cb951a5e.webp":[2400, 2400, 1200],
+"images/illustration-editorial/calcalist-the-estonian-sting/24fb2872994423.5bfb1cb94eead.webp":[2400, 2400, 1200],
+"images/illustration-editorial/calcalist-the-estonian-sting/64360a72994423.5bfb1cb94e658.webp":[2400, 2400, 1200],
+"images/illustration-editorial/calcalist-the-estonian-sting/a8f43372994423.5bfb1cb950504.webp":[2400, 1300, 1200],
+"images/illustration-editorial/calcalist-the-estonian-sting/ad746272994423.5bfb1cb94f984.webp":[2400, 2400, 1200],
 "images/illustration-editorial/calcalist-the-estonian-sting/calcalist-the-estonian-sting-cover.webp":[938, 588, 0],
+"images/illustration-editorial/calcalist-the-estonian-sting/cf81a272994423.5bfb1cb94cfe7.webp":[2400, 1586, 1200],
+"images/illustration-editorial/calcalist-the-estonian-sting/f35e1d72994423.5bfb1cb94db51.webp":[2400, 2400, 1200],
+"images/illustration-editorial/calcalist-the-estonian-sting/fdba1f72994423.5bfb1cb950f6e.webp":[2400, 2400, 1200],
 "images/illustration-editorial/calcalist-the-ai-vortex/calcalist-the-ai-vortex-cover.webp":[1500, 1829, 0],
 "images/illustration-editorial/calcalist-crypto-conservatives/calcalist-crypto-conservatives-cover.webp":[2400, 1347, 1200],
 "images/illustration-editorial/einayim-magazine-lonely-scientists/einayim-magazine-lonely-scientists-2.webp":[800, 1000, 0],
@@ -439,5 +447,7 @@ window.IMG_SIZES = {
 "images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-8.webp":[1366, 1093, 0],
 "images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-9.webp":[1365, 1093, 0],
 "images/illustration-editorial/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev/einayim-magazine-the-tales-of-rabbi-nachman-of-breslev-cover.webp":[1366, 1093, 0],
-"images/illustration-editorial/globes-work-in-post-covid-times/globes-work-in-post-covid-times-cover.webp":[2400, 1349, 1200]
+"images/illustration-editorial/globes-work-in-post-covid-times/globes-work-in-post-covid-times-cover.webp":[2400, 1349, 1200],
+"images/share-src/home-damascus-gate.webp":[1200, 630, 0],
+"images/share-src/science-biomass-of-mammals.webp":[1200, 630, 0]
 };

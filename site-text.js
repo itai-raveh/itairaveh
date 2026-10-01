@@ -90,7 +90,7 @@ site description: Itai Raveh is an illustrator and graphic designer based in Tel
 hebrew name: איתי רווה
 hebrew description: איתי רווה, מאייר ומעצב גרפי מתל אביב: איור, שפות איור למותגים, איור ותקשורת מדע, ובימוי אמנותי לאנימציה.
 site address: https://itairaveh.com/
-share image: images/illustration-editorial/adam-tsair-magazine-the-beach/adam-tsair-magazine-the-beach-cover.webp
+share image: images/share-src/home-damascus-gate.webp
 projects heading: Projects
 editorial heading: Editorial and publications
 read more link: Read more about this project
@@ -486,6 +486,7 @@ caption 7.webp: Some initial sketches
 name: Science communication
 description: Science communication by Itai Raveh: illustration, infographics and visual essays for scientists at the Weizmann Institute of Science and other research institutes, including Anthropomass with Prof. Ron Milo.
 hebrew description: תקשורת מדע של איתי רווה: איור, אינפוגרפיקה ומאמרים חזותיים עבור מדענים במכון ויצמן למדע ובמוסדות מחקר נוספים, בהם Anthropomass עם פרופ׳ רון מילוא.
+share image: images/share-src/science-biomass-of-mammals.webp
 grid columns: 9
 
 ## watertowers-of-israel
